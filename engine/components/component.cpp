@@ -42,7 +42,17 @@ void Component::release()
     Component::pool->release(this);
 }
 
-void Component::init()
+Component *Component::init()
+{
+    return this;
+}
+
+void Component::update(float delta)
 {
 
+}
+
+Component *Component::clone()
+{
+    return Component::pool->obtain()->init();
 }

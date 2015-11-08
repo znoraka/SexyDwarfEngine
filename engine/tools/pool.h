@@ -12,6 +12,7 @@ template<typename T> class Pool
 public:
     Pool(std::function<T ()> f);
     T obtain();
+    T clone(T object);
     void release(T object);
 
 protected:

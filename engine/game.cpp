@@ -7,6 +7,13 @@ Game *Game::getInstance()
     return instance;
 }
 
+void Game::initialize()
+{
+    if(this->currentScene != nullptr) {
+        this->currentScene->initialize();
+    }
+}
+
 void Game::update(float delta)
 {
     if(!this->paused && this->currentScene != nullptr && currentScene->isReady()) {
@@ -27,6 +34,11 @@ void Game::resume()
 void Game::setScene(Scene *scene)
 {
     this->currentScene = scene;
+}
+
+void Game::addEvent(QEvent *event)
+{
+    currentScene->handleEvent(event);
 }
 
 Game::Game()

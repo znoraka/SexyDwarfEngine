@@ -4,12 +4,16 @@
 #include <QSet>
 #include <QList>
 #include <QHash>
+#include <QEvent>
+#include <QMouseEvent>
 
 #include "camera.h"
 #include "entity.h"
 #include "components/positioncomponent.h"
 #include "systems/system.h"
 #include "game/trianglecomponent.h"
+#include "components/volumecomponent.h"
+#include "consts.h"
 
 class Scene
 {
@@ -19,6 +23,9 @@ public:
     void removeEntity(Entity *entity);
     bool isReady() const;
     void update(float delta);
+    void initialize();
+
+    bool handleEvent(QEvent *event);
 
 protected:
     Camera *camera;

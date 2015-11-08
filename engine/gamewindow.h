@@ -1,8 +1,11 @@
 #ifndef GAMEWINDOW_H
 #define GAMEWINDOW_H
 
+#include <QTimer>
+#include <QElapsedTimer>
+#include <QPixmap>
+
 #include "openglwindow.h"
-#include "QTimer"
 #include "game.h"
 
 class GameWindow : public OpenGLWindow
@@ -25,6 +28,8 @@ private:
     float framerate = 1.0f / 60.0f;
 
     QTimer timer;
+    QElapsedTimer elapsedTimer;
+    float elapsed;
 };
 
 

@@ -40,6 +40,7 @@
 
 #include <QtGui/QWindow>
 #include <QtGui/QOpenGLFunctions>
+#include <QDebug>
 
 QT_BEGIN_NAMESPACE
 class QPainter;
@@ -66,6 +67,8 @@ public slots:
     void renderNow();
 
 protected:
+    QOpenGLPaintDevice *m_device;
+    QOpenGLContext *m_context;
 
     bool event(QEvent *event);
 
@@ -75,7 +78,5 @@ private:
     bool m_update_pending;
     bool m_animating;
 
-    QOpenGLContext *m_context;
-    QOpenGLPaintDevice *m_device;
 };
 

@@ -44,3 +44,61 @@ void Entity::release()
     }
     pool->release(this);
 }
+
+void Entity::update(float delta)
+{
+    foreach (Component *c, components) {
+        c->update(delta);
+    }
+}
+
+QVector3D Entity::getPosition() const
+{
+    return this->position;
+}
+
+QVector3D Entity::getRotation() const
+{
+    return this->rotation;
+}
+
+QVector3D Entity::getScale() const
+{
+    return this->scale;
+}
+
+void Entity::setRotation(QVector3D v)
+{
+    this->rotation = v;
+}
+
+void Entity::setRotation(float x, float y, float z)
+{
+    this->rotation.setX(x);
+    this->rotation.setY(y);
+    this->rotation.setZ(z);
+}
+
+void Entity::setPosition(QVector3D v)
+{
+    this->position = v;
+}
+
+void Entity::setPosition(float x, float y, float z)
+{
+    this->position.setX(x);
+    this->position.setY(y);
+    this->position.setZ(z);
+}
+
+void Entity::setScale(QVector3D v)
+{
+    this->scale = v;
+}
+
+void Entity::setScale(float x, float y, float z)
+{
+    this->scale.setX(x);
+    this->scale.setY(y);
+    this->scale.setZ(z);
+}

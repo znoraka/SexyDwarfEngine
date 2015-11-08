@@ -4,6 +4,7 @@
 #include <QtGui/QWindow>
 #include <QtGui/QOpenGLFunctions>
 #include <QDebug>
+#include <QVector3D>
 
 class Camera
 {
@@ -11,27 +12,32 @@ public:
     Camera();
 
 
-    virtual void initialize(qreal ratio, qreal width, qreal height, qreal near, qreal far);
-    void rotate(float x, float y, float z);
-    void scale(float scaleX, float scaleY, float scaleZ);
+    void initialize(qreal ratio, qreal width, qreal height, qreal near, qreal far);
     void update(float delta);
     void setAnimated(bool b);
 
-    float getRotationX() const;
-    float getRotationY() const;
-    float getRotationZ() const;
+    QVector3D getPosition() const;
+    QVector3D getRotation() const;
+    QVector3D getScale() const;
 
-    float getScaleX() const;
-    float getScaleY() const;
-    float geScaleZ() const;
+    void setRotation(QVector3D v);
+    void setRotation(float x, float y, float z);
+
+    void setPosition(QVector3D v);
+    void setPosition(float x, float y, float z);
+
+    void setScale(QVector3D v);
+    void setScale(float x, float y, float z);
 
     bool isAnimated() const;
 
 private:
     int etat = 0;
-    float rotX = 0;
-    float rotY = 0;
-    float ss = 1.0f;
+
+    QVector3D position;
+    QVector3D rotation;
+    QVector3D scale;
+
     bool animated = false;
 };
 

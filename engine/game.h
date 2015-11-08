@@ -6,11 +6,12 @@ class Game
 {
 public:
     static Game *getInstance();
-
+    void initialize();
     void update(float delta);
     void pause();
     void resume();
     void setScene(Scene *scene);
+    void addEvent(QEvent *event);
 
 private:
     Game();

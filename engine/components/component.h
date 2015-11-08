@@ -7,6 +7,7 @@
 #include "engine/systems/system.h"
 
 class Entity;
+#include "engine/entity.h"
 class System;
 
 class Component
@@ -23,7 +24,9 @@ public:
     Entity *getEntity() const;
 
     virtual void release();
-    virtual void init();
+    virtual Component *init();
+    virtual void update(float delta);
+    virtual Component *clone();
 
     static const QString name;
 

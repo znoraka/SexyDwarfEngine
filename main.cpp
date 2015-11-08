@@ -20,8 +20,7 @@
 #include "engine/entity.h"
 #include "game/trianglecomponent.h"
 
-using namespace std;
-
+#include "consts.h"
 
 int main(int argc, char **argv)
 {
@@ -33,7 +32,7 @@ int main(int argc, char **argv)
 
     GameWindow *w = new GameWindow();
     w->setFormat(format);
-    w->resize(640, 480);
+    w->resize(WIDTH, HEIGHT);
     w->show();
     w->setAnimating(true);
 
