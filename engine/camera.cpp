@@ -28,10 +28,10 @@ void Camera::update(float delta)
 {
 //    glLoadIdentity();
     glScalef(scale.x(), scale.y() , scale.z());
+    glTranslatef(position.x(), position.y(), position.z());
     glRotatef(rotation.x(), 1, 0, 0);
     glRotatef(rotation.y(), 0, 1, 0);
     glRotatef(rotation.z(), 0, 0, 1);
-    glTranslatef(position.x(), position.y(), position.z());
 }
 
 

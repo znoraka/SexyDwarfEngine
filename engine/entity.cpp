@@ -67,38 +67,44 @@ QVector3D Entity::getScale() const
     return this->scale;
 }
 
-void Entity::setRotation(QVector3D v)
+Entity *Entity::setRotation(QVector3D v)
 {
     this->rotation = v;
+    return this;
 }
 
-void Entity::setRotation(float x, float y, float z)
+Entity *Entity::setRotation(float x, float y, float z)
 {
     this->rotation.setX(x);
     this->rotation.setY(y);
     this->rotation.setZ(z);
+    return this;
 }
 
-void Entity::setPosition(QVector3D v)
+Entity *Entity::setPosition(QVector3D v)
 {
     this->position = v;
+    return this;
 }
 
-void Entity::setPosition(float x, float y, float z)
+Entity *Entity::setPosition(float x, float y, float z)
 {
     this->position.setX(x);
     this->position.setY(y);
     this->position.setZ(z);
+    return this;
 }
 
-void Entity::setScale(QVector3D v)
+Entity *Entity::setScale(QVector3D v)
 {
     this->scale = v;
+    return this;
 }
 
-void Entity::setScale(float x, float y, float z)
+Entity *Entity::setScale(float x, float y, float z)
 {
     this->scale.setX(x);
     this->scale.setY(y);
     this->scale.setZ(z);
+    return this;
 }

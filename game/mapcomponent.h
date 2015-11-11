@@ -1,28 +1,29 @@
-#ifndef VOLUMECOMPONENT_H
-#define VOLUMECOMPONENT_H
+#ifndef MAPCOMPONENT_H
+#define MAPCOMPONENT_H
+
 
 #include <QVector>
 #include <QVector3D>
 #include <QOpenGLBuffer>
 #include <QOpenGLFunctions>
 #include <QFile>
+#include <QImage>
+#include <QOpenGLShaderProgram>
+#include <QOpenGLTexture>
 
 #include "engine/components/component.h"
 
-class VolumeComponent : public Component
+class MapComponent : public Component
 {
 public:
-    VolumeComponent();
-    static Pool<VolumeComponent *> *pool;
+    MapComponent();
+    static Pool<MapComponent *> *pool;
     const QString componentName() const override;
-    const QString systemName() const override;
-    virtual System *instantiateSystem();
 
     void release() override;
 
-    VolumeComponent *init(QString filePath);
+    MapComponent *init(QString heightmapPath, QString texturePath);
     virtual void update(float delta);
-    VolumeComponent *clone();
 
     static const QString name;
 
@@ -36,6 +37,13 @@ private:
     QOpenGLBuffer m_normalbuffer;
     QOpenGLBuffer m_colorbuffer;
     QOpenGLBuffer m_indexbuffer;
-};
 
-#endif // VOLUMECOMPONENT_H
+    QImage heightmap;
+
+    QOpenGLTexture *glTexture;
+    QOpenGLShaderProgram *shader;
+
+
+    float getZ(float i, float j);
+};
+#endif // MAPCOMPONENT_H

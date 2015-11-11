@@ -27,14 +27,14 @@ public:
     QVector3D getRotation() const;
     QVector3D getScale() const;
 
-    void setRotation(QVector3D v);
-    void setRotation(float x, float y, float z);
+    Entity *setRotation(QVector3D v);
+    Entity *setRotation(float x, float y, float z);
 
-    void setPosition(QVector3D v);
-    void setPosition(float x, float y, float z);
+    Entity *setPosition(QVector3D v);
+    Entity *setPosition(float x, float y, float z);
 
-    void setScale(QVector3D v);
-    void setScale(float x, float y, float z);
+    Entity *setScale(QVector3D v);
+    Entity *setScale(float x, float y, float z);
 
 protected:
     Entity();

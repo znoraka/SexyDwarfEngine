@@ -8,19 +8,40 @@ Scene::Scene()
 void Scene::initialize()
 {
     camera->initialize(WIDTH / HEIGHT, WIDTH, HEIGHT, 0, 1000);
+    QVector3D pos = camera->getPosition();
+    pos.setX(0); pos.setY(0); pos.setZ(0);
+    camera->setPosition(pos);
+    camera->setRotation(54, -90, 0);
     Entity *e;
     VolumeComponent *v = VolumeComponent::pool->obtain()->init(":/assets/ply/galleon.ply");
-    for (int i = 0; i < 10; ++i) {
-        e = Entity::pool->obtain();
-        e->addComponent(v->clone());
-        e->setScale(0.5, 0.5, 0.5);
-        e->setPosition(400 + i, 400 + i, -400);
-        e->setRotation(-90 + i * 0.5, 0, 90);
-        this->addEntity(e);
-    }
+    //    for (int i = 0; i < 10; ++i) {
+    //        e = Entity::pool->obtain();
+    //        e->addComponent(v->clone());
+    //        e->setScale(0.5, 0.5, 0.5);
+    //        e->setPosition(0, 0, 0);
+    //        e->setRotation(-90 + i * 0.5, 0, 90);
+    //        this->addEntity(e);
+    //    }
     v->release();
 
-    qDebug() << e->getComponent(VolumeComponent::name)->componentName();
+    this->addEntity(Entity::pool->obtain()->
+                    addComponent(MapComponent::pool->obtain()->init(":/assets/heightmaps/heightmap.png", ":/assets/maptexture.png"))->
+                    setPosition(-0, -0, 0)->
+                    setScale(0.5, 0.5, 0.5)->
+                    setRotation(-90, 0, 90));
+
+    glEnable(GL_LIGHTING);
+    glEnable(GL_LIGHT0);
+
+    GLfloat ambientLight[] = { 0.2f, 0.2f, 0.2f, 1.0f };
+    GLfloat diffuseLight[] = { 0.8f, 0.8f, 0.8, 1.0f };
+    GLfloat specularLight[] = { 0.5f, 0.5f, 0.5f, 1.0f };
+    GLfloat position[] = { 264, 264, 500, 0.0f };
+
+    glLightfv(GL_LIGHT0, GL_AMBIENT, ambientLight);
+    glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuseLight);
+    glLightfv(GL_LIGHT0, GL_SPECULAR, specularLight);
+    glLightfv(GL_LIGHT0, GL_POSITION, position);
 
     this->ready = true;
 }
@@ -28,14 +49,6 @@ void Scene::initialize()
 
 void Scene::addEntity(Entity *entity)
 {
-    //    foreach (Component *component, entity->getComponents()) {
-    //        if(!this->containsSystem(component->systemName())) {
-    //            qDebug() << "inserting system" << component->systemName();
-    //            this->addSystem(component->instantiateSystem());
-    //        }
-    //        System *system = systemsHash.find(component->systemName()).value();
-    //        system->addComponent(component);
-    //    }
     this->entities.insert(entity);
 }
 
@@ -53,7 +66,7 @@ bool Scene::isReady() const
 void Scene::update(float delta)
 {
     glPushMatrix();
-    camera->initialize(WIDTH / HEIGHT, WIDTH, HEIGHT, 0, 1000);
+    camera->initialize(WIDTH / HEIGHT, WIDTH, HEIGHT, -1000, 1000);
     camera->update(delta);
 
     foreach (Entity *e, entities) {
@@ -67,6 +80,7 @@ bool Scene::handleEvent(QEvent *event)
 {
     QMouseEvent *mouseEvent;
     QKeyEvent *keyEvent;
+    QVector3D v;
 
     switch (event->type())
     {
@@ -75,38 +89,47 @@ bool Scene::handleEvent(QEvent *event)
     case QEvent::KeyPress:
         keyEvent = static_cast<QKeyEvent*>(event);
         switch (keyEvent->key()) {
-            case Qt::Key_Right:
-            foreach (Entity *e, entities) {
-                QVector3D v = e->getPosition();
-                v.setX(v.x() + 10);
-                e->setPosition(v);
-            }
+        case Qt::Key_Right:
+            v = camera->getRotation();
+            v.setY(v.y() + 1);
+            camera->setRotation(v);
             return true;
 
         case Qt::Key_Left:
-        foreach (Entity *e, entities) {
-            QVector3D v = e->getPosition();
-            v.setX(v.x() - 10);
-            e->setPosition(v);
-        }
-        return true;
+            v = camera->getRotation();
+            v.setY(v.y() - 1);
+            camera->setRotation(v);
+            return true;
 
         case Qt::Key_Up:
-        foreach (Entity *e, entities) {
-            QVector3D v = e->getPosition();
-            v.setY(v.y() + 10);
-            e->setPosition(v);
-        }
-        return true;
+            v = camera->getRotation();
+            v.setX(v.x() + 1);
+            camera->setRotation(v);
+            return true;
 
         case Qt::Key_Down:
-        foreach (Entity *e, entities) {
-            QVector3D v = e->getPosition();
-            v.setY(v.y() - 10);
-            e->setPosition(v);
+            v = camera->getRotation();
+            v.setX(v.x() - 1);
+            camera->setRotation(v);
+            return true;
+
+        case Qt::Key_B:
+            v = camera->getScale();
+            v.setX(v.x() + 0.1);
+            v.setY(v.y() + 0.1);
+            v.setZ(v.z() + 0.1);
+            camera->setScale(v);
+            return true;
+
+        case Qt::Key_Eacute:
+            v = camera->getScale();
+            v.setX(v.x() - 0.1);
+            v.setY(v.y() - 0.1);
+            v.setZ(v.z() - 0.1);
+            camera->setScale(v);
+            return true;
         }
-        return true;
-        }
+
     }
     return false;
 }

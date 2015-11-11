@@ -13,6 +13,7 @@
 #include "systems/system.h"
 #include "game/trianglecomponent.h"
 #include "components/volumecomponent.h"
+#include "game/mapcomponent.h"
 #include "consts.h"
 
 class Scene

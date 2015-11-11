@@ -1,5 +1,9 @@
 <RCC>
     <qresource prefix="/">
         <file>assets/ply/galleon.ply</file>
+        <file>assets/heightmaps/heightmap.png</file>
+        <file>assets/maptexture.png</file>
+        <file>assets/shaders/map_fragment.glsl</file>
+        <file>assets/shaders/map_vertex.glsl</file>
     </qresource>
 </RCC>
