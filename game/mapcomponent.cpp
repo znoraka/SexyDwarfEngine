@@ -17,10 +17,10 @@ void MapComponent::release()
     MapComponent::pool->release(this);
 }
 
-MapComponent *MapComponent::init(QString heightmapPath, QString texturePath)
+MapComponent *MapComponent::init(QString mapFolder)
 {
-    heightmap = QImage(heightmapPath);
-    glTexture = new QOpenGLTexture(QImage(texturePath));
+    heightmap = QImage(mapFolder + "h.png");
+    glTexture = new QOpenGLTexture(QImage(mapFolder + "t.png"));
     glTexture->setMinificationFilter(QOpenGLTexture::LinearMipMapLinear);
     glTexture->setMagnificationFilter(QOpenGLTexture::Linear);
 

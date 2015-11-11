@@ -133,11 +133,11 @@ void VolumeComponent::update(float delta)
 
     glPushMatrix();
 
-    glScalef(getEntity()->getScale().x(), getEntity()->getScale().y(), getEntity()->getScale().z());
     glTranslatef(getEntity()->getPosition().x(), getEntity()->getPosition().y(), getEntity()->getPosition().z());
     glRotatef(getEntity()->getRotation().x(), 1, 0, 0);
     glRotatef(getEntity()->getRotation().y(), 0, 1, 0);
     glRotatef(getEntity()->getRotation().z(), 0, 0, 1);
+    glScalef(getEntity()->getScale().x(), getEntity()->getScale().y(), getEntity()->getScale().z());
 
     glEnableClientState(GL_VERTEX_ARRAY);
     glEnableClientState(GL_NORMAL_ARRAY);

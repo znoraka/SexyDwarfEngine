@@ -12,22 +12,25 @@ void Scene::initialize()
     pos.setX(0); pos.setY(0); pos.setZ(0);
     camera->setPosition(pos);
     camera->setRotation(54, -90, 0);
+    camera->setScale(camera->getScale() * 1.2);
     Entity *e;
     VolumeComponent *v = VolumeComponent::pool->obtain()->init(":/assets/ply/galleon.ply");
-    //    for (int i = 0; i < 10; ++i) {
-    //        e = Entity::pool->obtain();
-    //        e->addComponent(v->clone());
-    //        e->setScale(0.5, 0.5, 0.5);
-    //        e->setPosition(0, 0, 0);
-    //        e->setRotation(-90 + i * 0.5, 0, 90);
-    //        this->addEntity(e);
-    //    }
+    PathFollowerComponent *p = PathFollowerComponent::pool->obtain()->init(":/assets/maps/map1/");
+        for (int i = 0; i < 1; ++i) {
+            e = Entity::pool->obtain();
+            e->addComponent(v->clone());
+            e->addComponent(p);
+            e->setScale(0.05, 0.05, 0.05);
+            e->setPosition(-512 + 96, 0, -16);
+            e->setRotation(-90, 0, 180);
+            this->addEntity(e);
+        }
     v->release();
 
     this->addEntity(Entity::pool->obtain()->
-                    addComponent(MapComponent::pool->obtain()->init(":/assets/heightmaps/heightmap.png", ":/assets/maptexture.png"))->
-                    setPosition(-0, -0, 0)->
-                    setScale(0.5, 0.5, 0.5)->
+                    addComponent(MapComponent::pool->obtain()->init(":/assets/maps/map1/"))->
+                    setPosition(0, 0, 0)->
+                    setScale(1, 1, 1)->
                     setRotation(-90, 0, 90));
 
     glEnable(GL_LIGHTING);
@@ -36,7 +39,7 @@ void Scene::initialize()
     GLfloat ambientLight[] = { 0.2f, 0.2f, 0.2f, 1.0f };
     GLfloat diffuseLight[] = { 0.8f, 0.8f, 0.8, 1.0f };
     GLfloat specularLight[] = { 0.5f, 0.5f, 0.5f, 1.0f };
-    GLfloat position[] = { 264, 264, 500, 0.0f };
+    GLfloat position[] = { 50, 50, 500, 0.0f };
 
     glLightfv(GL_LIGHT0, GL_AMBIENT, ambientLight);
     glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuseLight);

@@ -65,20 +65,20 @@ void GameWindow::render()
     m_device->setSize(size());
 
     QPainter p;
-    p.begin(m_device);
-    p.setPen(Qt::yellow);
-    p.setFont(QFont("Arial", 20));
 
     elapsed = elapsedTimer.elapsed();
     if(elapsed > timer.interval() * 0.5) {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-        glDisableVertexAttribArray(GL_DEPTH_TEST);
+
+        this->render((float) elapsed * 0.0005f);
+//        glDisableVertexAttribArray(GL_DEPTH_TEST);
+        p.begin(m_device);
+        p.setPen(Qt::yellow);
+        p.setFont(QFont("Arial", 20));
         p.drawText(10, 30, QString::number((int) (1.0 / (elapsed * 0.001f))));
         p.end();
         glEnable(GL_DEPTH_TEST);
         glDepthFunc(GL_LESS);
-
-        this->render((float) elapsed * 0.0005f);
         elapsed -= timer.interval();
         elapsedTimer.restart();
     }

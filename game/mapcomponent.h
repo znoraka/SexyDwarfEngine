@@ -22,7 +22,7 @@ public:
 
     void release() override;
 
-    MapComponent *init(QString heightmapPath, QString texturePath);
+    MapComponent *init(QString mapFolder);
     virtual void update(float delta);
 
     static const QString name;
