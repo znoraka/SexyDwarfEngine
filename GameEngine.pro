@@ -28,7 +28,8 @@ SOURCES += \
     engine/systems/trianglesystem.cpp \
     engine/components/volumecomponent.cpp \
     game/mapcomponent.cpp \
-    game/pathfollowercomponent.cpp
+    game/pathfollowercomponent.cpp \
+    game/towercomponent.cpp
 
 HEADERS  += \
     engine/camera.h \
@@ -46,7 +47,8 @@ HEADERS  += \
     engine/components/volumecomponent.h \
     consts.h \
     game/mapcomponent.h \
-    game/pathfollowercomponent.h
+    game/pathfollowercomponent.h \
+    game/towercomponent.h
 
 FORMS    +=
 QMAKE_CXXFLAGS += -std=c++11

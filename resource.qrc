@@ -6,5 +6,6 @@
         <file>assets/maps/map1/h.png</file>
         <file>assets/maps/map1/t.png</file>
         <file>assets/maps/map1/p.png</file>
+        <file>assets/ply/tower.ply</file>
     </qresource>
 </RCC>

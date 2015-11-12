@@ -15,6 +15,7 @@
 #include "components/volumecomponent.h"
 #include "game/mapcomponent.h"
 #include "game/pathfollowercomponent.h"
+#include "game/towercomponent.h"
 #include "consts.h"
 
 class Scene

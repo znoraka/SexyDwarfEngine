@@ -1,7 +1,7 @@
 #ifndef CONSTS_H
 #define CONSTS_H
 
-#define WIDTH 640
-#define HEIGHT 480
+#define WIDTH 1366
+#define HEIGHT 768
 
 #endif // CONSTS_H

@@ -29,6 +29,11 @@ void VolumeComponent::release()
 
 VolumeComponent *VolumeComponent::init(QString filePath)
 {
+    verticesArray.clear();
+    normalsArray.clear();
+    colorsArray.clear();
+    indexesArray.clear();
+
     QStringList list;
     qDebug() << "loading " << filePath;
     QFile file( filePath );

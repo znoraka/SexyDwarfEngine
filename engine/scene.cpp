@@ -12,20 +12,26 @@ void Scene::initialize()
     pos.setX(0); pos.setY(0); pos.setZ(0);
     camera->setPosition(pos);
     camera->setRotation(54, -90, 0);
-    camera->setScale(camera->getScale() * 1.2);
+    camera->setScale(camera->getScale() * 1.8);
     Entity *e;
     VolumeComponent *v = VolumeComponent::pool->obtain()->init(":/assets/ply/galleon.ply");
     PathFollowerComponent *p = PathFollowerComponent::pool->obtain()->init(":/assets/maps/map1/");
-        for (int i = 0; i < 1; ++i) {
-            e = Entity::pool->obtain();
-            e->addComponent(v->clone());
-            e->addComponent(p);
-            e->setScale(0.05, 0.05, 0.05);
-            e->setPosition(-512 + 96, 0, -16);
-            e->setRotation(-90, 0, 180);
-            this->addEntity(e);
-        }
-    v->release();
+    for (int i = 0; i < 1; ++i) {
+        e = Entity::pool->obtain();
+        e->addComponent(v->clone());
+        e->addComponent(p);
+        e->setScale(0.05, 0.05, 0.05);
+        e->setPosition(-512 + 96, 0, -16);
+        e->setRotation(-90, 0, 180);
+        this->addEntity(e);
+    }
+
+    this->addEntity(Entity::pool->obtain()->
+                    addComponent(VolumeComponent::pool->obtain()->init(":/assets/ply/tower.ply"))->
+                    addComponent(TowerComponent::pool->obtain()->init(QVector3D(0, 30, 0), e))->
+                    setScale(10, 10, 10)->
+                    setPosition(-350, 34.5, -345));
+
 
     this->addEntity(Entity::pool->obtain()->
                     addComponent(MapComponent::pool->obtain()->init(":/assets/maps/map1/"))->
