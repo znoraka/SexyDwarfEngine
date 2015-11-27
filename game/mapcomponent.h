@@ -10,11 +10,17 @@
 #include <QImage>
 #include <QOpenGLShaderProgram>
 #include <QOpenGLTexture>
+#include <QOpenGLVertexArrayObject>
+#include <QSet>
+#include <QtCore/qmath.h>
 
 #include "engine/components/component.h"
+#include "engine/tools/delaunay.h"
 
 class MapComponent : public Component
 {
+#define ROTL10(x) (((x) << 10) | (((x) >> 22) & 0x000000ff))
+#define ROTL20(x) (((x) << 20) | (((x) >> 12) & 0x0000ffff))
 public:
     MapComponent();
     static Pool<MapComponent *> *pool;
@@ -28,10 +34,16 @@ public:
     static const QString name;
 
 private:
+    QSet<QVector3D> verticesSet;
+
     QVector<QVector3D> verticesArray;
     QVector<QVector3D> normalsArray;
     QVector<QVector3D> colorsArray;
     QVector<GLuint> indexesArray;
+
+    QOpenGLVertexArrayObject v_vao;
+    QOpenGLVertexArrayObject n_vao;
+    QOpenGLVertexArrayObject c_vao;
 
     QOpenGLBuffer m_vertexbuffer;
     QOpenGLBuffer m_normalbuffer;
@@ -43,7 +55,9 @@ private:
     QOpenGLTexture *glTexture;
     QOpenGLShaderProgram *shader;
 
+    int posAttr, colAttr, normalAttr;
 
+    void step(int startx, int starty, int width, int height, float threshold);
     float getZ(float i, float j);
 };
 #endif // MAPCOMPONENT_H

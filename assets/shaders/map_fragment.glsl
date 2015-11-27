@@ -33,5 +33,5 @@ void main (void)
       finalColor += Iamb + Idiff + Ispec;
    }
    
-   gl_FragColor = (gl_FrontLightModelProduct.sceneColor + finalColor) * texture2D(tex, vec2(pos.x / v_textureWidth, v_textureHeight - pos.y / v_textureHeight));
+   gl_FragColor = (gl_FrontLightModelProduct.sceneColor + finalColor) * texture2D(tex, vec2(pos.x / v_textureWidth, pos.y / v_textureHeight));
 }

@@ -3,6 +3,22 @@
 QString const MapComponent::name = "mapcomponent";
 Pool<MapComponent *> *MapComponent::pool = new Pool<MapComponent*>([] () {return new MapComponent();});
 
+uint qHash(double data)
+{
+    union U {
+        quint64 n;
+        double f;
+    };
+    U u;
+    u.f = data;
+    return u.f;
+}
+
+inline uint qHash(const QVector3D &v, uint seed)
+{
+    return qHash(v.x()) ^ ROTL10(qHash(v.y())) ^ ROTL20(qHash(v.z()));
+}
+
 MapComponent::MapComponent()
 {
 }
@@ -19,8 +35,8 @@ void MapComponent::release()
 
 MapComponent *MapComponent::init(QString mapFolder)
 {
-    heightmap = QImage(mapFolder + "h.png");
-    glTexture = new QOpenGLTexture(QImage(mapFolder + "t.png"));
+    heightmap = QImage(mapFolder + "h.png").mirrored();
+    glTexture = new QOpenGLTexture(QImage(mapFolder + "t.png").mirrored());
     glTexture->setMinificationFilter(QOpenGLTexture::LinearMipMapLinear);
     glTexture->setMagnificationFilter(QOpenGLTexture::Linear);
 
@@ -29,18 +45,9 @@ MapComponent *MapComponent::init(QString mapFolder)
     shader->addShaderFromSourceFile(QOpenGLShader::Fragment, ":/assets/shaders/map_fragment.glsl");
     qDebug() << "linked = " << shader->link();
     shader->bind();
-    shader->setUniformValue("textureWidth", heightmap.width());
-    shader->setUniformValue("textureHeight", heightmap.height());
+    shader->setUniformValue("textureWidth", (float) heightmap.width());
+    shader->setUniformValue("textureHeight", (float) heightmap.height());
     shader->release();
-
-//    float stepX = 1.0 / (heightmap.width());
-//    float stepY = 1.0 / (heightmap.height());
-
-    float stepX = 1.0;
-    float stepY = 1.0;
-
-    float posX;
-    float posY;
 
     auto color = [](QVector3D v) {
         if(v.z() < 0.08) {
@@ -52,63 +59,72 @@ MapComponent *MapComponent::init(QString mapFolder)
         }
     };
 
-    for (int i = 0 ; i < heightmap.width() - 1; ++i) {
-        for (int j = 0; j < heightmap.height() - 1; ++j) {
-            posX = i * stepX; posY = (j + 1) * stepY;
-            QVector3D v2(posX,  posY, getZ(posX, posY));
-            verticesArray.push_back(v2);
-            colorsArray.push_back(color(v2));
+    step(0, 0, heightmap.width(), heightmap.height(), 0.0);
 
-            posX = i * stepX; posY = j * stepY;
-            QVector3D v1(posX,  posY, getZ(posX, posY));
-            verticesArray.push_back(v1);
-            colorsArray.push_back(color(v1));
+    del_point2d_t	points_[verticesSet.size()];
+    QList<QVector3D> l = verticesSet.toList();
+    for (int i = 0; i < verticesSet.size(); ++i) {
+        del_point2d_t p;
+        p.x = l[i].x(); p.y = l[i].y();
+        points_[i] = p;
+    }
+    delaunay2d_t* res = delaunay2d_from(points_, verticesSet.size());
+    tri_delaunay2d_t*	tdel	= tri_delaunay2d_from(res);
 
-            posX = (i + 1) * stepX; posY = j * stepY;
-            QVector3D v3(posX,  posY, getZ(posX, posY));
-            verticesArray.push_back(v3);
-            colorsArray.push_back(color(v3));
-
-            QVector3D n = QVector3D::normal(v3 - v1, v2 - v1);
-            normalsArray.push_back(n);
-            normalsArray.push_back(n);
-            normalsArray.push_back(n);
-
-            posX = i * stepX; posY = (j + 1) * stepY;
-            QVector3D v4(posX, posY, getZ(posX, posY));
-            verticesArray.push_back(v4);
-            colorsArray.push_back(color(v4));
-
-            posX = (i + 1) * stepX; posY = j * stepY;
-            QVector3D v6(posX, posY, getZ(posX, posY));
-            verticesArray.push_back(v6);
-            colorsArray.push_back(color(v6));
-
-            posX = (i + 1) * stepX; posY = (j + 1) * stepY;
-            QVector3D v5(posX, posY, getZ(posX, posY));
-            verticesArray.push_back(v5);
-            colorsArray.push_back(color(v5));
-
-            QVector3D n1 = QVector3D::normal(v6 - v4, v5 - v4);
-            normalsArray.push_back(n1);
-            normalsArray.push_back(n1);
-            normalsArray.push_back(n1);
+    for (int i = 0; i < tdel->num_triangles; ++i) {
+        for (int j = 0; j < 3; ++j) {
+            indexesArray.push_back(tdel->tris[i * 3 + j]);
         }
     }
+    delaunay2d_release(res);
 
+    for (int i = 0; i < indexesArray.size(); i += 3) {
+        QVector3D v1 = l.at(indexesArray[i]);
+        QVector3D v2 = l.at(indexesArray[i + 1]);
+        QVector3D v3 = l.at(indexesArray[i + 2]);
+        QVector3D n = QVector3D::normal(v2 - v1, v3 - v1);
+
+        verticesArray.push_back(v1);
+        colorsArray.push_back(color(v1));
+        normalsArray.push_back(n);
+
+        verticesArray.push_back(v2);
+        colorsArray.push_back(color(v2));
+        normalsArray.push_back(n);
+
+        verticesArray.push_back(v3);
+        colorsArray.push_back(color(v3));
+        normalsArray.push_back(n);
+
+    }
+
+    shader->bind();
+
+    posAttr = shader->attributeLocation("position");
+    colAttr = shader->attributeLocation("color");
+    normalAttr = shader->attributeLocation("normal");
+
+    v_vao.create();
+    v_vao.bind();
     m_vertexbuffer.create();
     m_vertexbuffer.bind();
     m_vertexbuffer.allocate(verticesArray.constData(), verticesArray.size() * sizeof(QVector3D));
+    shader->enableAttributeArray(posAttr);
+    shader->setAttributeBuffer(posAttr, GL_FLOAT, 0, 3, 0);
     m_vertexbuffer.release();
 
     m_normalbuffer.create();
     m_normalbuffer.bind();
     m_normalbuffer.allocate(normalsArray.constData(), normalsArray.size() * sizeof(QVector3D));
+    shader->enableAttributeArray(normalAttr);
+    shader->setAttributeBuffer(normalAttr, GL_FLOAT, 0, 3, 0);
     m_normalbuffer.release();
 
     m_colorbuffer.create();
     m_colorbuffer.bind();
     m_colorbuffer.allocate(colorsArray.constData(), colorsArray.size() * sizeof(QVector3D));
+    shader->enableAttributeArray(colAttr);
+    shader->setAttributeBuffer(colAttr, GL_FLOAT, 0, 3, 0);
     m_colorbuffer.release();
 
     m_indexbuffer.create();
@@ -116,8 +132,65 @@ MapComponent *MapComponent::init(QString mapFolder)
     m_indexbuffer.allocate(indexesArray.constData(), indexesArray.size() * sizeof(GLuint));
     m_indexbuffer.release();
 
+    v_vao.release();
+    shader->release();
 
     return this;
+}
+
+void MapComponent::step(int startx, int starty, int width, int height, float threshold)
+{
+    float posX, posY;
+
+    if(startx + width >= heightmap.width()) width--;
+    if(starty + height >= heightmap.height()) height--;
+
+    auto areaAvg = [=]() {
+        double sum = 0;
+        for (int i = startx; i < width + startx; ++i) {
+            for (int j = starty; j < height + starty; ++j) {
+                sum += qGray(heightmap.pixel(i , j));
+            }
+        }
+        return sum /= (width * height);
+    };
+
+    auto areaStdDev = [=] (double avg) {
+        double dev = 0;
+
+        for (int i = startx; i < width + startx; ++i) {
+            for (int j = starty; j < height + starty; ++j) {
+                dev += pow(qGray(heightmap.pixel(i , j)) - avg, 2);
+            }
+        }
+
+        return sqrt(dev / (width * height));
+    };
+
+    double v = areaStdDev(areaAvg());
+
+    if(v < threshold || width == 1) {
+        posX = startx;
+        posY = starty;
+        QVector3D v1(posX,  posY, getZ(posX, posY));
+        verticesSet.insert(v1);
+
+        posX = startx;
+        posY = (starty + height);
+        QVector3D v2(posX,  posY, getZ(posX, posY));
+        verticesSet.insert(v2);
+
+        posX = (startx + width);
+        posY = starty;
+        QVector3D v3(posX,  posY, getZ(posX, posY));
+        verticesSet.insert(v3);
+
+    } else {
+        step(startx, starty, width * 0.5, height * 0.5, threshold);
+        step(startx + width * 0.5, starty, width * 0.5, height * 0.5, threshold);
+        step(startx, starty + height * 0.5, width * 0.5, height * 0.5, threshold);
+        step(startx + width * 0.5, starty + height * 0.5, width * 0.5, height * 0.5, threshold);
+    }
 }
 
 void MapComponent::update(float delta)
@@ -136,29 +209,14 @@ void MapComponent::update(float delta)
     glTranslatef(getEntity()->getPosition().x(), getEntity()->getPosition().y(), getEntity()->getPosition().z());
     glScalef(getEntity()->getScale().x(), getEntity()->getScale().y(), getEntity()->getScale().z());
 
-    glEnableClientState(GL_VERTEX_ARRAY);
-    glEnableClientState(GL_NORMAL_ARRAY);
-    glEnableClientState(GL_COLOR_ARRAY);
-    m_vertexbuffer.bind();
-    glVertexPointer(3, GL_FLOAT, 0, NULL);
-    m_vertexbuffer.release();
-    m_normalbuffer.bind();
-    glNormalPointer(GL_FLOAT, 0, NULL);
-    m_normalbuffer.release();
-    m_colorbuffer.bind();
-    glColorPointer(3, GL_FLOAT, 0, NULL);
-    m_colorbuffer.release();
-
-    glDrawArrays(GL_TRIANGLES, 0, verticesArray.size());
-
-    glDisableClientState(GL_COLOR_ARRAY);
-    glDisableClientState(GL_NORMAL_ARRAY);
-    glDisableClientState(GL_VERTEX_ARRAY);
-
-    glPopMatrix();
+    v_vao.bind();
+    glDrawArrays(GL_TRIANGLES, 0, normalsArray.size());
+    v_vao.release();
 
     glTexture->release();
     shader->release();
+
+    glPopMatrix();
 }
 
 float MapComponent::getZ(float i, float j)

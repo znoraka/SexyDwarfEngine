@@ -110,6 +110,7 @@ VolumeComponent *VolumeComponent::init(QString filePath)
         }
     }
 
+
     m_vertexbuffer.create();
     m_vertexbuffer.bind();
     m_vertexbuffer.allocate(verticesArray.constData(), verticesArray.size() * sizeof(QVector3D));

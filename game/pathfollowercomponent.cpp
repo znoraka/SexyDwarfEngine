@@ -19,7 +19,7 @@ void PathFollowerComponent::release()
 
 PathFollowerComponent *PathFollowerComponent::init(QString mapFolder)
 {
-    path = QImage(mapFolder + "p.png");
+    path = QImage(mapFolder + "p.png").mirrored();
     qDebug() << path.width();
     return this;
 }
@@ -34,7 +34,7 @@ void PathFollowerComponent::update(float delta)
     //    green = down
     //    white = up
 
-    QRgb pixel = path.pixel(-v.z(), 512 + v.x());
+    QRgb pixel = path.pixel(-v.z(), -v.x());
 
     if(qRed(pixel) == 255 && qGreen(pixel) == 255 && qBlue(pixel) == 255) {
         //up

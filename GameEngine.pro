@@ -29,7 +29,8 @@ SOURCES += \
     engine/components/volumecomponent.cpp \
     game/mapcomponent.cpp \
     game/pathfollowercomponent.cpp \
-    game/towercomponent.cpp
+    game/towercomponent.cpp \
+    engine/tools/delaunay.c
 
 HEADERS  += \
     engine/camera.h \
@@ -48,10 +49,11 @@ HEADERS  += \
     consts.h \
     game/mapcomponent.h \
     game/pathfollowercomponent.h \
-    game/towercomponent.h
+    game/towercomponent.h \
+    engine/tools/delaunay.h
 
 FORMS    +=
-QMAKE_CXXFLAGS += -std=c++11
+QMAKE_CXXFLAGS += -std=c++11 -lGL -lGLU -lglut
 
 RESOURCES += \
     resource.qrc

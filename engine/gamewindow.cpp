@@ -14,8 +14,6 @@
 
 #include <QtCore>
 #include <QtGui>
-using namespace std;
-
 
 GameWindow::GameWindow()
 {
@@ -69,7 +67,6 @@ void GameWindow::render()
     elapsed = elapsedTimer.elapsed();
     if(elapsed > timer.interval() * 0.5) {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-
         this->render((float) elapsed * 0.0005f);
 //        glDisableVertexAttribArray(GL_DEPTH_TEST);
         p.begin(m_device);

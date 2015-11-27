@@ -5,6 +5,7 @@
 #include <QVector3D>
 #include <QOpenGLBuffer>
 #include <QOpenGLFunctions>
+#include <QOpenGLVertexArrayObject>
 #include <QFile>
 
 #include "engine/components/component.h"
@@ -31,6 +32,8 @@ private:
     QVector<QVector3D> normalsArray;
     QVector<QVector3D> colorsArray;
     QVector<GLuint> indexesArray;
+
+    QOpenGLVertexArrayObject vao;
 
     QOpenGLBuffer m_vertexbuffer;
     QOpenGLBuffer m_normalbuffer;
