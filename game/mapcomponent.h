@@ -41,9 +41,7 @@ private:
     QVector<QVector3D> colorsArray;
     QVector<GLuint> indexesArray;
 
-    QOpenGLVertexArrayObject v_vao;
-    QOpenGLVertexArrayObject n_vao;
-    QOpenGLVertexArrayObject c_vao;
+    QOpenGLVertexArrayObject vao;
 
     QOpenGLBuffer m_vertexbuffer;
     QOpenGLBuffer m_normalbuffer;
@@ -59,5 +57,6 @@ private:
 
     void step(int startx, int starty, int width, int height, float threshold);
     float getZ(float i, float j);
+    void computeColorWithLights(QVector3D color, QVector3D normal, QVector3D vertex);
 };
 #endif // MAPCOMPONENT_H

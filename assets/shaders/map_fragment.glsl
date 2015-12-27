@@ -7,7 +7,7 @@ varying float v_textureWidth;
 varying float v_textureHeight;
 
 #define MAX_LIGHTS 3 
-
+// #define MAX_LIGHTS 0
 void main (void) 
 { 
    vec4 finalColor = vec4(0.0, 0.0, 0.0, 0.0);
@@ -33,5 +33,5 @@ void main (void)
       finalColor += Iamb + Idiff + Ispec;
    }
    
-   gl_FragColor = (gl_FrontLightModelProduct.sceneColor + finalColor) * texture2D(tex, vec2(pos.x / v_textureWidth, pos.y / v_textureHeight));
+   gl_FragColor = ((gl_FrontLightModelProduct.sceneColor + finalColor)) * texture2D(tex, vec2(pos.x / v_textureWidth, pos.y / v_textureHeight));
 }

@@ -53,7 +53,14 @@ HEADERS  += \
     engine/tools/delaunay.h
 
 FORMS    +=
-QMAKE_CXXFLAGS += -std=c++11 -lGL -lGLU -lglut
+QMAKE_CXXFLAGS += -std=c++11 -lGL -lGLU -lglut -lassimp
+
+LIBS += -L"/home/noe/Downloads/fmodstudioapi10703linux/api/studio/lib/  -libfmodex"
+LIBS += -L"/home/noe/Downloads/fmodstudioapi10703linux/api/lowlevel/lib/  -libfmodex"
+LIBS += -lassimp
+
+INCLUDEPATH += "/home/noe/Downloads/fmodstudioapi10703linux/api/studio/inc"
+INCLUDEPATH += "/home/noe/Downloads/fmodstudioapi10703linux/api/lowlevel/inc"
 
 RESOURCES += \
     resource.qrc

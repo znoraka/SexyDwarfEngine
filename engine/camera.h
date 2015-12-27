@@ -5,6 +5,7 @@
 #include <QtGui/QOpenGLFunctions>
 #include <QDebug>
 #include <QVector3D>
+#include "consts.h"
 
 class Camera
 {

@@ -5,12 +5,15 @@ Scene::Scene()
     camera = new Camera();
 }
 
-void Scene::initialize()
+void Scene::initialize(QMainWindow *parent)
 {
+    this->setParent(parent);
+
     camera->initialize(WIDTH / HEIGHT, WIDTH, HEIGHT, 0, 1000);
     QVector3D pos = camera->getPosition();
-    pos.setX(0); pos.setY(0); pos.setZ(0);
-    camera->setPosition(pos);
+//    pos.setX(WIDTH * 0.5); pos.setY(HEIGHT * 0.5); pos.setZ(0);
+//    camera->setPosition(WIDTH * 0.5, HEIGHT * 0.5, 0);
+    camera->setPosition(0, 0, 0);
     camera->setRotation(54, -90, 0);
     camera->setScale(camera->getScale() * 1.8);
     Entity *e;
@@ -55,6 +58,42 @@ void Scene::initialize()
     this->ready = true;
 }
 
+void Scene::initializeGL()
+{
+    QOpenGLFunctions *f = QOpenGLContext::currentContext()->functions();
+
+    glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LESS);
+    glEnable(GL_COLOR_MATERIAL);
+    glEnable(GL_CULL_FACE);
+    glEnable (GL_BLEND);
+    glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glHint(GL_PERSPECTIVE_CORRECTION_HINT,  GL_FASTEST);
+    glShadeModel(GL_SMOOTH);
+    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+    glClearDepth(1.0f);
+}
+
+//void Scene::paintGL()
+//{
+//    QPainter p;
+
+////    elapsed = elapsedTimer.elapsed();
+////    if(elapsed > timer.interval() * 0.5) {
+////        this->update((float) elapsed * 0.0005f);
+////        glDisableVertexAttribArray(GL_DEPTH_TEST);
+////        p.begin(m_device);
+////        p.setPen(Qt::yellow);
+////        p.setFont(QFont("Arial", 20));
+////        p.drawText(10, 30, QString::number((int) (1.0 / (elapsed * 0.001f))));
+////        p.end();
+////        glEnable(GL_DEPTH_TEST);
+////        glDepthFunc(GL_LESS);
+////        elapsed -= timer.interval();
+////        elapsedTimer.restart();
+////    }
+//}
+
 
 void Scene::addEntity(Entity *entity)
 {
@@ -74,6 +113,8 @@ bool Scene::isReady() const
 
 void Scene::update(float delta)
 {
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+
     glPushMatrix();
     camera->initialize(WIDTH / HEIGHT, WIDTH, HEIGHT, -1000, 1000);
     camera->update(delta);
@@ -82,6 +123,7 @@ void Scene::update(float delta)
         e->update(delta);
     }
     glPopMatrix();
+
 }
 
 
@@ -122,7 +164,7 @@ bool Scene::handleEvent(QEvent *event)
             camera->setRotation(v);
             return true;
 
-        case Qt::Key_B:
+        case Qt::Key_J:
             v = camera->getScale();
             v.setX(v.x() + 0.1);
             v.setY(v.y() + 0.1);
@@ -130,12 +172,45 @@ bool Scene::handleEvent(QEvent *event)
             camera->setScale(v);
             return true;
 
-        case Qt::Key_Eacute:
+        case Qt::Key_L:
             v = camera->getScale();
             v.setX(v.x() - 0.1);
             v.setY(v.y() - 0.1);
             v.setZ(v.z() - 0.1);
             camera->setScale(v);
+            return true;
+
+        case Qt::Key_Eacute:
+            v = camera->getPosition();
+            v.setZ(v.z() + 1);
+            camera->setPosition(v);
+            return true;
+
+        case Qt::Key_U:
+            v = camera->getPosition();
+            v.setZ(v.z() - 1);
+            camera->setPosition(v);
+            return true;
+
+        case Qt::Key_A:
+            v = camera->getPosition();
+            v.setX(v.x() - 1);
+            camera->setPosition(v);
+            return true;
+
+        case Qt::Key_I:
+            v = camera->getPosition();
+            v.setX(v.x() + 1);
+            camera->setPosition(v);
+            return true;
+
+        case Qt::Key_Space:
+            if(displayLines) {
+                glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+            } else {
+                glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+            }
+            displayLines = !displayLines;
             return true;
         }
 

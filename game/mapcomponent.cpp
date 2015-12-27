@@ -59,7 +59,7 @@ MapComponent *MapComponent::init(QString mapFolder)
         }
     };
 
-    step(0, 0, heightmap.width(), heightmap.height(), 0.0);
+    step(0, 0, heightmap.width(), heightmap.height(), .050);
 
     del_point2d_t	points_[verticesSet.size()];
     QList<QVector3D> l = verticesSet.toList();
@@ -104,8 +104,8 @@ MapComponent *MapComponent::init(QString mapFolder)
     colAttr = shader->attributeLocation("color");
     normalAttr = shader->attributeLocation("normal");
 
-    v_vao.create();
-    v_vao.bind();
+    vao.create();
+    vao.bind();
     m_vertexbuffer.create();
     m_vertexbuffer.bind();
     m_vertexbuffer.allocate(verticesArray.constData(), verticesArray.size() * sizeof(QVector3D));
@@ -127,12 +127,7 @@ MapComponent *MapComponent::init(QString mapFolder)
     shader->setAttributeBuffer(colAttr, GL_FLOAT, 0, 3, 0);
     m_colorbuffer.release();
 
-    m_indexbuffer.create();
-    m_indexbuffer.bind();
-    m_indexbuffer.allocate(indexesArray.constData(), indexesArray.size() * sizeof(GLuint));
-    m_indexbuffer.release();
-
-    v_vao.release();
+    vao.release();
     shader->release();
 
     return this;
@@ -209,9 +204,9 @@ void MapComponent::update(float delta)
     glTranslatef(getEntity()->getPosition().x(), getEntity()->getPosition().y(), getEntity()->getPosition().z());
     glScalef(getEntity()->getScale().x(), getEntity()->getScale().y(), getEntity()->getScale().z());
 
-    v_vao.bind();
+    vao.bind();
     glDrawArrays(GL_TRIANGLES, 0, normalsArray.size());
-    v_vao.release();
+    vao.release();
 
     glTexture->release();
     shader->release();
@@ -222,5 +217,44 @@ void MapComponent::update(float delta)
 float MapComponent::getZ(float i, float j)
 {
     return qGray(this->heightmap.pixel(i, j)) * 0.8f;
+}
+
+void MapComponent::computeColorWithLights(QVector3D color, QVector3D normal, QVector3D vertex)
+{
+    auto clamp = [](QVector3D v) {
+        v.setX(qBound(0.0f, v.x(), 1.0f));
+        v.setY(qBound(0.0f, v.y(), 1.0f));
+        v.setZ(qBound(0.0f, v.z(), 1.0f));
+    };
+
+    QVector3D finalColor(0, 0, 0);
+
+    GLfloat ambientLight[] = { 0.2f, 0.2f, 0.2f, 1.0f };
+    GLfloat diffuseLight[] = { 0.8f, 0.8f, 0.8, 1.0f };
+    GLfloat specularLight[] = { 0.5f, 0.5f, 0.5f, 1.0f };
+    GLfloat position[] = { 50, 50, 500, 0.0f };
+    float shininess = 1.0;
+
+    QVector3D L = QVector3D(position[0], position[1], position[2]) - vertex;
+    L.normalize();
+
+    QVector3D E = -vertex;
+    E.normalize();
+
+    QVector3D R = L - 2.0 * QVector3D::dotProduct(normal, L) * normal;
+    R.normalize();
+
+    QVector3D amb(ambientLight[0], ambientLight[1], ambientLight[2]);
+
+    QVector3D diff(diffuseLight[0], diffuseLight[1], diffuseLight[2]);
+    diff *= qMax(QVector3D::dotProduct(normal, L), 0.0f);
+    clamp(diff);
+
+    QVector3D spec(specularLight[0], specularLight[1], specularLight[2]);
+    spec *= pow(qMax(QVector3D::dotProduct(R, E), 0.0f), 0.3 * shininess);
+    clamp(spec);
+
+    finalColor += amb + diff + spec;
+    color = finalColor;
 }
 
