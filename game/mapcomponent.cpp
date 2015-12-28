@@ -221,6 +221,7 @@ MapComponent *MapComponent::clone()
 
 float MapComponent::getZ(float i, float j)
 {
+    qDebug() << i << ", " << j;
     return qGray(this->heightmap.pixel(i, j)) * 0.8f;
 }
 

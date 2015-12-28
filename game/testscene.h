@@ -26,6 +26,7 @@ private:
     bool handleEvent(QEvent *event);
     QPushButton *slowTowerButton;
     Entity *towerGhost;
+    Entity *map;
 };
 
 #endif // TESTSCENE_H

@@ -46,11 +46,12 @@ void TestScene::initialize()
                     setPosition(-350, 34.5, -345));
 
 
-    this->addEntity(Entity::pool->obtain()->
-                    addComponent(MapComponent::pool->obtain()->init(":/assets/maps/map1/"))->
-                    setPosition(0, 0, 0)->
-                    setScale(1, 1, 1)->
-                    setRotation(-90, 0, 90));
+    map = Entity::pool->obtain()->
+            addComponent(MapComponent::pool->obtain()->init(":/assets/maps/map1/"))->
+            setPosition(0, 0, 0)->
+            setScale(1, 1, 1)->
+            setRotation(-90, 0, 90);
+    this->addEntity(map);
 
     glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);
@@ -96,13 +97,10 @@ bool TestScene::handleEvent(QEvent *event)
     case QEvent::MouseMove:
         mouseEvent = static_cast<QMouseEvent*>(event);
 
-        v.setX(mouseEvent->pos().x());
-        v.setZ(mouseEvent->pos().y());
-        v.setY(0);
-        qDebug() << camera->screenToWorld(v);
-
         if(towerGhost != nullptr) {
-            towerGhost->setPosition(camera->screenToWorld(QVector3D(mouseEvent->x(), 0, mouseEvent->y())));
+            v = camera->screenToWorld(QVector3D(mouseEvent->x(), 0, mouseEvent->y()));
+            v.setY(static_cast<MapComponent*>(map->getComponent(MapComponent::name))->getZ(-v.z(), -v.x()));
+            towerGhost->setPosition(v);
         }
         return true;
     case QEvent::KeyPress:

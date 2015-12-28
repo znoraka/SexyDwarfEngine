@@ -33,6 +33,7 @@ public:
     MapComponent *clone();
 
     static const QString name;
+    float getZ(float i, float j);
 
 private:
     QSet<QVector3D> verticesSet;
@@ -57,7 +58,6 @@ private:
     int posAttr, colAttr, normalAttr;
 
     void step(int startx, int starty, int width, int height, float threshold);
-    float getZ(float i, float j);
     void computeColorWithLights(QVector3D color, QVector3D normal, QVector3D vertex);
 };
 #endif // MAPCOMPONENT_H
