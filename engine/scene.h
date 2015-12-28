@@ -12,6 +12,8 @@
 #include <QElapsedTimer>
 #include <QTimer>
 #include <QMainWindow>
+#include <QVBoxLayout>
+#include <QPushButton>
 
 #include "camera.h"
 #include "entity.h"
@@ -35,7 +37,6 @@ public:
     bool isReady() const;
     void update(float delta);
     void initializeGL();
-//    void paintGL();
 
     bool handleEvent(QEvent *event);
 
@@ -43,8 +44,6 @@ protected:
     Camera *camera;
 
 private:
-    bool containsSystem(const QString s) const;
-    void addSystem(System* system);
     void initialize(QMainWindow *parent);
 
     QSet<Entity*> entities;

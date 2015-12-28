@@ -74,27 +74,6 @@ void Scene::initializeGL()
     glClearDepth(1.0f);
 }
 
-//void Scene::paintGL()
-//{
-//    QPainter p;
-
-////    elapsed = elapsedTimer.elapsed();
-////    if(elapsed > timer.interval() * 0.5) {
-////        this->update((float) elapsed * 0.0005f);
-////        glDisableVertexAttribArray(GL_DEPTH_TEST);
-////        p.begin(m_device);
-////        p.setPen(Qt::yellow);
-////        p.setFont(QFont("Arial", 20));
-////        p.drawText(10, 30, QString::number((int) (1.0 / (elapsed * 0.001f))));
-////        p.end();
-////        glEnable(GL_DEPTH_TEST);
-////        glDepthFunc(GL_LESS);
-////        elapsed -= timer.interval();
-////        elapsedTimer.restart();
-////    }
-//}
-
-
 void Scene::addEntity(Entity *entity)
 {
     this->entities.insert(entity);
@@ -216,14 +195,4 @@ bool Scene::handleEvent(QEvent *event)
 
     }
     return false;
-}
-
-bool Scene::containsSystem(const QString s) const
-{
-    //    return systemsHash.find(s) != systemsHash.end();
-}
-
-void Scene::addSystem(System *system)
-{
-    //    systemsHash.insert(system->systemName(), system);
 }

@@ -9,6 +9,8 @@
 
 #include "scene.h"
 
+class MainWindow;
+
 class Game : public QObject
 {
     Q_OBJECT
@@ -34,10 +36,23 @@ private:
     QTimer timer;
     QElapsedTimer elapsedTimer;
 
-    QMainWindow *mainWindow;
+    MainWindow *mainWindow;
     QWidget *container;
 
     static Game *instance;
+};
+
+class MainWindow : public QMainWindow
+{
+    Q_OBJECT
+public:
+protected:
+    void keyPressEvent(QKeyEvent *event);
+    void keyReleaseEvent(QKeyEvent *event);
+    void mouseDoubleClickEvent(QMouseEvent *event);
+    void mouseMoveEvent(QMouseEvent *event);
+    void mousePressEvent(QMouseEvent *event);
+    void mouseReleaseEvent(QMouseEvent *event);
 };
 
 #endif // GAME_H

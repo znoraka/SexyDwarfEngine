@@ -9,7 +9,7 @@ Game *Game::getInstance()
 
 void Game::initialize()
 {
-    mainWindow = new QMainWindow();
+    mainWindow = new MainWindow();
     mainWindow->resize(WIDTH, HEIGHT);
     container = new QWidget();
     mainWindow->setCentralWidget(container);
@@ -47,6 +47,7 @@ void Game::setScene(Scene *scene)
 
 void Game::addEvent(QEvent *event)
 {
+
     currentScene->handleEvent(event);
 }
 
@@ -65,4 +66,34 @@ Game::Game()
 {
     paused = false;
     this->currentScene = nullptr;
+}
+
+void MainWindow::keyPressEvent(QKeyEvent *event)
+{
+    Game::getInstance()->addEvent(event);
+}
+
+void MainWindow::keyReleaseEvent(QKeyEvent *event)
+{
+    Game::getInstance()->addEvent(event);
+}
+
+void MainWindow::mouseDoubleClickEvent(QMouseEvent *event)
+{
+    Game::getInstance()->addEvent(event);
+}
+
+void MainWindow::mouseMoveEvent(QMouseEvent *event)
+{
+    Game::getInstance()->addEvent(event);
+}
+
+void MainWindow::mousePressEvent(QMouseEvent *event)
+{
+    Game::getInstance()->addEvent(event);
+}
+
+void MainWindow::mouseReleaseEvent(QMouseEvent *event)
+{
+    Game::getInstance()->addEvent(event);
 }
