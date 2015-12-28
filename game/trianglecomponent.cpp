@@ -34,6 +34,11 @@ TriangleComponent *TriangleComponent::init(float width, float height)
     return this;
 }
 
+TriangleComponent *TriangleComponent::clone()
+{
+    return TriangleComponent::pool->obtain();
+}
+
 float TriangleComponent::getWidth() const
 {
     return width;

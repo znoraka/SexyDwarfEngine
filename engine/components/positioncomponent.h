@@ -13,6 +13,7 @@ public:
     void release() override;
 
     PositionComponent *init(float x, float y, float z);
+    PositionComponent *clone();
 
     float getX() const;
     float getY() const;

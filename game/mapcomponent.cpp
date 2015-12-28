@@ -59,7 +59,7 @@ MapComponent *MapComponent::init(QString mapFolder)
         }
     };
 
-    step(0, 0, heightmap.width(), heightmap.height(), .050);
+    step(0, 0, heightmap.width(), heightmap.height(), .001);
 
     del_point2d_t	points_[verticesSet.size()];
     QList<QVector3D> l = verticesSet.toList();
@@ -212,6 +212,11 @@ void MapComponent::update(float delta)
     shader->release();
 
     glPopMatrix();
+}
+
+MapComponent *MapComponent::clone()
+{
+   return this;
 }
 
 float MapComponent::getZ(float i, float j)

@@ -23,6 +23,7 @@
 #include "engine/components/positioncomponent.h"
 #include "engine/entity.h"
 #include "game/trianglecomponent.h"
+#include "game/testscene.h"
 
 #include "consts.h"
 
@@ -33,29 +34,12 @@
 int main(int argc, char **argv)
 {
     srand(time(NULL));
-//    QSurfaceFormat::setDefaultFormat(QSurfaceFormat::OpenGL);
+
     QApplication app(argc, argv);
 
-//    QSurfaceFormat format;
-//    format.setSamples(16);
-
-//    QMainWindow mainWindow;
-//    mainWindow.resize(WIDTH, HEIGHT);
-//    QWidget *container = new QWidget();
-//    QVBoxLayout *layout = new QVBoxLayout();
-//    mainWindow.setCentralWidget(container);
-//    container->setLayout(layout);
-
-//    GameWindow *w = new GameWindow();
-//    w->setFormat(format);
-//    w->resize(WIDTH, HEIGHT * 0.8);
-//    w->show();
-////    w->setAnimating(true);
-
-//    layout->addWidget(w);
     Game::getInstance()->initialize();
 
-    Game::getInstance()->setScene(new Scene());
+    Game::getInstance()->setScene(new TestScene());
 
     return app.exec();
 }

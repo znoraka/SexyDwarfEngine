@@ -36,27 +36,22 @@ public:
     void removeEntity(Entity *entity);
     bool isReady() const;
     void update(float delta);
-    void initializeGL();
 
-    bool handleEvent(QEvent *event);
+    virtual bool handleEvent(QEvent *event);
 
 protected:
     Camera *camera;
-
-private:
-    void initialize(QMainWindow *parent);
-
-    QSet<Entity*> entities;
-    QList<System*> systems;
-    QHash<QString, System*> systemsHash;
+    virtual void initialize();
     bool ready = false;
     bool displayLines = false;
-
-    float framerate = 1.0f / 60.0f;
 
     QTimer timer;
     QElapsedTimer elapsedTimer;
     float elapsed;
+
+private:
+    QSet<Entity*> entities;
+    QList<System*> systems;
 
 };
 

@@ -37,3 +37,10 @@ void TowerComponent::update(float delta)
 
     }
 }
+
+TowerComponent *TowerComponent::clone()
+{
+    TowerComponent *t = TowerComponent::pool->obtain();
+    t->canonPosition = canonPosition;
+    t->target = target;
+}

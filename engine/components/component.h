@@ -26,7 +26,7 @@ public:
     virtual void release();
     virtual Component *init();
     virtual void update(float delta);
-    virtual Component *clone();
+    virtual Component *clone() = 0;
 
     static const QString name;
 

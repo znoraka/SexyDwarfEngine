@@ -30,6 +30,15 @@ PositionComponent *PositionComponent::init(float x, float y, float z)
     return this;
 }
 
+PositionComponent *PositionComponent::clone()
+{
+    PositionComponent *p = PositionComponent::pool->obtain();
+    p->x = x;
+    p->y = y;
+    p->z = z;
+    return p;
+}
+
 float PositionComponent::getX() const
 {
     return x;

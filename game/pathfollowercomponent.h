@@ -16,14 +16,16 @@ public:
 
     void release() override;
 
-    PathFollowerComponent *init(QString mapFolder);
+    PathFollowerComponent *init(QString mapFolder, float speed);
     virtual void update(float delta);
+    PathFollowerComponent *clone();
 
     static const QString name;
 
 private:
     QImage path;
     QVector3D direction;
+    float speed;
 };
 
 #endif // PATHFOLLOWERCOMPONENT_H

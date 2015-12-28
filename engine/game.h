@@ -6,6 +6,7 @@
 #include <QObject>
 #include <QOpenGLContext>
 #include <QSurface>
+#include <QLabel>
 
 #include "scene.h"
 

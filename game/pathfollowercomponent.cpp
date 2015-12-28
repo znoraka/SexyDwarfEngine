@@ -17,16 +17,17 @@ void PathFollowerComponent::release()
     PathFollowerComponent::pool->release(this);
 }
 
-PathFollowerComponent *PathFollowerComponent::init(QString mapFolder)
+PathFollowerComponent *PathFollowerComponent::init(QString mapFolder, float speed)
 {
     path = QImage(mapFolder + "p.png").mirrored();
     qDebug() << path.width();
+    this->speed = speed;
     return this;
 }
 
 void PathFollowerComponent::update(float delta)
 {
-    delta = 1;
+    delta *= speed;
     QVector3D v = getEntity()->getPosition();
 
     //    red = right
@@ -60,4 +61,12 @@ void PathFollowerComponent::update(float delta)
     }
     getEntity()->setPosition(v + direction);
 
+}
+
+PathFollowerComponent *PathFollowerComponent::clone()
+{
+    PathFollowerComponent *p = PathFollowerComponent::pool->obtain();
+    p->path = path;
+    p->direction = direction;
+    p->speed = speed;
 }

@@ -16,6 +16,7 @@ public:
     void release() override;
 
     virtual TriangleComponent *init(float width, float height);
+    TriangleComponent *clone();
 
     float getWidth() const;
     float getHeight() const;

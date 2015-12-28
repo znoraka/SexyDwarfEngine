@@ -17,6 +17,7 @@ public:
 
     TowerComponent *init(QVector3D canonPosition, Entity *target);
     virtual void update(float delta);
+    TowerComponent *clone();
 
     static const QString name;
 

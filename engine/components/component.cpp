@@ -1,7 +1,7 @@
 #include "component.h"
 
 QString const Component::name = "component";
-Pool<Component *> *Component::pool = new Pool<Component*>([] () {return new Component();});
+Pool<Component *> *Component::pool = new Pool<Component*>([] () {return nullptr;});
 
 Component::Component()
 {
@@ -50,9 +50,4 @@ Component *Component::init()
 void Component::update(float delta)
 {
 
-}
-
-Component *Component::clone()
-{
-    return Component::pool->obtain()->init();
 }

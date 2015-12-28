@@ -5,6 +5,9 @@
 #include <QtGui/QOpenGLFunctions>
 #include <QDebug>
 #include <QVector3D>
+#include <QVector4D>
+#include <QMatrix4x4>
+
 #include "consts.h"
 
 class Camera
@@ -20,6 +23,8 @@ public:
     QVector3D getPosition() const;
     QVector3D getRotation() const;
     QVector3D getScale() const;
+
+    QVector3D screenToWorld(QVector3D vec);
 
     void setRotation(QVector3D v);
     void setRotation(float x, float y, float z);
@@ -40,6 +45,8 @@ private:
     QVector3D scale;
 
     bool animated = false;
+
+    float width, height, ratio, near, far;
 };
 
 #endif // CAMERA_H

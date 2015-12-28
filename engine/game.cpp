@@ -21,9 +21,18 @@ void Game::initialize()
 
 void Game::update(float delta)
 {
-    if(!this->paused && this->currentScene != nullptr && currentScene->isReady()) {
+
+    if(!this->paused && this->currentScene != nullptr && currentScene->isReady() && delta > 0.1f && delta < 1000.0f) {
         this->currentScene->makeCurrent();
         this->currentScene->update(delta);
+        QPainter p;
+        p.begin(currentScene);
+        p.setPen(Qt::yellow);
+        p.setFont(QFont("Arial", 20));
+        p.drawText(10, 30, QString::number((int) (1.0 / (delta * 0.001f))));
+        p.end();
+        glEnable(GL_DEPTH_TEST);
+        glDepthFunc(GL_LESS);
         mainWindow->repaint();
     }
 }
@@ -41,7 +50,8 @@ void Game::resume()
 void Game::setScene(Scene *scene)
 {
     this->currentScene = scene;
-    scene->initialize(mainWindow);
+    scene->setParent(mainWindow);
+    scene->initialize();
     this->mainWindow->setCentralWidget(scene);
 }
 
@@ -58,8 +68,9 @@ QWidget *Game::getWidgetContainer() const
 
 void Game::update()
 {
-    this->update(this->elapsedTimer.elapsed());
+    float elapsed = this->elapsedTimer.elapsed();
     this->elapsedTimer.restart();
+    this->update(elapsed);
 }
 
 Game::Game()

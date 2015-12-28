@@ -30,7 +30,8 @@ SOURCES += \
     game/mapcomponent.cpp \
     game/pathfollowercomponent.cpp \
     game/towercomponent.cpp \
-    engine/tools/delaunay.c
+    engine/tools/delaunay.c \
+    game/testscene.cpp
 
 HEADERS  += \
     engine/camera.h \
@@ -50,7 +51,8 @@ HEADERS  += \
     game/mapcomponent.h \
     game/pathfollowercomponent.h \
     game/towercomponent.h \
-    engine/tools/delaunay.h
+    engine/tools/delaunay.h \
+    game/testscene.h
 
 FORMS    +=
 QMAKE_CXXFLAGS += -std=c++11 -lGL -lGLU -lglut -lassimp

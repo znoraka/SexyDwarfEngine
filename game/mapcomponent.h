@@ -30,6 +30,7 @@ public:
 
     MapComponent *init(QString mapFolder);
     virtual void update(float delta);
+    MapComponent *clone();
 
     static const QString name;
 
