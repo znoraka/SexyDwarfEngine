@@ -6,6 +6,7 @@
 #include <QImage>
 
 #include "engine/components/component.h"
+#include "game/mapcomponent.h"
 
 class PathFollowerComponent : public Component
 {
@@ -16,7 +17,7 @@ public:
 
     void release() override;
 
-    PathFollowerComponent *init(QString mapFolder, float speed);
+    PathFollowerComponent *init(QString mapFolder, MapComponent *map, float speed);
     virtual void update(float delta);
     PathFollowerComponent *clone();
 
@@ -24,6 +25,7 @@ public:
 
 private:
     QImage path;
+    MapComponent *map;
     QVector3D direction;
     float speed;
 };

@@ -17,49 +17,50 @@ void PathFollowerComponent::release()
     PathFollowerComponent::pool->release(this);
 }
 
-PathFollowerComponent *PathFollowerComponent::init(QString mapFolder, float speed)
+PathFollowerComponent *PathFollowerComponent::init(QString mapFolder, MapComponent *map, float speed)
 {
-    path = QImage(mapFolder + "p.png").mirrored();
+    path = QImage(mapFolder + "p.png");
     qDebug() << path.width();
     this->speed = speed;
+    this->map = map;
     return this;
 }
 
 void PathFollowerComponent::update(float delta)
 {
     delta *= speed;
-    QVector3D v = getEntity()->getPosition();
+    QVector3D v = getEntity()->getLocalPosition();
 
     //    red = right
     //    blue = left
     //    green = down
     //    white = up
+//    QVector3D tmp = map->toMapCoordinate(v);
 
-    QRgb pixel = path.pixel(-v.z(), -v.x());
+    QRgb pixel = path.pixel(v.x(), path.height() - v.y());
 
     if(qRed(pixel) == 255 && qGreen(pixel) == 255 && qBlue(pixel) == 255) {
         //up
         getEntity()->setRotation(0, 0, 0);
-        direction.setX(-1 * delta);
-        direction.setZ(0);
+        direction.setX(0);
+        direction.setY(1 * delta);
     } else if (qRed(pixel) == 255) {
         //right
         getEntity()->setRotation(0, 0, 0);
-        direction.setX(0);
-        direction.setZ(-1 * delta);
+        direction.setX(1 * delta);
+        direction.setY(0);
     } else if (qGreen(pixel) == 255) {
         //down
         getEntity()->setRotation(0, 0, 180);
-        direction.setX(1 * delta);
-        direction.setZ(0);
-
+        direction.setX(0);
+        direction.setY(-1 * delta);
     } else if (qBlue(pixel) == 255) {
         //left
         getEntity()->setRotation(0, 0, 270);
-        direction.setX(0);
-        direction.setZ(1 * delta);
+        direction.setX(-1 * delta);
+        direction.setY(0);
     }
-    getEntity()->setPosition(v + direction);
+    getEntity()->setPosition(getEntity()->getLocalPosition() + direction);
 
 }
 
@@ -69,4 +70,5 @@ PathFollowerComponent *PathFollowerComponent::clone()
     p->path = path;
     p->direction = direction;
     p->speed = speed;
+    p->map = map;
 }

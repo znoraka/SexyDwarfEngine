@@ -35,7 +35,9 @@ void Scene::update(float delta)
 //    glOrtho(0.0, width * ratio, 0.0, height * ratio, near, far);
 
     foreach (Entity *e, entities) {
-        e->update(delta);
+        if(!e->hasParent()) {
+            e->update(delta);
+        }
     }
     glPopMatrix();
 

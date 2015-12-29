@@ -182,13 +182,15 @@ VolumeComponent *VolumeComponent::init(QString filePath)
 
 void VolumeComponent::update(float delta)
 {
-    glPushMatrix();
+//    glPushMatrix();
 
-    glTranslatef(getEntity()->getPosition().x(), getEntity()->getPosition().y(), getEntity()->getPosition().z());
-    glRotatef(getEntity()->getRotation().x(), 1, 0, 0);
-    glRotatef(getEntity()->getRotation().y(), 0, 1, 0);
-    glRotatef(getEntity()->getRotation().z(), 0, 0, 1);
-    glScalef(getEntity()->getScale().x(), getEntity()->getScale().y(), getEntity()->getScale().z());
+//    qDebug() << "position = " << getEntity()->getPosition();
+
+//    glTranslatef(getEntity()->getPosition().x(), getEntity()->getPosition().y(), getEntity()->getPosition().z());
+//    glRotatef(getEntity()->getRotation().x(), 1, 0, 0);
+//    glRotatef(getEntity()->getRotation().y(), 0, 1, 0);
+//    glRotatef(getEntity()->getRotation().z(), 0, 0, 1);
+//    glScalef(getEntity()->getScale().x(), getEntity()->getScale().y(), getEntity()->getScale().z());
 
     glEnableClientState(GL_VERTEX_ARRAY);
     glEnableClientState(GL_NORMAL_ARRAY);
@@ -212,7 +214,7 @@ void VolumeComponent::update(float delta)
     glDisableClientState(GL_NORMAL_ARRAY);
     glDisableClientState(GL_VERTEX_ARRAY);
 
-    glPopMatrix();
+//    glPopMatrix();
 }
 
 VolumeComponent *VolumeComponent::clone()

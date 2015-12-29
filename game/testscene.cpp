@@ -21,30 +21,10 @@ void TestScene::initialize()
     camera->initialize(WIDTH / HEIGHT, WIDTH, HEIGHT, -1000, 1000);
     QVector3D pos = camera->getPosition();
 //    pos.setX(WIDTH * 0.5); pos.setY(HEIGHT * 0.5); pos.setZ(0);
-//    camera->setPosition(WIDTH * 0.5, HEIGHT * 0.5, 0);
+//    camera->setPosition(WIDTH * 0.1, 0, 0);
     camera->setPosition(0, 0, 0);
     camera->setRotation(54, -90, 0);
-    camera->setScale(camera->getScale() * 1.8);
-    Entity *e;
-    VolumeComponent *v = VolumeComponent::pool->obtain()->init(":/assets/ply/galleon.ply");
-    PathFollowerComponent *p = PathFollowerComponent::pool->obtain()->init(":/assets/maps/map1/", 0.1);
-
-    for (int i = 0; i < 1; ++i) {
-        e = Entity::pool->obtain();
-        e->addComponent(v->clone());
-        e->addComponent(p->clone());
-        e->setScale(0.05, 0.05, 0.05);
-        e->setPosition(-512 + 96, 0, -16);
-        e->setRotation(-90, 0, 180);
-//        this->addEntity(e);
-    }
-
-    this->addEntity(Entity::pool->obtain()->
-                    addComponent(VolumeComponent::pool->obtain()->init(":/assets/ply/tower.ply"))->
-                    addComponent(TowerComponent::pool->obtain()->init(QVector3D(0, 30, 0), e))->
-                    setScale(10, 10, 10)->
-                    setPosition(-350, 34.5, -345));
-
+    camera->setScale(camera->getScale() * 0.5);
 
     map = Entity::pool->obtain()->
             addComponent(MapComponent::pool->obtain()->init(":/assets/maps/map1/"))->
@@ -52,6 +32,32 @@ void TestScene::initialize()
             setScale(1, 1, 1)->
             setRotation(-90, 0, 90);
     this->addEntity(map);
+
+    Entity *e;
+    VolumeComponent *v = VolumeComponent::pool->obtain()->init(":/assets/ply/galleon.ply");
+    PathFollowerComponent *p = PathFollowerComponent::pool->
+            obtain()->
+            init(":/assets/maps/map1/",
+                 static_cast<MapComponent*>(map->getComponent(MapComponent::name)),
+                 0.1);
+
+    for (int i = 0; i < 1; ++i) {
+        e = Entity::pool->obtain();
+        e->addComponent(v->clone());
+        e->addComponent(p->clone());
+        e->setScale(0.05, 0.05, 0.05);
+        e->setPosition(16, 416, 0);
+        e->setRotation(0, 0, 90);
+        map->addChild(e);
+//        this->addEntity(e);
+    }
+
+    map->addChild(Entity::pool->obtain()->
+                    addComponent(VolumeComponent::pool->obtain()->init(":/assets/ply/tower.ply"))->
+                    addComponent(TowerComponent::pool->obtain()->init(QVector3D(0, 30, 0), e))->
+                    setScale(10, 10, 10)->
+                    setRotation(90, 0, 0)->
+                    setPosition(345, 350, 35));
 
     glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);
@@ -99,7 +105,7 @@ bool TestScene::handleEvent(QEvent *event)
 
         if(towerGhost != nullptr) {
             v = camera->screenToWorld(QVector3D(mouseEvent->x(), 0, mouseEvent->y()));
-            v.setY(static_cast<MapComponent*>(map->getComponent(MapComponent::name))->getZ(-v.z(), -v.x()));
+            v.setY(static_cast<MapComponent*>(map->getComponent(MapComponent::name))->getZ(v.x(), v.z()));
             towerGhost->setPosition(v);
         }
         return true;

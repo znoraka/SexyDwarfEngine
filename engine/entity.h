@@ -5,6 +5,9 @@
 #include <QString>
 #include <QVector>
 #include <QVector3D>
+#include <QSet>
+#include <QMatrix4x4>
+#include <QOpenGLFunctions>
 
 #include "engine/components/component.h"
 
@@ -23,9 +26,19 @@ public:
     void release();
     void update(float delta);
 
+    void addChild(Entity *child);
+    void removeChild(Entity *child);
+
     QVector3D getPosition() const;
     QVector3D getRotation() const;
     QVector3D getScale() const;
+
+    QVector3D getLocalPosition() const;
+    QVector3D getLocalRotation() const;
+    QVector3D getLocalScale() const;
+
+    QMatrix4x4 getTransformMatrix();
+    QMatrix4x4 getParentsTransformMatrix();
 
     Entity *setRotation(QVector3D v);
     Entity *setRotation(float x, float y, float z);
@@ -36,14 +49,22 @@ public:
     Entity *setScale(QVector3D v);
     Entity *setScale(float x, float y, float z);
 
+    bool hasParent() const;
+
 protected:
     Entity();
-    QVector3D position;
-    QVector3D rotation;
-    QVector3D scale;
+
+    QVector3D position, localPosition;
+    QVector3D rotation, localRotation;
+    QVector3D scale, localScale;
+
+    QMatrix4x4 transform;
 
 private:
     QHash<QString, Component*> components;
+    QSet<Entity*> children;
+    Entity *parent;
+    bool dirty;
 };
 
 #endif // ENTITY_H

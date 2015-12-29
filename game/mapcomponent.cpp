@@ -196,13 +196,13 @@ void MapComponent::update(float delta)
 
     glTexture->bind();
 
-    glPushMatrix();
+//    glPushMatrix();
 
-    glRotatef(getEntity()->getRotation().x(), 1, 0, 0);
-    glRotatef(getEntity()->getRotation().y(), 0, 1, 0);
-    glRotatef(getEntity()->getRotation().z(), 0, 0, 1);
-    glTranslatef(getEntity()->getPosition().x(), getEntity()->getPosition().y(), getEntity()->getPosition().z());
-    glScalef(getEntity()->getScale().x(), getEntity()->getScale().y(), getEntity()->getScale().z());
+//    glRotatef(getEntity()->getRotation().x(), 1, 0, 0);
+//    glRotatef(getEntity()->getRotation().y(), 0, 1, 0);
+//    glRotatef(getEntity()->getRotation().z(), 0, 0, 1);
+//    glTranslatef(getEntity()->getPosition().x(), getEntity()->getPosition().y(), getEntity()->getPosition().z());
+//    glScalef(getEntity()->getScale().x(), getEntity()->getScale().y(), getEntity()->getScale().z());
 
     vao.bind();
     glDrawArrays(GL_TRIANGLES, 0, normalsArray.size());
@@ -211,7 +211,7 @@ void MapComponent::update(float delta)
     glTexture->release();
     shader->release();
 
-    glPopMatrix();
+//    glPopMatrix();
 }
 
 MapComponent *MapComponent::clone()
@@ -221,8 +221,26 @@ MapComponent *MapComponent::clone()
 
 float MapComponent::getZ(float i, float j)
 {
-    qDebug() << i << ", " << j;
-    return qGray(this->heightmap.pixel(i, j)) * 0.8f;
+    QVector3D v(i, 0, j);
+//    if(this->getEntity() != nullptr) {
+//        v = toMapCoordinate(v);
+//    }
+    return qGray(this->heightmap.pixel(v.x(), v.z())) * 0.8f;
+}
+
+QVector3D MapComponent::toMapCoordinate(QVector3D coords)
+{
+    if(this->getEntity() != nullptr) {
+        QMatrix4x4 m;
+        m.setToIdentity();
+        m.translate(this->getEntity()->getPosition());
+        m.rotate(this->getEntity()->getRotation().x(), 1, 0, 0);
+        m.rotate(this->getEntity()->getRotation().y(), 0, 1, 0);
+        m.rotate(this->getEntity()->getRotation().z(), 0, 0, 1);
+        m.scale(this->getEntity()->getScale());
+        return m * coords;
+    }
+    return QVector3D(0, 0, 0);
 }
 
 void MapComponent::computeColorWithLights(QVector3D color, QVector3D normal, QVector3D vertex)

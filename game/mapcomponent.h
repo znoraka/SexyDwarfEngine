@@ -34,6 +34,7 @@ public:
 
     static const QString name;
     float getZ(float i, float j);
+    QVector3D toMapCoordinate(QVector3D coords);
 
 private:
     QSet<QVector3D> verticesSet;

@@ -5,6 +5,7 @@ Pool<Component *> *Component::pool = new Pool<Component*>([] () {return nullptr;
 
 Component::Component()
 {
+    entity = nullptr;
 }
 
 const QString Component::componentName() const

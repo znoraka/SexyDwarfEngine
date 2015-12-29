@@ -28,13 +28,15 @@ void TowerComponent::update(float delta)
 {
     if(target) {
         glColor3f(1, 0, 0);
+        glPopMatrix();
         glBegin(GL_LINES);
-        glVertex3f(target->getPosition().x(), target->getPosition().y(), target->getPosition().z());
-        glVertex3f(canonPosition.x() + getEntity()->getPosition().x(),
-                   canonPosition.y() + getEntity()->getPosition().y(),
-                   canonPosition.z() + getEntity()->getPosition().z());
-        glEnd();
 
+        glVertex3f(target->getLocalPosition().x(), target->getLocalPosition().y(), target->getLocalPosition().z());
+        glVertex3f(canonPosition.x() + getEntity()->getLocalPosition().x(),
+                   canonPosition.y() + getEntity()->getLocalPosition().y(),
+                   canonPosition.z() + getEntity()->getLocalPosition().z());
+        glEnd();
+        glPushMatrix();
     }
 }
 
