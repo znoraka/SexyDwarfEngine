@@ -54,13 +54,22 @@ void Entity::release()
 
 void Entity::update(float delta)
 {
+    GLfloat m[16];
+
+    glGetFloatv (GL_PROJECTION_MATRIX, m);
+    projection = QMatrix4x4(m);
+
+    glGetFloatv (GL_MODELVIEW_MATRIX, m);
+    modelview = QMatrix4x4(m);
+
     glPushMatrix();
 
     glTranslatef(localPosition.x(), localPosition.y(), localPosition.z());
     glRotatef(localRotation.x(), 1, 0, 0);
-    glRotatef(localRotation.y(), 0, 1, 0);
     glRotatef(localRotation.z(), 0, 0, 1);
+    glRotatef(localRotation.y(), 0, 1, 0);
     glScalef(localScale.x(), localScale.y() , localScale.z());
+
 
     if(this->parent == nullptr) {
         this->position = localPosition;
@@ -71,6 +80,7 @@ void Entity::update(float delta)
     foreach (Component *c, components) {
         c->update(delta);
     }
+
     foreach (Entity *child, children) {
         child->position = child->localPosition + position;
         child->rotation = child->localRotation + rotation;
@@ -125,22 +135,14 @@ QVector3D Entity::getLocalScale() const
     return this->localScale;
 }
 
-QMatrix4x4 Entity::getTransformMatrix()
+QMatrix4x4 Entity::getModelViewMatrix()
 {
-    if(dirty) {
-        transform.setToIdentity();
-        transform.translate(position);
-        transform.rotate(rotation.x(), 1, 0, 0);
-        transform.rotate(rotation.y(), 0, 1, 0);
-        transform.rotate(rotation.z(), 0, 0, 1);
-        transform.scale(scale);
-        dirty = false;
-        if(this->parent != nullptr) {
-            transform *= parent->getTransformMatrix();
-        }
-    }
+    return modelview;
+}
 
-    return transform;
+QMatrix4x4 Entity::getProjectionMatrix()
+{
+    return projection;
 }
 
 QMatrix4x4 Entity::getParentsTransformMatrix()
@@ -148,7 +150,7 @@ QMatrix4x4 Entity::getParentsTransformMatrix()
     QMatrix4x4 m;
     m.setToIdentity();
     if(this->parent != nullptr) {
-        m *= this->parent->getTransformMatrix();
+        m *= this->parent->getModelViewMatrix();
         m *= this->parent->getParentsTransformMatrix();
     }
     return m;
@@ -167,6 +169,18 @@ Entity *Entity::setRotation(float x, float y, float z)
     this->localRotation.setY(y);
     this->localRotation.setZ(z);
     dirty = true;
+    return this;
+}
+
+Entity *Entity::setGlobalPosition(QVector3D v)
+{
+    this->localPosition = v * modelview.inverted();
+    return this;
+}
+
+Entity *Entity::setGlobalPosition(float x, float y, float z)
+{
+    this->setGlobalPosition(QVector3D(x, y, z));
     return this;
 }
 

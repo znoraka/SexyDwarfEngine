@@ -18,7 +18,7 @@ Camera::Camera()
 
 void Camera::initialize(qreal ratio, qreal width, qreal height, qreal near, qreal far)
 {
-    this->ratio = ratio;
+    this->ratio = 1;
     this->width = width;
     this->height = height;
     this->near = near;
@@ -30,18 +30,15 @@ void Camera::update(float delta)
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     glOrtho(0.0, width, 0.0, height, near, far);
-    glViewport(0, 0, width * ratio, height * ratio);
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    glViewport(0, 0, width, height);
 
-//    glLoadIdentity();
-//    glTranslatef(position.x() - WIDTH * 0.5, position.y(), position.z() - HEIGHT * 0.5);
     glTranslatef(position.x(), position.y(), position.z());
     glRotatef(rotation.x(), 1, 0, 0);
     glRotatef(rotation.y(), 0, 1, 0);
     glRotatef(rotation.z(), 0, 0, 1);
     glScalef(scale.x(), scale.y() , scale.z());
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-//    glTranslatef(position.x() + WIDTH * 0.5, position.y(), position.z() + HEIGHT * 0.5);
 }
 
 
@@ -60,38 +57,96 @@ QVector3D Camera::getScale() const
     return this->scale;
 }
 
-QVector3D Camera::screenToWorld(QVector3D vec)
+QVector3D Camera::screenToWorld(QVector3D vec, QMatrix4x4 modelview, QMatrix4x4 projection, QVector3D &out1, QVector3D &out2)
 {
-    this->update(0);
     vec.setX(qMin(vec.x(), width));
-    vec.setZ(qMin(vec.z(), height));
+    vec.setY(qMin(vec.y(), height));
     vec.setX(qMax(vec.x(), 0.0f));
-    vec.setZ(qMax(vec.z(), 0.0f));
+    vec.setY(qMax(vec.y(), 0.0f));
 
-    GLfloat m[16];
-    glGetFloatv (GL_MODELVIEW_MATRIX, m);
-    QMatrix4x4 view(m);
+    int viewport[4];
+    glGetIntegerv(GL_VIEWPORT, viewport);
+    float winX = vec.x();
+    float winY = vec.y();
+    winY = height - winY;
+    float winZ;
+    glReadPixels(winX, winY, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &winZ);
 
-    glGetFloatv (GL_PROJECTION_MATRIX, m);
-    QMatrix4x4 proj(m);
+    QVector4D v((winX-(float)viewport[0])/(float)viewport[2]*2.0-1.0,
+                   (winY-(float)viewport[1])/(float)viewport[3]*2.0-1.0,
+                   0, 1);
 
-    QMatrix4x4 viewproj = proj * view;
 
-    float x = vec.x(); float z = vec.z();
+    QVector4D v2((winX-(float)viewport[0])/(float)viewport[2]*2.0-1.0,
+                   (winY-(float)viewport[1])/(float)viewport[3]*2.0-1.0,
+                   1, 1);
 
-    QVector4D v((2 * x) / (width * ratio) - 1,
-                2 * vec.y() - 1,
-                (2 * z) / (height * ratio) - 1,
-                1);
+    QMatrix4x4 mat(modelview * projection);
 
-    QVector4D v2 = v * viewproj.inverted();
+    QVector4D t = v * mat.inverted();
+    float w = 1 / t.w();
+    QVector3D pt1(t.x() * w, t.y() * w, t.z() * w);
 
-    float w = 1.0 / v2.w();
+    t = v2 * mat.inverted();
+    w = 1 / t.w();
+    QVector3D pt2(t.x() * w, t.y() * w, t.z() * w);
 
-    vec.setX( - (v2.x()) * w * 0.5);
-    vec.setY(0);
-    vec.setZ((v2.z()) * w);
-    return vec;
+    QVector3D n(modelview.row(1).toVector3D());
+    QVector3D p(modelview.row(2).toVector3D());
+
+    out1 = pt1; out2 = pt2;
+
+    QVector3D out;
+    intersects(QVector3D(1, 0, 0), QVector3D(0, 1, 0), QVector3D(1, 1, 0),
+               pt1, pt2, out);
+    return out;
+
+//    QVector3D ba = pt2 - pt1;
+//    QVector3D tmp = pt2 + pt1;
+//    float length = tmp.length() * 0.25;
+//    qDebug() << ba;
+////    return ba;
+//    float nDotA = QVector3D::dotProduct(n, pt1);
+//    float nDotBA = QVector3D::dotProduct(n, ba);
+//    qDebug() << length;
+//    return pt1 + (((length - nDotA)/nDotBA) * ba);
+////    float nDotA = Vector3::dotProduct(n, a);
+////    float nDotBA = Vector3::dotProduct(n, ba);
+
+////    return a + (((d - nDotA)/nDotBA) * ba);
+
+    return pt1;
+
+}
+
+bool Camera::intersects(QVector3D p1, QVector3D p2, QVector3D p3, QVector3D r1, QVector3D r2, QVector3D &out)
+{
+    QVector3D v1 = p2 - p1;
+    QVector3D v2 = p3 - p1;
+
+    QVector3D v3 = QVector3D::crossProduct(v1, v2);
+
+    QVector3D vRotRay1 = QVector3D(QVector3D::dotProduct(v1, r1 - p1),
+                                   QVector3D::dotProduct(v2, r1 - p1),
+                                   QVector3D::dotProduct(v3, r1 - p1));
+
+    QVector3D vRotRay2 = QVector3D(QVector3D::dotProduct(v1, r2 - p1),
+                                   QVector3D::dotProduct(v2, r2 - p1),
+                                   QVector3D::dotProduct(v3, r2 - p1));
+
+      // Return now if ray will never intersect plane (they're parallel)
+      if (vRotRay1.z() == vRotRay2.z()) return false;
+
+      // Find 2D plane coordinates (fX, fY) that the ray interesects with
+      float fPercent = vRotRay1.z() / (vRotRay2.z()-vRotRay1.z());
+//      QVector3D vIntersect2d = vRotRay1 + (vRotRay1-vRotRay2) * fPercent;
+//      fX = vIntersect2d.x;
+//      fY = vIntersect2d.y;
+
+      // Note that to find the 3D point on the world-space ray use this
+      // vInstersect = R1 + (R1-R2) * fPercent;
+      out = r1 + (r1 - r2) * fPercent;
+
 }
 
 void Camera::setRotation(QVector3D v)
@@ -140,6 +195,3 @@ bool Camera::isAnimated() const
 {
     return this->animated;
 }
-
-
-

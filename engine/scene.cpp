@@ -39,7 +39,7 @@ void Scene::update(float delta)
             e->update(delta);
         }
     }
-    glPopMatrix();
+//    glPopMatrix();
 
 }
 

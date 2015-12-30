@@ -37,11 +37,15 @@ public:
     QVector3D getLocalRotation() const;
     QVector3D getLocalScale() const;
 
-    QMatrix4x4 getTransformMatrix();
+    QMatrix4x4 getModelViewMatrix();
+    QMatrix4x4 getProjectionMatrix();
     QMatrix4x4 getParentsTransformMatrix();
 
     Entity *setRotation(QVector3D v);
     Entity *setRotation(float x, float y, float z);
+
+    Entity *setGlobalPosition(QVector3D v);
+    Entity *setGlobalPosition(float x, float y, float z);
 
     Entity *setPosition(QVector3D v);
     Entity *setPosition(float x, float y, float z);
@@ -58,7 +62,7 @@ protected:
     QVector3D rotation, localRotation;
     QVector3D scale, localScale;
 
-    QMatrix4x4 transform;
+    QMatrix4x4 modelview, projection;
 
 private:
     QHash<QString, Component*> components;

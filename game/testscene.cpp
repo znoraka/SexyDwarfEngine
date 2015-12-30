@@ -22,15 +22,15 @@ void TestScene::initialize()
     QVector3D pos = camera->getPosition();
 //    pos.setX(WIDTH * 0.5); pos.setY(HEIGHT * 0.5); pos.setZ(0);
 //    camera->setPosition(WIDTH * 0.1, 0, 0);
-    camera->setPosition(0, 0, 0);
+    camera->setPosition(200, 0, 0);
     camera->setRotation(54, -90, 0);
-    camera->setScale(camera->getScale() * 0.5);
+    camera->setScale(camera->getScale() * 1);
 
     map = Entity::pool->obtain()->
             addComponent(MapComponent::pool->obtain()->init(":/assets/maps/map1/"))->
             setPosition(0, 0, 0)->
             setScale(1, 1, 1)->
-            setRotation(-90, 0, 90);
+            setRotation(-90, 0, 100);
     this->addEntity(map);
 
     Entity *e;
@@ -48,13 +48,13 @@ void TestScene::initialize()
         e->setScale(0.05, 0.05, 0.05);
         e->setPosition(16, 416, 0);
         e->setRotation(0, 0, 90);
-        map->addChild(e);
+//        map->addChild(e);
 //        this->addEntity(e);
     }
 
     map->addChild(Entity::pool->obtain()->
                     addComponent(VolumeComponent::pool->obtain()->init(":/assets/ply/tower.ply"))->
-                    addComponent(TowerComponent::pool->obtain()->init(QVector3D(0, 30, 0), e))->
+                    addComponent(TowerComponent::pool->obtain()->init(QVector3D(0, 0, 30), e))->
                     setScale(10, 10, 10)->
                     setRotation(90, 0, 0)->
                     setPosition(345, 350, 35));
@@ -65,7 +65,7 @@ void TestScene::initialize()
     GLfloat ambientLight[] = { 0.2f, 0.2f, 0.2f, 1.0f };
     GLfloat diffuseLight[] = { 0.8f, 0.8f, 0.8, 1.0f };
     GLfloat specularLight[] = { 0.5f, 0.5f, 0.5f, 1.0f };
-    GLfloat position[] = { 0, 500, 0, 0.0f };
+    GLfloat position[] = { 0, 800, 600, 0.0f };
 
     glLightfv(GL_LIGHT0, GL_AMBIENT, ambientLight);
     glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuseLight);
@@ -88,15 +88,30 @@ void TestScene::onAddTowerButtonClicked()
 {
     towerGhost = Entity::pool->obtain()->
                     addComponent(VolumeComponent::pool->obtain()->init(":/assets/ply/tower.ply"))->
-                    setScale(10, 10, 10);
-    this->addEntity(towerGhost);
+                    setScale(10, 10, 10)->
+                    setRotation(90, 0, 0);
+    map->addChild(towerGhost);
+
+    towerGhost2 = Entity::pool->obtain()->
+                    addComponent(VolumeComponent::pool->obtain()->init(":/assets/ply/tower.ply"))->
+                    addComponent(TowerComponent::pool->obtain()->init(QVector3D(0, 0, 30), towerGhost))->
+                    setScale(10, 10, 10)->
+                    setRotation(90, 0, 0);
+    map->addChild(towerGhost2);
+
+    towerGhost3 = Entity::pool->obtain()->
+                    addComponent(VolumeComponent::pool->obtain()->init(":/assets/ply/tower.ply"))->
+                    setScale(10, 10, 10)->
+                    setRotation(90, 0, 0);
+    map->addChild(towerGhost3);
+//    this->addEntity(towerGhost);
 }
 
 bool TestScene::handleEvent(QEvent *event)
 {
     QMouseEvent *mouseEvent;
     QKeyEvent *keyEvent;
-    QVector3D v;
+    QVector3D v, v1, v2;
 
     switch (event->type())
     {
@@ -104,8 +119,16 @@ bool TestScene::handleEvent(QEvent *event)
         mouseEvent = static_cast<QMouseEvent*>(event);
 
         if(towerGhost != nullptr) {
-            v = camera->screenToWorld(QVector3D(mouseEvent->x(), 0, mouseEvent->y()));
-            v.setY(static_cast<MapComponent*>(map->getComponent(MapComponent::name))->getZ(v.x(), v.z()));
+            v = camera->screenToWorld(
+                        QVector3D(mouseEvent->x(), mouseEvent->y(), 0),
+                        towerGhost->getModelViewMatrix(), towerGhost->getProjectionMatrix(),
+                        v1, v2);
+
+            towerGhost->setPosition(v);
+//            towerGhost2->setPosition(v2);
+//            towerGhost3->setPosition(v);
+            v = towerGhost->getLocalPosition();
+            v.setZ(static_cast<MapComponent*>(map->getComponent(MapComponent::name))->getZ(v.x(), v.y()));
             towerGhost->setPosition(v);
         }
         return true;
@@ -153,12 +176,9 @@ bool TestScene::handleEvent(QEvent *event)
             return true;
 
         case Qt::Key_Eacute:
-            qDebug() << camera->getPosition();
             v = camera->getPosition();
-            v.setZ(v.z() + 5);
+            v.setY(v.y() + 5);
             camera->setPosition(v);
-            qDebug() << camera->getPosition();
-            qDebug() << "---------";
             return true;
 
         case Qt::Key_U:

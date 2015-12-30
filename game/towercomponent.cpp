@@ -28,6 +28,10 @@ void TowerComponent::update(float delta)
 {
     if(target) {
         glColor3f(1, 0, 0);
+
+        GLfloat m[16];
+        glGetFloatv (GL_MODELVIEW_MATRIX, m);
+
         glPopMatrix();
         glBegin(GL_LINES);
 
@@ -37,6 +41,7 @@ void TowerComponent::update(float delta)
                    canonPosition.z() + getEntity()->getLocalPosition().z());
         glEnd();
         glPushMatrix();
+        glLoadMatrixf(m);
     }
 }
 

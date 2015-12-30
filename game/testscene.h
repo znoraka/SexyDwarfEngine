@@ -25,7 +25,7 @@ public slots:
 private:
     bool handleEvent(QEvent *event);
     QPushButton *slowTowerButton;
-    Entity *towerGhost;
+    Entity *towerGhost, *towerGhost2, *towerGhost3;
     Entity *map;
 };
 

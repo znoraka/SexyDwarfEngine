@@ -12,6 +12,7 @@
 
 class Camera
 {
+#define EPSILON 0.000001
 public:
     Camera();
 
@@ -24,8 +25,8 @@ public:
     QVector3D getRotation() const;
     QVector3D getScale() const;
 
-    QVector3D screenToWorld(QVector3D vec);
-
+    QVector3D screenToWorld(QVector3D vec, QMatrix4x4 modelview, QMatrix4x4 projection, QVector3D &out1, QVector3D &out2);
+    bool intersects(QVector3D p1, QVector3D p2, QVector3D p3, QVector3D r1, QVector3D r2, QVector3D &out);
     void setRotation(QVector3D v);
     void setRotation(float x, float y, float z);
 
@@ -48,5 +49,14 @@ private:
 
     float width, height, ratio, near, far;
 };
+
+int glhUnProjectf(float winx, float winy, float winz, float *modelview, float *projection, int *viewport, float *objectCoordinate);
+void MultiplyMatrices4by4OpenGL_FLOAT(float *result, float *matrix1, float *matrix2);
+void MultiplyMatrixByVector4by4OpenGL_FLOAT(float *resultvector, const float *matrix, const float *pvector);
+int glhInvertMatrixf2(float *m, float *out);
+
+#define SWAP_ROWS_DOUBLE(a, b) { double *_tmp = a; (a)=(b); (b)=_tmp; }
+#define SWAP_ROWS_FLOAT(a, b) { float *_tmp = a; (a)=(b); (b)=_tmp; }
+#define MAT(m,r,c) (m)[(c)*4+(r)]
 
 #endif // CAMERA_H
