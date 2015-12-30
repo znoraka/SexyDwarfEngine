@@ -64,11 +64,13 @@ void TowerComponent::drawRange()
 {
     int steps = 50;
     float angle = 360.0 / steps;
+    float range = 10;
 
     glColor3f(0, 1, 0);
     glBegin(GL_LINE_STRIP);
 
     for (int i = 0; i < steps; ++i) {
+//        glVertex3f(0, 0, 0);
         glVertex3f(cos(angle * i) * range, 0.1, sin(angle * i) * range);
     }
 

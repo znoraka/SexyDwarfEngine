@@ -35,6 +35,8 @@ void TestScene::initialize()
 
     Entity *e;
     VolumeComponent *v = VolumeComponent::pool->obtain()->init(":/assets/ply/galleon.ply");
+    towerComponent = TowerComponent::pool->obtain()->init(QVector3D(0, 0, 30), nullptr, 10);
+    towerVolume = VolumeComponent::pool->obtain()->init(":/assets/ply/tower.ply");
     PathFollowerComponent *p = PathFollowerComponent::pool->
             obtain()->
             init(":/assets/maps/map1/",
@@ -52,9 +54,10 @@ void TestScene::initialize()
 //        this->addEntity(e);
     }
 
+
     map->addChild(Entity::pool->obtain()->
                     addComponent(VolumeComponent::pool->obtain()->init(":/assets/ply/tower.ply"))->
-                    addComponent(TowerComponent::pool->obtain()->init(QVector3D(0, 0, 30), e, 10))->
+                    addComponent(towerComponent->clone())->
                     setScale(10, 10, 10)->
                     setRotation(90, 0, 0)->
                     setPosition(345, 350, 35));
@@ -86,14 +89,16 @@ void TestScene::initialize()
 
 void TestScene::onAddTowerButtonClicked()
 {
+//    for (int var = 0; var < 100; ++var) {
 
     towerGhost = Entity::pool->obtain()->
-                    addComponent(VolumeComponent::pool->obtain()->init(":/assets/ply/tower.ply"))->
-                    addComponent(TowerComponent::pool->obtain()->init(QVector3D(0, 0, 30), nullptr, 10))->
+                    addComponent(towerVolume->clone())->
+                    addComponent(towerComponent->clone())->
                     addComponent(TowerGhostComponent::pool->obtain()->init())->
                     setScale(10, 10, 10)->
                     setRotation(90, 0, 0);
     map->addChild(towerGhost);
+//    }
 }
 
 bool TestScene::handleEvent(QEvent *event)

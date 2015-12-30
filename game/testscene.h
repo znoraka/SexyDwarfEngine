@@ -28,6 +28,8 @@ private:
     QPushButton *slowTowerButton;
     Entity *towerGhost, *towerGhost2, *towerGhost3;
     Entity *map;
+    TowerComponent *towerComponent;
+    VolumeComponent *towerVolume;
 };
 
 #endif // TESTSCENE_H
