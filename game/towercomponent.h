@@ -15,15 +15,20 @@ public:
 
     void release() override;
 
-    TowerComponent *init(QVector3D canonPosition, Entity *target);
+    TowerComponent *init(QVector3D canonPosition, Entity *target, float range);
     virtual void update(float delta);
     TowerComponent *clone();
 
     static const QString name;
 
+    float getRange() const;
+
+    void drawRange();
 private:
     QVector3D canonPosition;
     Entity *target;
+    float range;
+
 };
 
 #endif // TOWERCOMPONENT_H

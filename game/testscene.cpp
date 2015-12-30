@@ -54,7 +54,7 @@ void TestScene::initialize()
 
     map->addChild(Entity::pool->obtain()->
                     addComponent(VolumeComponent::pool->obtain()->init(":/assets/ply/tower.ply"))->
-                    addComponent(TowerComponent::pool->obtain()->init(QVector3D(0, 0, 30), e))->
+                    addComponent(TowerComponent::pool->obtain()->init(QVector3D(0, 0, 30), e, 10))->
                     setScale(10, 10, 10)->
                     setRotation(90, 0, 0)->
                     setPosition(345, 350, 35));
@@ -86,25 +86,14 @@ void TestScene::initialize()
 
 void TestScene::onAddTowerButtonClicked()
 {
+
     towerGhost = Entity::pool->obtain()->
                     addComponent(VolumeComponent::pool->obtain()->init(":/assets/ply/tower.ply"))->
+                    addComponent(TowerComponent::pool->obtain()->init(QVector3D(0, 0, 30), nullptr, 10))->
+                    addComponent(TowerGhostComponent::pool->obtain()->init())->
                     setScale(10, 10, 10)->
                     setRotation(90, 0, 0);
     map->addChild(towerGhost);
-
-    towerGhost2 = Entity::pool->obtain()->
-                    addComponent(VolumeComponent::pool->obtain()->init(":/assets/ply/tower.ply"))->
-                    addComponent(TowerComponent::pool->obtain()->init(QVector3D(0, 0, 30), towerGhost))->
-                    setScale(10, 10, 10)->
-                    setRotation(90, 0, 0);
-    map->addChild(towerGhost2);
-
-    towerGhost3 = Entity::pool->obtain()->
-                    addComponent(VolumeComponent::pool->obtain()->init(":/assets/ply/tower.ply"))->
-                    setScale(10, 10, 10)->
-                    setRotation(90, 0, 0);
-    map->addChild(towerGhost3);
-//    this->addEntity(towerGhost);
 }
 
 bool TestScene::handleEvent(QEvent *event)

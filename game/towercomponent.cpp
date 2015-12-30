@@ -17,10 +17,11 @@ void TowerComponent::release()
     TowerComponent::pool->release(this);
 }
 
-TowerComponent *TowerComponent::init(QVector3D canonPosition, Entity *target)
+TowerComponent *TowerComponent::init(QVector3D canonPosition, Entity *target, float range)
 {
     this->canonPosition = canonPosition;
     this->target = target;
+    this->range = range;
     return this;
 }
 
@@ -50,4 +51,26 @@ TowerComponent *TowerComponent::clone()
     TowerComponent *t = TowerComponent::pool->obtain();
     t->canonPosition = canonPosition;
     t->target = target;
+    t->range = range;
+    return t;
+}
+
+float TowerComponent::getRange() const
+{
+    return range;
+}
+
+void TowerComponent::drawRange()
+{
+    int steps = 50;
+    float angle = 360.0 / steps;
+
+    glColor3f(0, 1, 0);
+    glBegin(GL_LINE_STRIP);
+
+    for (int i = 0; i < steps; ++i) {
+        glVertex3f(cos(angle * i) * range, 0.1, sin(angle * i) * range);
+    }
+
+    glEnd();
 }

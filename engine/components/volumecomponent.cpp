@@ -192,6 +192,8 @@ void VolumeComponent::update(float delta)
 //    glRotatef(getEntity()->getRotation().z(), 0, 0, 1);
 //    glScalef(getEntity()->getScale().x(), getEntity()->getScale().y(), getEntity()->getScale().z());
 
+    glEnable(GL_COLOR_MATERIAL);
+    glColor4f(0, 1, 0, 0.5);
     glEnableClientState(GL_VERTEX_ARRAY);
     glEnableClientState(GL_NORMAL_ARRAY);
     glEnableClientState(GL_COLOR_ARRAY);

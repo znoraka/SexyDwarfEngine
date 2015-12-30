@@ -31,7 +31,8 @@ SOURCES += \
     game/pathfollowercomponent.cpp \
     game/towercomponent.cpp \
     engine/tools/delaunay.c \
-    game/testscene.cpp
+    game/testscene.cpp \
+    game/towerghostcomponent.cpp
 
 HEADERS  += \
     engine/camera.h \
@@ -52,7 +53,8 @@ HEADERS  += \
     game/pathfollowercomponent.h \
     game/towercomponent.h \
     engine/tools/delaunay.h \
-    game/testscene.h
+    game/testscene.h \
+    game/towerghostcomponent.h
 
 FORMS    +=
 QMAKE_CXXFLAGS += -std=c++11 -lGL -lGLU -lglut -lassimp

@@ -10,6 +10,7 @@
 #include "game/mapcomponent.h"
 #include "game/pathfollowercomponent.h"
 #include "game/towercomponent.h"
+#include "game/towerghostcomponent.h"
 #include "consts.h"
 
 class TestScene : public Scene
