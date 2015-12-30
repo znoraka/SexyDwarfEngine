@@ -30,6 +30,8 @@ private:
     Entity *map;
     TowerComponent *towerComponent;
     VolumeComponent *towerVolume;
+
+    QVector<Entity*> *enemies;
 };
 
 #endif // TESTSCENE_H

@@ -26,6 +26,8 @@ void TestScene::initialize()
     camera->setRotation(54, -90, 0);
     camera->setScale(camera->getScale() * 1);
 
+    enemies = new QVector<Entity*>();
+
     map = Entity::pool->obtain()->
             addComponent(MapComponent::pool->obtain()->init(":/assets/maps/map1/"))->
             setPosition(0, 0, 0)->
@@ -35,7 +37,7 @@ void TestScene::initialize()
 
     Entity *e;
     VolumeComponent *v = VolumeComponent::pool->obtain()->init(":/assets/ply/galleon.ply");
-    towerComponent = TowerComponent::pool->obtain()->init(QVector3D(0, 0, 30), nullptr, 10);
+    towerComponent = TowerComponent::pool->obtain()->init(QVector3D(0, 0, 30), enemies, 150);
     towerVolume = VolumeComponent::pool->obtain()->init(":/assets/ply/tower.ply");
     PathFollowerComponent *p = PathFollowerComponent::pool->
             obtain()->
@@ -43,17 +45,17 @@ void TestScene::initialize()
                  static_cast<MapComponent*>(map->getComponent(MapComponent::name)),
                  0.1);
 
-    for (int i = 0; i < 1; ++i) {
+    for (int i = 0; i < 10; ++i) {
         e = Entity::pool->obtain();
         e->addComponent(v->clone());
-        e->addComponent(p->clone());
+        e->addComponent(p->clone()->setSpeed((qrand() % 10) * 0.01));
         e->setScale(0.05, 0.05, 0.05);
         e->setPosition(16, 416, 0);
         e->setRotation(0, 0, 90);
-//        map->addChild(e);
+        map->addChild(e);
+        enemies->push_back(e);
 //        this->addEntity(e);
     }
-
 
     map->addChild(Entity::pool->obtain()->
                     addComponent(VolumeComponent::pool->obtain()->init(":/assets/ply/tower.ply"))->
@@ -85,12 +87,11 @@ void TestScene::initialize()
     towerGhost = nullptr;
 
     this->ready = true;
+    this->setMouseTracking(true);
 }
 
 void TestScene::onAddTowerButtonClicked()
 {
-//    for (int var = 0; var < 100; ++var) {
-
     towerGhost = Entity::pool->obtain()->
                     addComponent(towerVolume->clone())->
                     addComponent(towerComponent->clone())->
@@ -98,8 +99,7 @@ void TestScene::onAddTowerButtonClicked()
                     setScale(10, 10, 10)->
                     setRotation(90, 0, 0);
     map->addChild(towerGhost);
-//    }
-}
+    }
 
 bool TestScene::handleEvent(QEvent *event)
 {
@@ -109,6 +109,13 @@ bool TestScene::handleEvent(QEvent *event)
 
     switch (event->type())
     {
+    case QEvent::MouseButtonRelease:
+        mouseEvent = static_cast<QMouseEvent*>(event);
+        if(mouseEvent->button() == Qt::LeftButton) {
+            towerGhost->removeComponent(TowerGhostComponent::name);
+            towerGhost = nullptr;
+        }
+        return true;
     case QEvent::MouseMove:
         mouseEvent = static_cast<QMouseEvent*>(event);
 
@@ -119,8 +126,6 @@ bool TestScene::handleEvent(QEvent *event)
                         v1, v2);
 
             towerGhost->setPosition(v);
-//            towerGhost2->setPosition(v2);
-//            towerGhost3->setPosition(v);
             v = towerGhost->getLocalPosition();
             v.setZ(static_cast<MapComponent*>(map->getComponent(MapComponent::name))->getZ(v.x(), v.y()));
             towerGhost->setPosition(v);

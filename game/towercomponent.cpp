@@ -17,16 +17,19 @@ void TowerComponent::release()
     TowerComponent::pool->release(this);
 }
 
-TowerComponent *TowerComponent::init(QVector3D canonPosition, Entity *target, float range)
+TowerComponent *TowerComponent::init(QVector3D canonPosition, QVector<Entity *> *enemies, float range)
 {
     this->canonPosition = canonPosition;
-    this->target = target;
+    this->enemies = enemies;
     this->range = range;
+    this->target = nullptr;
     return this;
 }
 
 void TowerComponent::update(float delta)
 {
+    this->setTarget();
+
     if(target) {
         glColor3f(1, 0, 0);
 
@@ -51,6 +54,7 @@ TowerComponent *TowerComponent::clone()
     TowerComponent *t = TowerComponent::pool->obtain();
     t->canonPosition = canonPosition;
     t->target = target;
+    t->enemies = enemies;
     t->range = range;
     return t;
 }
@@ -64,15 +68,33 @@ void TowerComponent::drawRange()
 {
     int steps = 50;
     float angle = 360.0 / steps;
-    float range = 10;
 
     glColor3f(0, 1, 0);
     glBegin(GL_LINE_STRIP);
 
+    float range = this->range / this->getEntity()->getScale().x();
+
     for (int i = 0; i < steps; ++i) {
-//        glVertex3f(0, 0, 0);
         glVertex3f(cos(angle * i) * range, 0.1, sin(angle * i) * range);
     }
 
     glEnd();
+}
+
+void TowerComponent::setTarget()
+{
+    if(target != nullptr && (this->getEntity()->getLocalPosition() - target->getLocalPosition()).length() > range) {
+        target = nullptr;
+    }
+
+    if(target == nullptr) {
+        float maxDist = range;
+        foreach (Entity *enemy, *enemies) {
+            QVector3D d = this->getEntity()->getLocalPosition() - enemy->getLocalPosition();
+            if(d.length() < maxDist) {
+                maxDist = d.length();
+                target = enemy;
+            }
+        }
+    }
 }

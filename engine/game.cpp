@@ -14,6 +14,7 @@ void Game::initialize()
     container = new QWidget();
     mainWindow->setCentralWidget(container);
     mainWindow->setVisible(true);
+    mainWindow->setMouseTracking(true);
 
     QObject::connect(&timer, SIGNAL(timeout()), this, SLOT(update()));
     timer.start(0);

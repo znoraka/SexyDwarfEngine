@@ -72,3 +72,9 @@ PathFollowerComponent *PathFollowerComponent::clone()
     p->speed = speed;
     p->map = map;
 }
+
+PathFollowerComponent *PathFollowerComponent::setSpeed(float speed)
+{
+    this->speed = speed;
+    return this;
+}

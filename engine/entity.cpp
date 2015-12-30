@@ -21,13 +21,12 @@ void Entity::removeComponent(const QString componentName)
     QHash<QString, Component*>::iterator i = components.find(componentName);
     if(i != components.end()) {
         i.value()->release();
+        components.remove(componentName);
     }
 }
 
 Component *Entity::getComponent(const QString componentId)
 {
-
-    qDebug() << "getting :" << componentId;
     auto i = components.find(componentId);
 
     if(i == components.end()) {

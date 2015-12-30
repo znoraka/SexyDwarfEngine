@@ -23,6 +23,8 @@ public:
 
     static const QString name;
 
+    PathFollowerComponent *setSpeed(float speed);
+
 private:
     QImage path;
     MapComponent *map;
