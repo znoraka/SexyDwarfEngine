@@ -27,6 +27,8 @@ public:
 
     static const QString name;
 
+    bool hasRoom();
+
 private:
     QImage map;
     TowerComponent *tc;

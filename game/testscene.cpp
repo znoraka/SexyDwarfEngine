@@ -112,8 +112,10 @@ bool TestScene::handleEvent(QEvent *event)
     case QEvent::MouseButtonRelease:
         mouseEvent = static_cast<QMouseEvent*>(event);
         if(mouseEvent->button() == Qt::LeftButton) {
-            towerGhost->removeComponent(TowerGhostComponent::name);
-            towerGhost = nullptr;
+            if(static_cast<TowerGhostComponent*>(towerGhost->getComponent(TowerGhostComponent::name))->hasRoom()) {
+                towerGhost->removeComponent(TowerGhostComponent::name);
+                towerGhost = nullptr;
+            }
         }
         return true;
     case QEvent::MouseMove:
