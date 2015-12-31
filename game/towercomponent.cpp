@@ -64,12 +64,12 @@ float TowerComponent::getRange() const
     return range;
 }
 
-void TowerComponent::drawRange()
+void TowerComponent::drawRange(QVector3D color)
 {
     int steps = 50;
     float angle = 360.0 / steps;
 
-    glColor3f(0, 1, 0);
+    glColor3f(color.x(), color.y(), color.z());
     glBegin(GL_LINE_STRIP);
 
     float range = this->range / this->getEntity()->getScale().x();

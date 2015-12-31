@@ -8,7 +8,9 @@
 #include <QImage>
 
 #include "engine/components/component.h"
+#include "engine/components/volumecomponent.h"
 #include "game/towercomponent.h"
+#include "consts.h"
 
 class TowerGhostComponent : public Component
 {
@@ -19,7 +21,7 @@ public:
 
     void release() override;
 
-    TowerGhostComponent *init();
+    TowerGhostComponent *init(QString mapFolder);
     virtual void update(float delta);
     TowerGhostComponent *clone();
 
@@ -28,6 +30,8 @@ public:
 private:
     QImage map;
     TowerComponent *tc;
+    VolumeComponent *vc;
+    QString mapFolder;
 
 };
 

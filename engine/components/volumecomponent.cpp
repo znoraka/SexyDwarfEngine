@@ -177,6 +177,18 @@ VolumeComponent *VolumeComponent::init(QString filePath)
     m_indexbuffer.allocate(indexesArray.constData(), indexesArray.size() * sizeof(GLuint));
     m_indexbuffer.release();
 
+    float minX = verticesArray[0].x(), maxX = verticesArray[0].x();
+    float minY = verticesArray[0].y(), maxY = verticesArray[0].y();
+
+    for(auto i : verticesArray) {
+        minX = qMin(i.x(), minX);
+        maxX = qMax(i.x(), maxX);
+        minY = qMin(i.y(), minY);
+        maxY = qMax(i.y(), maxY);
+    }
+
+    this->bounds = QRectF(QPointF(minX, minY), QPointF(maxX, maxY));
+
     return this;
 }
 
@@ -232,7 +244,14 @@ VolumeComponent *VolumeComponent::clone()
     v->m_colorbuffer = m_colorbuffer;
     v->m_indexbuffer = m_indexbuffer;
 
+    v->bounds = bounds;
+
     return v;
+}
+
+QRectF VolumeComponent::getBounds() const
+{
+    return bounds;
 }
 
 QSharedPointer<MaterialInfo> VolumeComponent::processMaterial(aiMaterial *material)

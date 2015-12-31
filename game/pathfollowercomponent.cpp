@@ -35,7 +35,6 @@ void PathFollowerComponent::update(float delta)
     //    blue = left
     //    green = down
     //    white = up
-//    QVector3D tmp = map->toMapCoordinate(v);
 
     QRgb pixel = path.pixel(v.x(), path.height() - v.y());
 

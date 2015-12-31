@@ -23,7 +23,7 @@ public:
     static const QString name;
 
     float getRange() const;
-    void drawRange();
+    void drawRange(QVector3D color);
 
 
 private:

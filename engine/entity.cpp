@@ -6,6 +6,7 @@ Entity::Entity()
 {
     this->parent = nullptr;
     this->dirty = true;
+    this->ready = false;
 }
 
 Entity *Entity::addComponent(Component *component)

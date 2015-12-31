@@ -68,6 +68,7 @@ private:
     QHash<QString, Component*> components;
     QSet<Entity*> children;
     Entity *parent;
+    bool ready;
     bool dirty;
 };
 

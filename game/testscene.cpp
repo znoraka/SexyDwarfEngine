@@ -95,11 +95,11 @@ void TestScene::onAddTowerButtonClicked()
     towerGhost = Entity::pool->obtain()->
                     addComponent(towerVolume->clone())->
                     addComponent(towerComponent->clone())->
-                    addComponent(TowerGhostComponent::pool->obtain()->init())->
+                    addComponent(TowerGhostComponent::pool->obtain()->init(":/assets/maps/map1/"))->
                     setScale(10, 10, 10)->
                     setRotation(90, 0, 0);
     map->addChild(towerGhost);
-    }
+}
 
 bool TestScene::handleEvent(QEvent *event)
 {
@@ -128,6 +128,13 @@ bool TestScene::handleEvent(QEvent *event)
             towerGhost->setPosition(v);
             v = towerGhost->getLocalPosition();
             v.setZ(static_cast<MapComponent*>(map->getComponent(MapComponent::name))->getZ(v.x(), v.y()));
+
+//            int nx = v.x() / TILE_SIZE;
+//            v.setX(TILE_SIZE * nx);
+
+//            int ny = v.y() / TILE_SIZE;
+//            v.setY(TILE_SIZE * ny);
+
             towerGhost->setPosition(v);
         }
         return true;
@@ -207,6 +214,8 @@ bool TestScene::handleEvent(QEvent *event)
             }
             displayLines = !displayLines;
             return true;
+
+        default: return false;
         }
     }
     return false;

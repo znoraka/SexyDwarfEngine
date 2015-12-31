@@ -64,6 +64,8 @@ public:
     virtual void update(float delta);
     VolumeComponent *clone();
 
+    QRectF getBounds() const;
+
     static const QString name;
 
 private:
@@ -95,6 +97,8 @@ private:
     QOpenGLBuffer m_normalbuffer;
     QOpenGLBuffer m_colorbuffer;
     QOpenGLBuffer m_indexbuffer;
+
+    QRectF bounds;
 };
 
 #endif // VOLUMECOMPONENT_H
