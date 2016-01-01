@@ -1,8 +1,6 @@
 #ifndef TOWERGHOSTCOMPONENT_H
 #define TOWERGHOSTCOMPONENT_H
 
-
-
 #include <QVector3D>
 #include <QtGui/QOpenGLFunctions>
 #include <QImage>
@@ -35,6 +33,7 @@ private:
     VolumeComponent *vc;
     QString mapFolder;
 
+    void initDependencies();
 };
 
 #endif // TOWERGHOSTCOMPONENT_H

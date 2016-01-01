@@ -7,6 +7,7 @@
 #include <QOpenGLContext>
 #include <QSurface>
 #include <QLabel>
+#include <QQueue>
 
 #include "scene.h"
 
@@ -39,6 +40,11 @@ private:
 
     MainWindow *mainWindow;
     QWidget *container;
+
+    QQueue<QEvent*> events1, events2, toDelete;
+
+
+    bool firstEventList;
 
     static Game *instance;
 };

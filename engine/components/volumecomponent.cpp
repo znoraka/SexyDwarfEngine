@@ -24,6 +24,16 @@ System *VolumeComponent::instantiateSystem()
 
 void VolumeComponent::release()
 {
+//    this->vao.destroy();
+//    this->verticesArray.clear();
+//    this->normalsArray.clear();
+//    this->colorsArray.clear();
+//    this->indexesArray.clear();
+//    this->m_vertexbuffer.destroy();
+//    this->m_normalbuffer.destroy();
+//    this->m_colorbuffer.destroy();
+//    this->m_indexbuffer.destroy();
+
     VolumeComponent::pool->release(this);
 }
 
@@ -234,6 +244,7 @@ void VolumeComponent::update(float delta)
 VolumeComponent *VolumeComponent::clone()
 {
     VolumeComponent *v = VolumeComponent::pool->obtain();
+    v->bounds = bounds;
     v->verticesArray = verticesArray;
     v->normalsArray = normalsArray;
     v->colorsArray = colorsArray;
@@ -243,8 +254,6 @@ VolumeComponent *VolumeComponent::clone()
     v->m_normalbuffer = m_normalbuffer;
     v->m_colorbuffer = m_colorbuffer;
     v->m_indexbuffer = m_indexbuffer;
-
-    v->bounds = bounds;
 
     return v;
 }

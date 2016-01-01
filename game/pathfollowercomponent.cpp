@@ -36,7 +36,14 @@ void PathFollowerComponent::update(float delta)
     //    green = down
     //    white = up
 
-    QRgb pixel = path.pixel(v.x(), path.height() - v.y());
+    float x = v.x();
+    float y = path.height() - v.y();
+
+    if(x < 0 || y < 0 || x > path.width() || y > path.height()) {
+        return;
+    }
+
+    QRgb pixel = path.pixel(x, y);
 
     if(qRed(pixel) == 255 && qGreen(pixel) == 255 && qBlue(pixel) == 255) {
         //up

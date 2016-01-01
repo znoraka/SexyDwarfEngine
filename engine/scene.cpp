@@ -34,6 +34,11 @@ void Scene::update(float delta)
 //    glLoadIdentity();
 //    glOrtho(0.0, width * ratio, 0.0, height * ratio, near, far);
 
+    while(!callbacks.empty()) {
+        auto f = callbacks.dequeue();
+        f();
+    }
+
     foreach (Entity *e, entities) {
         if(!e->hasParent()) {
             e->update(delta);
@@ -43,8 +48,12 @@ void Scene::update(float delta)
 
 }
 
+void Scene::addCallBack(std::function<void()> f)
+{
+    this->callbacks.enqueue(f);
+}
+
 
 bool Scene::handleEvent(QEvent *event)
 {
-
 }

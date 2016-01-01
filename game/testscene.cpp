@@ -20,8 +20,8 @@ void TestScene::initialize()
     glClearDepth(1.0f);
     camera->initialize(WIDTH / HEIGHT, WIDTH, HEIGHT, -1000, 1000);
     QVector3D pos = camera->getPosition();
-//    pos.setX(WIDTH * 0.5); pos.setY(HEIGHT * 0.5); pos.setZ(0);
-//    camera->setPosition(WIDTH * 0.1, 0, 0);
+    //    pos.setX(WIDTH * 0.5); pos.setY(HEIGHT * 0.5); pos.setZ(0);
+    //    camera->setPosition(WIDTH * 0.1, 0, 0);
     camera->setPosition(200, 0, 0);
     camera->setRotation(54, -90, 0);
     camera->setScale(camera->getScale() * 1);
@@ -37,7 +37,8 @@ void TestScene::initialize()
 
     Entity *e;
     VolumeComponent *v = VolumeComponent::pool->obtain()->init(":/assets/ply/galleon.ply");
-    towerComponent = TowerComponent::pool->obtain()->init(QVector3D(0, 0, 30), enemies, 150);
+    towerComponent = TowerComponent::pool->obtain()->init(QVector3D(0, 0, 30), enemies, 150, 3);
+    towerGhostComponent = TowerGhostComponent::pool->obtain()->init(":/assets/maps/map1/");
     towerVolume = VolumeComponent::pool->obtain()->init(":/assets/ply/tower.ply");
     PathFollowerComponent *p = PathFollowerComponent::pool->
             obtain()->
@@ -54,15 +55,8 @@ void TestScene::initialize()
         e->setRotation(0, 0, 90);
         map->addChild(e);
         enemies->push_back(e);
-//        this->addEntity(e);
     }
 
-    map->addChild(Entity::pool->obtain()->
-                    addComponent(VolumeComponent::pool->obtain()->init(":/assets/ply/tower.ply"))->
-                    addComponent(towerComponent->clone())->
-                    setScale(10, 10, 10)->
-                    setRotation(90, 0, 0)->
-                    setPosition(345, 350, 35));
 
     glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);
@@ -92,13 +86,16 @@ void TestScene::initialize()
 
 void TestScene::onAddTowerButtonClicked()
 {
-    towerGhost = Entity::pool->obtain()->
+    if(towerGhost == nullptr) {
+//        this->addCallBack([=]() {
+            towerGhost = Entity::pool->obtain()->
                     addComponent(towerVolume->clone())->
+                    addComponent(towerGhostComponent->clone())->
                     addComponent(towerComponent->clone())->
-                    addComponent(TowerGhostComponent::pool->obtain()->init(":/assets/maps/map1/"))->
                     setScale(10, 10, 10)->
                     setRotation(90, 0, 0);
-    map->addChild(towerGhost);
+            map->addChild(towerGhost);
+    }
 }
 
 bool TestScene::handleEvent(QEvent *event)
@@ -112,8 +109,25 @@ bool TestScene::handleEvent(QEvent *event)
     case QEvent::MouseButtonRelease:
         mouseEvent = static_cast<QMouseEvent*>(event);
         if(mouseEvent->button() == Qt::LeftButton) {
-            if(static_cast<TowerGhostComponent*>(towerGhost->getComponent(TowerGhostComponent::name))->hasRoom()) {
-                towerGhost->removeComponent(TowerGhostComponent::name);
+            if(towerGhost != nullptr) {
+                if(static_cast<TowerGhostComponent*>(towerGhost->getComponent(TowerGhostComponent::name))->hasRoom()) {
+
+                    //                v = towerGhost->getLocalPosition();
+                    //                int nx = v.x() / TILE_SIZE;
+                    //                v.setX(TILE_SIZE * nx);
+
+                    //                int ny = v.y() / TILE_SIZE;
+                    //                v.setY(TILE_SIZE * ny);
+                    //                towerGhost->setPosition(v);
+
+                    towerGhost->removeComponent(TowerGhostComponent::name);
+                    towerGhost = nullptr;
+                }
+            }
+        } else if (mouseEvent->button() == Qt::RightButton) {
+            if(towerGhost != nullptr) {
+//                map->removeChild(towerGhost);
+                towerGhost->release();
                 towerGhost = nullptr;
             }
         }
@@ -130,12 +144,6 @@ bool TestScene::handleEvent(QEvent *event)
             towerGhost->setPosition(v);
             v = towerGhost->getLocalPosition();
             v.setZ(static_cast<MapComponent*>(map->getComponent(MapComponent::name))->getZ(v.x(), v.y()));
-
-//            int nx = v.x() / TILE_SIZE;
-//            v.setX(TILE_SIZE * nx);
-
-//            int ny = v.y() / TILE_SIZE;
-//            v.setY(TILE_SIZE * ny);
 
             towerGhost->setPosition(v);
         }
@@ -207,6 +215,10 @@ bool TestScene::handleEvent(QEvent *event)
             camera->setPosition(v);
             return true;
 
+        case Qt::Key_E:
+            onAddTowerButtonClicked();
+            return true;
+
         case Qt::Key_Space:
             makeCurrent();
             if(displayLines) {
@@ -217,8 +229,8 @@ bool TestScene::handleEvent(QEvent *event)
             displayLines = !displayLines;
             return true;
 
-        default: return false;
         }
+    default: return false;
     }
     return false;
 }

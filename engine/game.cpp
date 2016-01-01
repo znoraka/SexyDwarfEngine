@@ -17,6 +17,7 @@ void Game::initialize()
     mainWindow->setMouseTracking(true);
 
     QObject::connect(&timer, SIGNAL(timeout()), this, SLOT(update()));
+    firstEventList = true;
     timer.start(0);
 }
 
@@ -24,6 +25,20 @@ void Game::update(float delta)
 {
 
     if(!this->paused && this->currentScene != nullptr && currentScene->isReady() && delta > 0.1f && delta < 1000.0f) {
+
+        if(firstEventList) {
+            while (!events1.empty()) {
+                toDelete.enqueue(events1.first());
+                currentScene->handleEvent(events1.dequeue());
+            }
+        } else {
+            while (!events2.empty()) {
+                toDelete.enqueue(events2.first());
+                currentScene->handleEvent(events2.dequeue());
+            }
+        }
+        firstEventList = !firstEventList;
+
         this->currentScene->makeCurrent();
         this->currentScene->update(delta);
         QPainter p;
@@ -35,6 +50,10 @@ void Game::update(float delta)
         glEnable(GL_DEPTH_TEST);
         glDepthFunc(GL_LESS);
         mainWindow->repaint();
+
+        while (!toDelete.empty()) {
+            delete toDelete.dequeue();
+        }
     }
 }
 
@@ -58,7 +77,11 @@ void Game::setScene(Scene *scene)
 
 void Game::addEvent(QEvent *event)
 {
-
+//    if(firstEventList) {
+//        events2.enqueue(event);
+//    } else {
+//        events1.enqueue(event);
+//    }
     currentScene->handleEvent(event);
 }
 
@@ -82,30 +105,42 @@ Game::Game()
 
 void MainWindow::keyPressEvent(QKeyEvent *event)
 {
+//    QKeyEvent *q = new QKeyEvent(*event);
+//    Game::getInstance()->addEvent(q);
     Game::getInstance()->addEvent(event);
 }
 
 void MainWindow::keyReleaseEvent(QKeyEvent *event)
 {
+//    QKeyEvent *q = new QKeyEvent(*event);
+//    Game::getInstance()->addEvent(q);
     Game::getInstance()->addEvent(event);
 }
 
 void MainWindow::mouseDoubleClickEvent(QMouseEvent *event)
 {
+//    QMouseEvent *q = new QMouseEvent(*event);
+//    Game::getInstance()->addEvent(q);
     Game::getInstance()->addEvent(event);
 }
 
 void MainWindow::mouseMoveEvent(QMouseEvent *event)
 {
+//    QMouseEvent *q = new QMouseEvent(*event);
+//    Game::getInstance()->addEvent(q);
     Game::getInstance()->addEvent(event);
 }
 
 void MainWindow::mousePressEvent(QMouseEvent *event)
 {
+//    QMouseEvent *q = new QMouseEvent(*event);
+//    Game::getInstance()->addEvent(q);
     Game::getInstance()->addEvent(event);
 }
 
 void MainWindow::mouseReleaseEvent(QMouseEvent *event)
 {
+//    QMouseEvent *q = new QMouseEvent(*event);
+//    Game::getInstance()->addEvent(q);
     Game::getInstance()->addEvent(event);
 }

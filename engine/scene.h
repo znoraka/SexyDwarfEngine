@@ -14,6 +14,8 @@
 #include <QMainWindow>
 #include <QVBoxLayout>
 #include <QPushButton>
+#include <QQueue>
+#include <functional>
 
 #include "camera.h"
 #include "entity.h"
@@ -36,6 +38,7 @@ public:
     void removeEntity(Entity *entity);
     bool isReady() const;
     void update(float delta);
+    void addCallBack(std::function<void()> f);
 
     virtual bool handleEvent(QEvent *event);
 
@@ -52,7 +55,7 @@ protected:
 private:
     QSet<Entity*> entities;
     QList<System*> systems;
-
+    QQueue<std::function<void()> > callbacks;
 };
 
 #endif // SCENE_H

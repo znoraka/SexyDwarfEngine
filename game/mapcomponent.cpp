@@ -222,9 +222,6 @@ MapComponent *MapComponent::clone()
 float MapComponent::getZ(float i, float j)
 {
     QVector3D v(i, 0, j);
-//    if(this->getEntity() != nullptr) {
-//        v = toMapCoordinate(v);
-//    }
     return qGray(this->heightmap.pixel(v.x(), v.z())) * 0.8f;
 }
 

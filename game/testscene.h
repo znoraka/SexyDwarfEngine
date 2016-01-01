@@ -30,6 +30,7 @@ private:
     Entity *map;
     TowerComponent *towerComponent;
     VolumeComponent *towerVolume;
+    TowerGhostComponent *towerGhostComponent;
 
     QVector<Entity*> *enemies;
 };

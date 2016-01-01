@@ -32,7 +32,8 @@ SOURCES += \
     game/towercomponent.cpp \
     engine/tools/delaunay.c \
     game/testscene.cpp \
-    game/towerghostcomponent.cpp
+    game/towerghostcomponent.cpp \
+    game/bulletcomponent.cpp
 
 HEADERS  += \
     engine/camera.h \
@@ -54,7 +55,8 @@ HEADERS  += \
     game/towercomponent.h \
     engine/tools/delaunay.h \
     game/testscene.h \
-    game/towerghostcomponent.h
+    game/towerghostcomponent.h \
+    game/bulletcomponent.h
 
 FORMS    +=
 QMAKE_CXXFLAGS += -std=c++11 -lGL -lGLU -lglut -lassimp

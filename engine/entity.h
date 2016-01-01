@@ -53,6 +53,8 @@ public:
     Entity *setScale(QVector3D v);
     Entity *setScale(float x, float y, float z);
 
+    Entity *getParent() const;
+
     bool hasParent() const;
 
 protected:

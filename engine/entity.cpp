@@ -31,8 +31,10 @@ Component *Entity::getComponent(const QString componentId)
     auto i = components.find(componentId);
 
     if(i == components.end()) {
+        qDebug() << "no component " << componentId << "found";
         return nullptr;
     }
+
     return i.value();
 }
 
@@ -51,6 +53,7 @@ void Entity::release()
         var->release();
     }
     this->dirty = true;
+    this->parent->removeChild(this);
     this->parent = nullptr;
     pool->release(this);
     components.clear();
@@ -108,8 +111,8 @@ void Entity::addChild(Entity *child)
 void Entity::removeChild(Entity *child)
 {
     this->children.remove(child);
-    dirty = true;
     child->parent = nullptr;
+    dirty = true;
 }
 
 QVector3D Entity::getPosition() const
@@ -221,6 +224,11 @@ Entity *Entity::setScale(float x, float y, float z)
     this->localScale.setZ(z);
     dirty = true;
     return this;
+}
+
+Entity *Entity::getParent() const
+{
+    return this->parent;
 }
 
 bool Entity::hasParent() const
