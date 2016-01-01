@@ -14,11 +14,11 @@ const QString TowerComponent::componentName() const
 
 void TowerComponent::release()
 {
-//    delete enemies;
+    //    delete enemies;
     TowerComponent::pool->release(this);
 }
 
-TowerComponent *TowerComponent::init(QVector3D canonPosition, QVector<Entity *> *enemies, float range, float attackSpeed)
+TowerComponent *TowerComponent::init(QVector3D canonPosition, QList<Entity *> *enemies, float range, float attackSpeed)
 {
     this->canonPosition = canonPosition;
     this->enemies = enemies;
@@ -27,6 +27,7 @@ TowerComponent *TowerComponent::init(QVector3D canonPosition, QVector<Entity *> 
     this->elapsed = 0;
     this->attackSpeed = attackSpeed;
     this->volume = VolumeComponent::pool->obtain()->init(":/assets/ply/sphere.ply");
+    this->ready = false;
     return this;
 }
 
@@ -34,28 +35,28 @@ void TowerComponent::update(float delta)
 {
     this->setTarget();
 
-    if(target) {
+    if(ready && target) {
         elapsed += delta * 0.01;
         if(elapsed > attackSpeed) {
             shoot();
             elapsed = 0;
         }
 
-//        glColor3f(1, 0, 0);
+        //        glColor3f(1, 0, 0);
 
-//        GLfloat m[16];
-//        glGetFloatv (GL_MODELVIEW_MATRIX, m);
+        //        GLfloat m[16];
+        //        glGetFloatv (GL_MODELVIEW_MATRIX, m);
 
-//        glPopMatrix();
-//        glBegin(GL_LINES);
+        //        glPopMatrix();
+        //        glBegin(GL_LINES);
 
-//        glVertex3f(target->getLocalPosition().x(), target->getLocalPosition().y(), target->getLocalPosition().z());
-//        glVertex3f(canonPosition.x() + getEntity()->getLocalPosition().x(),
-//                   canonPosition.y() + getEntity()->getLocalPosition().y(),
-//                   canonPosition.z() + getEntity()->getLocalPosition().z());
-//        glEnd();
-//        glPushMatrix();
-//        glLoadMatrixf(m);
+        //        glVertex3f(target->getLocalPosition().x(), target->getLocalPosition().y(), target->getLocalPosition().z());
+        //        glVertex3f(canonPosition.x() + getEntity()->getLocalPosition().x(),
+        //                   canonPosition.y() + getEntity()->getLocalPosition().y(),
+        //                   canonPosition.z() + getEntity()->getLocalPosition().z());
+        //        glEnd();
+        //        glPushMatrix();
+        //        glLoadMatrixf(m);
     }
 }
 
@@ -69,6 +70,7 @@ TowerComponent *TowerComponent::clone()
     t->attackSpeed = attackSpeed;
     t->elapsed = elapsed;
     t->volume = volume;
+    t->ready = false;
     return t;
 }
 
@@ -94,10 +96,17 @@ void TowerComponent::drawRange(QVector3D color)
     glEnd();
 }
 
+void TowerComponent::setReady()
+{
+    this->ready = true;
+}
+
 void TowerComponent::setTarget()
 {
-    if(target != nullptr && (this->getEntity()->getLocalPosition() - target->getLocalPosition()).length() > range) {
-        target = nullptr;
+    if(target != nullptr) {
+        if(target->getParent() == nullptr || (this->getEntity()->getLocalPosition() - target->getLocalPosition()).length() > range) {
+            target = nullptr;
+        }
     }
 
     if(target == nullptr) {
@@ -115,7 +124,7 @@ void TowerComponent::setTarget()
 void TowerComponent::shoot()
 {
     Entity *e = Entity::pool->obtain()->
-            addComponent(BulletComponent::pool->obtain()->init(target, 0.5))->
+            addComponent(BulletComponent::pool->obtain()->init(target, 0.5, 1))->
             addComponent(volume->clone())->
             setPosition(this->getEntity()->getPosition() + canonPosition)->
             setScale(0.02, 0.02, 0.02);

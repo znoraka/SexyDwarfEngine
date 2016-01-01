@@ -8,5 +8,9 @@
         <file>assets/maps/map1/p.png</file>
         <file>assets/ply/tower.ply</file>
         <file>assets/ply/sphere.ply</file>
+        <file>assets/sounds/Master Bank.bank</file>
+        <file>assets/sounds/Master Bank.strings.bank</file>
+        <file>assets/sounds/Weapons.bank</file>
+        <file>assets/sounds/Vehicles.bank</file>
     </qresource>
 </RCC>

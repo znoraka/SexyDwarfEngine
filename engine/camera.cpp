@@ -59,16 +59,16 @@ QVector3D Camera::getScale() const
 
 QVector3D Camera::screenToWorld(QVector3D vec, QMatrix4x4 modelview, QMatrix4x4 projection, QVector3D &out1, QVector3D &out2)
 {
-    vec.setX(qMin(vec.x(), width));
-    vec.setY(qMin(vec.y(), height));
-    vec.setX(qMax(vec.x(), 0.0f));
-    vec.setY(qMax(vec.y(), 0.0f));
+//    vec.setX(qMin(vec.x(), width));
+//    vec.setY(qMin(vec.y(), height));
+//    vec.setX(qMax(vec.x(), 0.0f));
+//    vec.setY(qMax(vec.y(), 0.0f));
 
     int viewport[4];
     glGetIntegerv(GL_VIEWPORT, viewport);
     float winX = vec.x();
     float winY = vec.y();
-    winY = height - winY;
+    winY = viewport[3] - winY;
     float winZ;
     glReadPixels(winX, winY, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &winZ);
 
@@ -100,23 +100,6 @@ QVector3D Camera::screenToWorld(QVector3D vec, QMatrix4x4 modelview, QMatrix4x4 
     intersects(QVector3D(1, 0, 0), QVector3D(0, 1, 0), QVector3D(1, 1, 0),
                pt1, pt2, out);
     return out;
-
-//    QVector3D ba = pt2 - pt1;
-//    QVector3D tmp = pt2 + pt1;
-//    float length = tmp.length() * 0.25;
-//    qDebug() << ba;
-////    return ba;
-//    float nDotA = QVector3D::dotProduct(n, pt1);
-//    float nDotBA = QVector3D::dotProduct(n, ba);
-//    qDebug() << length;
-//    return pt1 + (((length - nDotA)/nDotBA) * ba);
-////    float nDotA = Vector3::dotProduct(n, a);
-////    float nDotBA = Vector3::dotProduct(n, ba);
-
-////    return a + (((d - nDotA)/nDotBA) * ba);
-
-    return pt1;
-
 }
 
 bool Camera::intersects(QVector3D p1, QVector3D p2, QVector3D p3, QVector3D r1, QVector3D r2, QVector3D &out)
@@ -147,6 +130,30 @@ bool Camera::intersects(QVector3D p1, QVector3D p2, QVector3D p3, QVector3D r1, 
       // vInstersect = R1 + (R1-R2) * fPercent;
       out = r1 + (r1 - r2) * fPercent;
 
+}
+
+QPointF Camera::worldToScreen(QVector3D vec, QMatrix4x4 modelview, QMatrix4x4 projection)
+{
+    QPointF p;
+    QVector4D tmp(vec.x(), vec.y(), vec.z(), 1);
+    tmp = tmp * modelview;
+    tmp = tmp * projection;
+
+    tmp.setX(tmp.x() / tmp.w());
+    tmp.setY(tmp.y() / tmp.w());
+    tmp.setZ(tmp.z() / tmp.w());
+
+    tmp.setX(tmp.x() * 0.5 + 0.5);
+    tmp.setY(tmp.y() * 0.5 + 0.5);
+    tmp.setZ(tmp.z() * 0.5 + 0.5);
+
+    int viewport[4];
+    glGetIntegerv(GL_VIEWPORT, viewport);
+
+    p.setX(tmp.x()  * viewport[2] + viewport[0]);
+    p.setY(tmp.y()  * viewport[3] + viewport[1]);
+
+    return p;
 }
 
 void Camera::setRotation(QVector3D v)

@@ -55,11 +55,12 @@ void Entity::release()
     this->dirty = true;
     this->parent->removeChild(this);
     this->parent = nullptr;
-    pool->release(this);
     components.clear();
     foreach (Entity *e, children) {
         e->release();
     }
+    children.clear();
+    pool->release(this);
 }
 
 void Entity::update(float delta)

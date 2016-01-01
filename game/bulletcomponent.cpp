@@ -17,17 +17,25 @@ void BulletComponent::release()
     BulletComponent::pool->release(this);
 }
 
-BulletComponent *BulletComponent::init(Entity *target, float speed)
+BulletComponent *BulletComponent::init(Entity *target, float speed, float damage)
 {
     this->target = target;
     this->speed = speed;
+    this->damage = damage;
     return this;
 }
 
 void BulletComponent::update(float delta)
 {
     QVector3D dir = -(this->getEntity()->getPosition() - target->getPosition());
-    if(dir.length() < 1) {
+    if(dir.length() < 3) {
+
+        EnemyComponent *enemy = static_cast<EnemyComponent*>(target->getComponent(EnemyComponent::name));
+
+        if(enemy != nullptr) {
+            enemy->takeDamage(damage);
+        }
+
         this->getEntity()->release();
     } else {
         dir.normalize();
@@ -39,7 +47,7 @@ BulletComponent *BulletComponent::clone()
     BulletComponent *t = BulletComponent::pool->obtain();
     t->target = target;
     t->speed = speed;
-
+    t->damage = damage;
     return t;
 }
 

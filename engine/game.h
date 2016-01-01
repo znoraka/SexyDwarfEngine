@@ -9,7 +9,15 @@
 #include <QLabel>
 #include <QQueue>
 
+#include "fmod_studio.hpp"
+#include "fmod.hpp"
+#include "fmod_common.h"
+#include "fmod_studio_common.h"
+#include "fmod_errors.h"
+#include "fmod_output.h"
+
 #include "scene.h"
+#include "engine/tools/fileutility.h"
 
 class MainWindow;
 
@@ -43,6 +51,8 @@ private:
 
     QQueue<QEvent*> events1, events2, toDelete;
 
+    FMOD::Studio::System* system;
+    FMOD::System* lowLevelSystem;
 
     bool firstEventList;
 

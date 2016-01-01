@@ -2,6 +2,12 @@
 
 Game *Game::instance = new Game();
 
+void ERRCHECK(FMOD_RESULT result) {
+    if(result != FMOD_OK) {
+        qDebug() << "error : " << FMOD_ErrorString(result);
+    }
+}
+
 Game *Game::getInstance()
 {
     return instance;
@@ -19,11 +25,49 @@ void Game::initialize()
     QObject::connect(&timer, SIGNAL(timeout()), this, SLOT(update()));
     firstEventList = true;
     timer.start(0);
+
+    ERRCHECK( FMOD::Studio::System::create(&system) );
+    ERRCHECK( system->getLowLevelSystem(&lowLevelSystem) );
+    ERRCHECK( lowLevelSystem->setSoftwareFormat(0, FMOD_SPEAKERMODE_5POINT1, 0) );
+    ERRCHECK( system->initialize(32, FMOD_STUDIO_INIT_NORMAL, FMOD_INIT_NORMAL, 0) );
+
+//    FMOD::Studio::Bank* masterBank = NULL;
+//    ERRCHECK( system->loadBankFile(FileUtility::loadTempFile(":/assets/sounds/Master Bank.bank").toStdString().c_str(), FMOD_STUDIO_LOAD_BANK_NORMAL, &masterBank) );
+
+//    FMOD::Studio::Bank* stringsBank = NULL;
+//    ERRCHECK( system->loadBankFile(FileUtility::loadTempFile(":/assets/sounds/Master Bank.strings.bank").toStdString().c_str(), FMOD_STUDIO_LOAD_BANK_NORMAL, &stringsBank) );
+
+//    FMOD::Studio::Bank* weaponBank = NULL;
+//    ERRCHECK( system->loadBankFile(FileUtility::loadTempFile(":/assets/sounds/Vehicles.bank").toStdString().c_str(), FMOD_STUDIO_LOAD_BANK_NORMAL, &weaponBank) );
+
+//    FMOD::Studio::EventDescription* eventDescription = NULL;
+//    ERRCHECK( system->getEvent("event:/Vehicles/Basic Engine", &eventDescription) );
+
+//    FMOD::Studio::EventInstance* eventInstance = NULL;
+//    ERRCHECK( eventDescription->createInstance(&eventInstance) );
+
+//    FMOD::Studio::ParameterInstance* rpm = NULL;
+//    ERRCHECK( eventInstance->getParameter("RPM", &rpm) );
+
+//    ERRCHECK( rpm->setValue(2150) );
+
+//    ERRCHECK( eventInstance->start() );
+
+//    // Position the listener at the origin
+//        FMOD_3D_ATTRIBUTES attributes = { { 0 } };
+//        attributes.forward.z = 1.0f;
+//        attributes.up.y = 1.0f;
+//        ERRCHECK( system->setListenerAttributes(0, &attributes) );
+
+//        // Position the event 2 units in front of the listener
+//        attributes.position.z = 2.0f;
+//        ERRCHECK( eventInstance->set3DAttributes(&attributes) );
 }
 
 void Game::update(float delta)
 {
 
+    ERRCHECK( system->update() );
     if(!this->paused && this->currentScene != nullptr && currentScene->isReady() && delta > 0.1f && delta < 1000.0f) {
 
         if(firstEventList) {

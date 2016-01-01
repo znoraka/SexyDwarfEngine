@@ -11,6 +11,7 @@
 #include "game/pathfollowercomponent.h"
 #include "game/towercomponent.h"
 #include "game/towerghostcomponent.h"
+#include "game/enemycomponent.h"
 #include "consts.h"
 
 class TestScene : public Scene
@@ -19,6 +20,7 @@ class TestScene : public Scene
 public:
     TestScene();
     void initialize();
+    void update(float delta);
 
 public slots:
     void onAddTowerButtonClicked();
@@ -31,8 +33,9 @@ private:
     TowerComponent *towerComponent;
     VolumeComponent *towerVolume;
     TowerGhostComponent *towerGhostComponent;
+    EnemyComponent *enemyComponent;
 
-    QVector<Entity*> *enemies;
+    QList<Entity*> *enemies;
 };
 
 #endif // TESTSCENE_H

@@ -37,7 +37,7 @@ public:
     void addEntity(Entity *entity);
     void removeEntity(Entity *entity);
     bool isReady() const;
-    void update(float delta);
+    virtual void update(float delta);
     void addCallBack(std::function<void()> f);
 
     virtual bool handleEvent(QEvent *event);

@@ -11,7 +11,6 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = GameEngine
 TEMPLATE = app
 
-
 SOURCES += \
     engine/camera.cpp \
     engine/gamewindow.cpp \
@@ -33,7 +32,9 @@ SOURCES += \
     engine/tools/delaunay.c \
     game/testscene.cpp \
     game/towerghostcomponent.cpp \
-    game/bulletcomponent.cpp
+    game/bulletcomponent.cpp \
+    engine/tools/fileutility.cpp \
+    game/enemycomponent.cpp
 
 HEADERS  += \
     engine/camera.h \
@@ -56,17 +57,19 @@ HEADERS  += \
     engine/tools/delaunay.h \
     game/testscene.h \
     game/towerghostcomponent.h \
-    game/bulletcomponent.h
+    game/bulletcomponent.h \
+    engine/tools/fileutility.h \
+    game/enemycomponent.h
 
 FORMS    +=
-QMAKE_CXXFLAGS += -std=c++11 -lGL -lGLU -lglut -lassimp
-
-LIBS += -L"/home/noe/Downloads/fmodstudioapi10703linux/api/studio/lib/  -libfmodex"
-LIBS += -L"/home/noe/Downloads/fmodstudioapi10703linux/api/lowlevel/lib/  -libfmodex"
-LIBS += -lassimp
+QMAKE_CXXFLAGS += -std=c++11 -lGL -lGLU -lglut -lassimp -libfmodstudio -libfmod -lfmod -lfmodstudio
 
 INCLUDEPATH += "/home/noe/Downloads/fmodstudioapi10703linux/api/studio/inc"
 INCLUDEPATH += "/home/noe/Downloads/fmodstudioapi10703linux/api/lowlevel/inc"
+
+LIBS += -lfmodstudio
+LIBS += -lfmod
+LIBS += -lassimp
 
 RESOURCES += \
     resource.qrc

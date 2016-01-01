@@ -24,18 +24,39 @@
 #include "engine/entity.h"
 #include "game/trianglecomponent.h"
 #include "game/testscene.h"
+#include "engine/tools/fileutility.h"
 
 #include "consts.h"
-
-#include "fmod_studio.hpp"
-#include "fmod.hpp"
-#include "fmod_common.h"
 
 int main(int argc, char **argv)
 {
     srand(time(NULL));
 
     QApplication app(argc, argv);
+
+//
+
+//    FMOD::Studio::Bank* masterBank = NULL;
+//    ERRCHECK( system->loadBankFile(FileUtility::loadTempFile(":/assets/sounds/Master Bank.bank").toStdString().c_str(), FMOD_STUDIO_LOAD_BANK_NORMAL, &masterBank) );
+
+//    FMOD::Studio::Bank* stringsBank = NULL;
+//    ERRCHECK( system->loadBankFile(FileUtility::loadTempFile(":/assets/sounds/Master Bank.strings.bank").toStdString().c_str(), FMOD_STUDIO_LOAD_BANK_NORMAL, &stringsBank) );
+
+//    FMOD::Studio::Bank* weaponBank = NULL;
+//    ERRCHECK( system->loadBankFile(FileUtility::loadTempFile(":/assets/sounds/Vehicles.bank").toStdString().c_str(), FMOD_STUDIO_LOAD_BANK_NORMAL, &weaponBank) );
+
+//    FMOD::Studio::EventDescription* eventDescription = NULL;
+//    ERRCHECK( system->getEvent("event:/Vehicles/Basic Engine", &eventDescription) );
+
+//    FMOD::Studio::EventInstance* eventInstance = NULL;
+//    ERRCHECK( eventDescription->createInstance(&eventInstance) );
+
+//    FMOD::Studio::ParameterInstance* rpm = NULL;
+//    ERRCHECK( eventInstance->getParameter("RPM", &rpm) );
+
+//    ERRCHECK( rpm->setValue(650) );
+
+//    ERRCHECK( eventInstance->start() );
 
     Game::getInstance()->initialize();
 

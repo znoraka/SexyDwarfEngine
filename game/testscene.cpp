@@ -26,7 +26,7 @@ void TestScene::initialize()
     camera->setRotation(54, -90, 0);
     camera->setScale(camera->getScale() * 1);
 
-    enemies = new QVector<Entity*>();
+    enemies = new QList<Entity*>();
 
     map = Entity::pool->obtain()->
             addComponent(MapComponent::pool->obtain()->init(":/assets/maps/map1/"))->
@@ -40,23 +40,24 @@ void TestScene::initialize()
     towerComponent = TowerComponent::pool->obtain()->init(QVector3D(0, 0, 30), enemies, 150, 3);
     towerGhostComponent = TowerGhostComponent::pool->obtain()->init(":/assets/maps/map1/");
     towerVolume = VolumeComponent::pool->obtain()->init(":/assets/ply/tower.ply");
+    enemyComponent = EnemyComponent::pool->obtain()->init(0, 10, 0);
     PathFollowerComponent *p = PathFollowerComponent::pool->
             obtain()->
             init(":/assets/maps/map1/",
                  static_cast<MapComponent*>(map->getComponent(MapComponent::name)),
                  0.1);
 
-    for (int i = 0; i < 10; ++i) {
+    for (int i = 0; i < 20; ++i) {
         e = Entity::pool->obtain();
         e->addComponent(v->clone());
-        e->addComponent(p->clone()->setSpeed((qrand() % 10) * 0.01));
+        e->addComponent(enemyComponent->clone());
+        e->addComponent(p->clone()->setSpeed((qrand() % 100) * 0.001));
         e->setScale(0.05, 0.05, 0.05);
         e->setPosition(16, 416, 0);
         e->setRotation(0, 0, 90);
         map->addChild(e);
-        enemies->push_back(e);
+        enemies->append(e);
     }
-
 
     glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);
@@ -82,6 +83,17 @@ void TestScene::initialize()
 
     this->ready = true;
     this->setMouseTracking(true);
+}
+
+void TestScene::update(float delta) {
+
+    for(auto i : *enemies) {
+        if(i->getParent() == nullptr) {
+            enemies->removeAt(enemies->indexOf(i));
+        }
+    }
+
+    Scene::update(delta);
 }
 
 void TestScene::onAddTowerButtonClicked()
@@ -120,6 +132,7 @@ bool TestScene::handleEvent(QEvent *event)
                     //                v.setY(TILE_SIZE * ny);
                     //                towerGhost->setPosition(v);
 
+                    static_cast<TowerComponent*>(towerGhost->getComponent(TowerComponent::name))->setReady();
                     towerGhost->removeComponent(TowerGhostComponent::name);
                     towerGhost = nullptr;
                 }

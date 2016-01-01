@@ -7,6 +7,7 @@
 
 #include "engine/components/component.h"
 #include "engine/components/volumecomponent.h"
+#include "game/enemycomponent.h"
 #include "game/towercomponent.h"
 #include "consts.h"
 
@@ -19,7 +20,7 @@ public:
 
     void release() override;
 
-    BulletComponent *init(Entity *target, float speed);
+    BulletComponent *init(Entity *target, float speed, float damage);
     virtual void update(float delta);
     BulletComponent *clone();
 
@@ -30,6 +31,7 @@ public:
 private:
     Entity *target;
     float speed;
+    float damage;
 };
 
 #endif // BULLETCOMPONENT_H

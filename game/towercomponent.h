@@ -6,6 +6,7 @@
 #include <QtGui/QOpenGLFunctions>
 
 #include "engine/components/component.h"
+#include "game/enemycomponent.h"
 #include "game/bulletcomponent.h"
 
 class TowerComponent : public Component
@@ -17,7 +18,7 @@ public:
 
     void release() override;
 
-    TowerComponent *init(QVector3D canonPosition, QVector<Entity*> *enemies, float range, float attackSpeed);
+    TowerComponent *init(QVector3D canonPosition, QList<Entity*> *enemies, float range, float attackSpeed);
     virtual void update(float delta);
     TowerComponent *clone();
 
@@ -25,15 +26,17 @@ public:
 
     float getRange() const;
     void drawRange(QVector3D color);
-
+    void setReady();
 
 private:
     QVector3D canonPosition;
     Entity *target;
     float range;
     float attackSpeed;
-    QVector<Entity*> *enemies;
+    QList<Entity*> *enemies;
     float elapsed;
+
+    bool ready;
 
     VolumeComponent *volume;
 
