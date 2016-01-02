@@ -14,6 +14,7 @@ const QString BulletComponent::componentName() const
 
 void BulletComponent::release()
 {
+    this->getEntity()->setGlobalPosition(0, 0, 0);
     BulletComponent::pool->release(this);
 }
 
@@ -27,11 +28,13 @@ BulletComponent *BulletComponent::init(Entity *target, float speed, float damage
 
 void BulletComponent::update(float delta)
 {
-    QVector3D dir = -(this->getEntity()->getPosition() - target->getPosition());
+    EnemyComponent *enemy = static_cast<EnemyComponent*>(target->getComponent(EnemyComponent::name));
+
+    if(enemy != nullptr) {
+        destination = target->getPosition();
+    }
+    QVector3D dir = -(this->getEntity()->getPosition() - destination);
     if(dir.length() < 3) {
-
-        EnemyComponent *enemy = static_cast<EnemyComponent*>(target->getComponent(EnemyComponent::name));
-
         if(enemy != nullptr) {
             enemy->takeDamage(damage);
         }

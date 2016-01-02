@@ -47,7 +47,7 @@ void TestScene::initialize()
                  static_cast<MapComponent*>(map->getComponent(MapComponent::name)),
                  0.1);
 
-    for (int i = 0; i < 20; ++i) {
+    for (int i = 0; i < 200; ++i) {
         e = Entity::pool->obtain();
         e->addComponent(v->clone());
         e->addComponent(enemyComponent->clone());

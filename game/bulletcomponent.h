@@ -32,6 +32,7 @@ private:
     Entity *target;
     float speed;
     float damage;
+    QVector3D destination;
 };
 
 #endif // BULLETCOMPONENT_H

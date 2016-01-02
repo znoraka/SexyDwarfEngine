@@ -104,7 +104,7 @@ void TowerComponent::setReady()
 void TowerComponent::setTarget()
 {
     if(target != nullptr) {
-        if(target->getParent() == nullptr || (this->getEntity()->getLocalPosition() - target->getLocalPosition()).length() > range) {
+        if(target->getComponent(EnemyComponent::name) == nullptr || (this->getEntity()->getLocalPosition() - target->getLocalPosition()).length() > range) {
             target = nullptr;
         }
     }
