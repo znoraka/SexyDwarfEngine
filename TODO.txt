@@ -2,13 +2,13 @@ Sons = - création de tour
        - tir des tours
        - impact des bullets
        - déplacements ?
+       - mort d'un monstre
+       - monstre qui passe la limite
 
 Musique = - écran d'intro ?
 	  - musique dans le jeu
 	      => param = - nombre de vague
 	      	       	 - vie restante (lowpass)
-	      	       	 - mort d'un monstre
-	      	       	 - monstre qui passe la limite
 	      	       	 - monstre speciale (boss) ?
 	  - victoire
 	  - défaite		 
