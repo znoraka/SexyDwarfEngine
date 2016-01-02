@@ -7,6 +7,9 @@ Musique = - écran d'intro ?
 	  - musique dans le jeu
 	      => param = - nombre de vague
 	      	       	 - vie restante (lowpass)
+	      	       	 - mort d'un monstre
+	      	       	 - monstre qui passe la limite
+	      	       	 - monstre speciale (boss) ?
 	  - victoire
 	  - défaite		 
        
