@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core gui opengl
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -64,11 +64,11 @@ HEADERS  += \
 FORMS    +=
 QMAKE_CXXFLAGS += -std=c++11 -lGL -lGLU -lglut -lassimp -libfmodstudio -libfmod -lfmod -lfmodstudio
 
-INCLUDEPATH += "/home/noe/Downloads/fmodstudioapi10703linux/api/studio/inc"
-INCLUDEPATH += "/home/noe/Downloads/fmodstudioapi10703linux/api/lowlevel/inc"
+INCLUDEPATH += "./fmod/api/studio/inc"
+INCLUDEPATH += "./fmod/api/lowlevel/inc"
 
-LIBS += -lfmodstudio
-LIBS += -lfmod
+LIBS += -L"$$_PRO_FILE_PWD_/fmod/api/studio/lib/x86_64/" -lfmodstudio
+LIBS += -L"$$_PRO_FILE_PWD_/fmod/api/lowlevel/lib/x86_64/" -lfmod
 LIBS += -lassimp
 
 RESOURCES += \

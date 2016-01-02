@@ -6,7 +6,7 @@
 #include <QHash>
 #include <QEvent>
 #include <QMouseEvent>
-#include <QOpenGLWidget>
+#include <QQOpenGLWidget>
 #include <QOpenGLFunctions_4_3_Core>
 #include <QPainter>
 #include <QElapsedTimer>
