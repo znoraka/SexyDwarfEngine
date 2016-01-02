@@ -1,0 +1,12 @@
+Sons = - création de tour
+       - tir des tours
+       - impact des bullets
+       - déplacements ?
+
+Musique = - écran d'intro ?
+	  - musique dans le jeu
+	      => param = - nombre de vague
+	      	       	 - vie restante (lowpass)
+	  - victoire
+	  - défaite		 
+       
