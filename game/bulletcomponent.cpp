@@ -34,7 +34,7 @@ void BulletComponent::update(float delta)
         destination = target->getPosition();
     }
     QVector3D dir = -(this->getEntity()->getPosition() - destination);
-    if(dir.length() < 3) {
+    if(dir.length() < 5) {
         if(enemy != nullptr) {
             enemy->takeDamage(damage);
         }

@@ -12,6 +12,7 @@
 #include "game/towercomponent.h"
 #include "game/towerghostcomponent.h"
 #include "game/enemycomponent.h"
+#include "engine/fmodmanager.h"
 #include "consts.h"
 
 class TestScene : public Scene

@@ -31,7 +31,7 @@ Component *Entity::getComponent(const QString componentId)
     auto i = components.find(componentId);
 
     if(i == components.end()) {
-        qDebug() << "no component " << componentId << "found";
+//        qDebug() << "no component " << componentId << "found";
         return nullptr;
     }
 

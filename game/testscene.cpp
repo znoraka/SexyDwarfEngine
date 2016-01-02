@@ -47,7 +47,7 @@ void TestScene::initialize()
                  static_cast<MapComponent*>(map->getComponent(MapComponent::name)),
                  0.1);
 
-    for (int i = 0; i < 200; ++i) {
+    for (int i = 0; i < 10; ++i) {
         e = Entity::pool->obtain();
         e->addComponent(v->clone());
         e->addComponent(enemyComponent->clone());
@@ -83,6 +83,13 @@ void TestScene::initialize()
 
     this->ready = true;
     this->setMouseTracking(true);
+
+    FMODManager::getInstance()->loadBank(":/assets/sounds/Master Bank.bank");
+    FMODManager::getInstance()->loadBank(":/assets/sounds/Master Bank.strings.bank");
+    FMODManager::getInstance()->loadBank(":/assets/sounds/Vehicles.bank");
+    FMODEventInstance ei = FMODManager::getInstance()->addEventInstance("event:/Vehicles/Basic Engine");
+    FMODManager::getInstance()->startEventInstance(ei);
+    FMODManager::getInstance()->setParameterValue(ei, "RPM", 650);
 }
 
 void TestScene::update(float delta) {
@@ -99,14 +106,13 @@ void TestScene::update(float delta) {
 void TestScene::onAddTowerButtonClicked()
 {
     if(towerGhost == nullptr) {
-//        this->addCallBack([=]() {
-            towerGhost = Entity::pool->obtain()->
-                    addComponent(towerVolume->clone())->
-                    addComponent(towerGhostComponent->clone())->
-                    addComponent(towerComponent->clone())->
-                    setScale(10, 10, 10)->
-                    setRotation(90, 0, 0);
-            map->addChild(towerGhost);
+        towerGhost = Entity::pool->obtain()->
+                addComponent(towerVolume->clone())->
+                addComponent(towerGhostComponent->clone())->
+                addComponent(towerComponent->clone())->
+                setScale(10, 10, 10)->
+                setRotation(90, 0, 0);
+        map->addChild(towerGhost);
     }
 }
 
@@ -139,7 +145,6 @@ bool TestScene::handleEvent(QEvent *event)
             }
         } else if (mouseEvent->button() == Qt::RightButton) {
             if(towerGhost != nullptr) {
-//                map->removeChild(towerGhost);
                 towerGhost->release();
                 towerGhost = nullptr;
             }

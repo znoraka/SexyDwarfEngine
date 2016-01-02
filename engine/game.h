@@ -17,6 +17,7 @@
 #include "fmod_output.h"
 
 #include "scene.h"
+#include "engine/fmodmanager.h"
 #include "engine/tools/fileutility.h"
 
 class MainWindow;
@@ -50,9 +51,6 @@ private:
     QWidget *container;
 
     QQueue<QEvent*> events1, events2, toDelete;
-
-    FMOD::Studio::System* system;
-    FMOD::System* lowLevelSystem;
 
     bool firstEventList;
 
