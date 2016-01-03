@@ -112,28 +112,14 @@ void TestScene::update(float delta) {
         towerGhost->setPosition(v);
     }
 
-    if(mouseX < WIDTH * 0.1) {
-        QVector3D v = camera->getPosition();
-        v.setX(v.x() + 5);
-        camera->setPosition(v);
-    }
+    QVector3D center(WIDTH * 0.5, HEIGHT * 0.5, 0);
+    QVector3D mousePos(mouseX, mouseY, 0);
+    QVector3D dir = center - mousePos;
+    dir.setY(- dir.y());
 
-    if(mouseX > WIDTH * 0.9) {
-        QVector3D v = camera->getPosition();
-        v.setX(v.x() - 5);
-        camera->setPosition(v);
-    }
 
-    if(mouseY < HEIGHT * 0.1) {
-        QVector3D v = camera->getPosition();
-        v.setY(v.y() - 5);
-        camera->setPosition(v);
-    }
-
-    if(mouseY > HEIGHT * 0.9) {
-        QVector3D v = camera->getPosition();
-        v.setY(v.y() + 5);
-        camera->setPosition(v);
+    if(dir.length() > (sqrt(WIDTH * WIDTH) + sqrt(HEIGHT * HEIGHT)) * 0.11) {
+        camera->setPosition(camera->getPosition() + dir * 0.03 * dir.length() * 0.001);
     }
 
     Scene::update(delta);
