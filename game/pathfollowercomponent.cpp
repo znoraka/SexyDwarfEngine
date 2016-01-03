@@ -56,11 +56,7 @@ void PathFollowerComponent::update(float delta)
         //reached base
         EnemyComponent *e = static_cast<EnemyComponent*>(getEntity()->getComponent(EnemyComponent::name));
         e->die();
-        qDebug() << "- 1 hp";
-        FMODManager::getInstance()->setCurrentEvent("event:/lifelost");
-
-        FMODManager::getInstance()->setEventInstancePosition(v);
-        FMODManager::getInstance()->startEventInstance();
+        Player::getInstance()->takeDamage(1);
 
     } else if (qRed(pixel) == 255) {
         //right

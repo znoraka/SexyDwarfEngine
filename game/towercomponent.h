@@ -20,7 +20,7 @@ public:
 
     void release() override;
 
-    TowerComponent *init(QVector3D canonPosition, QList<Entity*> *enemies, float range, float attackSpeed, TowerType type);
+    TowerComponent *init(QVector3D canonPosition, QList<Entity*> *enemies, float range, float attackSpeed, float damage, TowerType type);
     virtual void update(float delta);
     TowerComponent *clone();
 
@@ -39,6 +39,7 @@ private:
     QList<Entity*> *enemies;
     float elapsed;
     TowerType type;
+    float damage;
 
     bool ready;
 

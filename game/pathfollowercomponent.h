@@ -9,6 +9,7 @@
 #include "game/enemycomponent.h"
 #include "game/mapcomponent.h"
 #include "engine/fmodmanager.h"
+#include "game/player.h"
 
 class PathFollowerComponent : public Component
 {

@@ -44,6 +44,7 @@ void BulletComponent::update(float delta)
 
             FMODManager::getInstance()->setCurrentEvent("event:/hit");
             FMODManager::getInstance()->setEventInstancePosition(v);
+            FMODManager::getInstance()->setEventInstanceVolume(0.4);
             FMODManager::getInstance()->setParameterValue("pitch", 0.3 + (qrand() % 200) * 0.001);
             FMODManager::getInstance()->startEventInstance();
         }

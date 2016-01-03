@@ -18,7 +18,7 @@ void TowerComponent::release()
     TowerComponent::pool->release(this);
 }
 
-TowerComponent *TowerComponent::init(QVector3D canonPosition, QList<Entity *> *enemies, float range, float attackSpeed, TowerType type)
+TowerComponent *TowerComponent::init(QVector3D canonPosition, QList<Entity *> *enemies, float range, float attackSpeed, float damage, TowerType type)
 {
     this->canonPosition = canonPosition;
     this->enemies = enemies;
@@ -28,6 +28,7 @@ TowerComponent *TowerComponent::init(QVector3D canonPosition, QList<Entity *> *e
     this->attackSpeed = attackSpeed;
     this->volume = VolumeComponent::pool->obtain()->init(":/assets/ply/sphere.ply");
     this->type = type;
+    this->damage = damage;
     this->ready = false;
     return this;
 }
@@ -42,22 +43,6 @@ void TowerComponent::update(float delta)
             shoot();
             elapsed = 0;
         }
-
-        //        glColor3f(1, 0, 0);
-
-        //        GLfloat m[16];
-        //        glGetFloatv (GL_MODELVIEW_MATRIX, m);
-
-        //        glPopMatrix();
-        //        glBegin(GL_LINES);
-
-        //        glVertex3f(target->getLocalPosition().x(), target->getLocalPosition().y(), target->getLocalPosition().z());
-        //        glVertex3f(canonPosition.x() + getEntity()->getLocalPosition().x(),
-        //                   canonPosition.y() + getEntity()->getLocalPosition().y(),
-        //                   canonPosition.z() + getEntity()->getLocalPosition().z());
-        //        glEnd();
-        //        glPushMatrix();
-        //        glLoadMatrixf(m);
     }
 }
 
@@ -73,6 +58,7 @@ TowerComponent *TowerComponent::clone()
     t->volume = volume;
     t->ready = false;
     t->type = type;
+    t->damage = damage;
     return t;
 }
 
@@ -133,15 +119,19 @@ void TowerComponent::shoot()
     switch (type) {
     case FIRE:
         FMODManager::getInstance()->setCurrentEvent("event:/fireshot");
+        FMODManager::getInstance()->setEventInstanceVolume(0.5);
         break;
     case ICE:
         FMODManager::getInstance()->setCurrentEvent("event:/iceshot");
+        FMODManager::getInstance()->setEventInstanceVolume(0.3);
         break;
     case LIGHTNING:
         FMODManager::getInstance()->setCurrentEvent("event:/lightning");
+        FMODManager::getInstance()->setEventInstanceVolume(0.5);
        break;
     case BULLET:
         FMODManager::getInstance()->setCurrentEvent("event:/firebullet");
+        FMODManager::getInstance()->setEventInstanceVolume(0.3);
         break;
     }
     FMODManager::getInstance()->setEventInstancePosition(v);
@@ -149,7 +139,7 @@ void TowerComponent::shoot()
     FMODManager::getInstance()->startEventInstance();
 
     Entity *e = Entity::pool->obtain()->
-            addComponent(BulletComponent::pool->obtain()->init(target, 0.5, 1))->
+            addComponent(BulletComponent::pool->obtain()->init(target, 0.5, damage))->
             addComponent(volume->clone())->
             setPosition(this->getEntity()->getPosition() + canonPosition)->
             setScale(0.02, 0.02, 0.02);

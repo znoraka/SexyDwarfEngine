@@ -37,13 +37,13 @@ void FMODManager::setCurrentEvent(QString description)
     ERRCHECK( system->getEvent(description.toStdString().c_str(), &eventDescription) );
 
     ERRCHECK( eventDescription->createInstance(&eventInstance) );
-    qDebug() << "[FMODManager]:" << "added event instance of" << description;
+//    qDebug() << "[FMODManager]:" << "added event instance of" << description;
 }
 
 void FMODManager::startEventInstance()
 {
     eventInstance->start();
-    qDebug() << "[FMODManager]:" << "started event instance:" << eventInstance;
+//    qDebug() << "[FMODManager]:" << "started event instance:" << eventInstance;
     eventInstance->release();
 }
 
@@ -73,6 +73,57 @@ void FMODManager::setEventInstancePosition(QVector3D position)
     attributes.position.y = position.y();
     attributes.position.z = position.z();
     ERRCHECK( eventInstance->set3DAttributes(&attributes) );
+}
+
+void FMODManager::setEventInstanceVolume(float volume)
+{
+    eventInstance->setVolume(volume);
+}
+
+void FMODManager::setCurrentMusic(QString music)
+{
+    FMOD::Studio::EventDescription* eventDescription = NULL;
+    ERRCHECK( system->getEvent(music.toStdString().c_str(), &eventDescription) );
+
+    ERRCHECK( eventDescription->createInstance(&currentMusic) );
+    qDebug() << "[FMODManager]:" << "added current music" << music;
+}
+
+void FMODManager::setNextMusic(QString music)
+{
+    FMOD::Studio::EventDescription* eventDescription = NULL;
+    ERRCHECK( system->getEvent(music.toStdString().c_str(), &eventDescription) );
+
+    ERRCHECK( eventDescription->createInstance(&nextMusic) );
+    qDebug() << "[FMODManager]:" << "added current music" << music;
+}
+
+void FMODManager::setCurrentMusicVolume(float volume)
+{
+    currentMusic->setVolume(volume);
+}
+
+void FMODManager::setCurrentMusicParameterValue(QString parameter, float value)
+{
+    FMOD::Studio::ParameterInstance* param = NULL;
+    ERRCHECK(currentMusic->getParameter(parameter.toStdString().c_str(), &param) );
+    ERRCHECK(param->setValue(value));
+}
+
+void FMODManager::setNextMusicCurrent()
+{
+    currentMusic->release();
+    currentMusic = nextMusic;
+}
+
+void FMODManager::startCurrentMusic()
+{
+    currentMusic->start();
+}
+
+void FMODManager::pauseCurrentMusic(bool paused)
+{
+    currentMusic->setPaused(paused);
 }
 
 void FMODManager::set3DSettings(float dopplerScale, float distanceFactor, float rolloffScale)

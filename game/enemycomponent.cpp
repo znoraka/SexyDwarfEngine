@@ -59,9 +59,20 @@ void EnemyComponent::die()
     v.setY(v.y() / 624);
     qDebug() << v;
 
-    FMODManager::getInstance()->setCurrentEvent("event:/death");
-    FMODManager::getInstance()->setEventInstancePosition(v);
-    FMODManager::getInstance()->startEventInstance();
+    if(maxLife > 50) {
+        for (int i = 0; i < 20; ++i) {
+            FMODManager::getInstance()->setCurrentEvent("event:/death");
+            FMODManager::getInstance()->setEventInstancePosition(v);
+            FMODManager::getInstance()->startEventInstance();
+        }
+        FMODManager::getInstance()->setCurrentMusicParameterValue("boss", 0);
+        FMODManager::getInstance()->setCurrentMusicVolume(0.5);
+
+    } else {
+        FMODManager::getInstance()->setCurrentEvent("event:/death");
+        FMODManager::getInstance()->setEventInstancePosition(v);
+        FMODManager::getInstance()->startEventInstance();
+    }
     this->getEntity()->release();
 }
 

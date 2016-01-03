@@ -30,6 +30,16 @@ public:
 
     void setListenerPosition(QVector3D position);
     void setEventInstancePosition(QVector3D position);
+    void setEventInstanceVolume(float volume);
+
+    void setCurrentMusic(QString music);
+    void setNextMusic(QString music);
+
+    void setCurrentMusicVolume(float volume);
+    void setCurrentMusicParameterValue(QString parameter, float value);
+    void setNextMusicCurrent();
+    void startCurrentMusic();
+    void pauseCurrentMusic(bool paused);
 
     void set3DSettings(float dopplerScale, float distanceFactor, float rolloffScale);
 
@@ -42,7 +52,8 @@ private:
     FMOD::Studio::System* system;
     FMOD::System* lowLevelSystem;
 
-    FMOD::Studio::EventInstance* eventInstance;
+    FMOD::Studio::EventInstance *eventInstance;
+    FMOD::Studio::EventInstance *currentMusic, *nextMusic;
 
 };
 

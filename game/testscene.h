@@ -13,6 +13,7 @@
 #include "game/towerghostcomponent.h"
 #include "game/enemycomponent.h"
 #include "engine/fmodmanager.h"
+#include "player.h"
 #include "consts.h"
 
 class TestScene : public Scene
@@ -24,19 +25,20 @@ public:
     void update(float delta);
 
 public slots:
-    void onAddTowerButtonClicked();
+    void onAddTowerButtonClicked(TowerComponent::TowerType type);
 
 private:
     bool handleEvent(QEvent *event);
     QPushButton *slowTowerButton;
     Entity *towerGhost, *towerGhost2, *towerGhost3;
-    Entity *map, *dummy;
+    Entity *map, *dummy, *boss;
     TowerComponent *towerComponent;
     VolumeComponent *towerVolume;
     TowerGhostComponent *towerGhostComponent;
     EnemyComponent *enemyComponent;
 
     QList<Entity*> *enemies;
+    QHash<TowerComponent::TowerType, TowerComponent*> towerComponents;
 
     float mouseX, mouseY;
 };

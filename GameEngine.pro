@@ -35,7 +35,8 @@ SOURCES += \
     game/bulletcomponent.cpp \
     engine/tools/fileutility.cpp \
     game/enemycomponent.cpp \
-    engine/fmodmanager.cpp
+    engine/fmodmanager.cpp \
+    game/player.cpp
 
 HEADERS  += \
     engine/camera.h \
@@ -61,7 +62,8 @@ HEADERS  += \
     game/bulletcomponent.h \
     engine/tools/fileutility.h \
     game/enemycomponent.h \
-    engine/fmodmanager.h
+    engine/fmodmanager.h \
+    game/player.h
 
 FORMS    +=
 QMAKE_CXXFLAGS += -std=c++11 -lGL -lGLU -lglut -lassimp -libfmodstudio -libfmod -lfmod -lfmodstudio

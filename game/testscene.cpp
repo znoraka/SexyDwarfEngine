@@ -43,10 +43,22 @@ void TestScene::initialize()
 
     Entity *e;
     VolumeComponent *v = VolumeComponent::pool->obtain()->init(":/assets/ply/beethoven.ply");
-    towerComponent = TowerComponent::pool->obtain()->init(QVector3D(0, 0, 30), enemies, 150, 6, TowerComponent::TowerType::ICE);
+    towerComponents.insert(
+                TowerComponent::TowerType::ICE,
+                TowerComponent::pool->obtain()->init(QVector3D(0, 0, 30), enemies, 100, 6, 3, TowerComponent::TowerType::ICE));
+    towerComponents.insert(
+                TowerComponent::TowerType::BULLET,
+                TowerComponent::pool->obtain()->init(QVector3D(0, 0, 30), enemies, 150, 3, 1, TowerComponent::TowerType::BULLET));
+    towerComponents.insert(
+                TowerComponent::TowerType::FIRE,
+                TowerComponent::pool->obtain()->init(QVector3D(0, 0, 30), enemies, 200, 5, 2, TowerComponent::TowerType::FIRE));
+    towerComponents.insert(
+                TowerComponent::TowerType::LIGHTNING,
+                TowerComponent::pool->obtain()->init(QVector3D(0, 0, 30), enemies, 350, 10, 2, TowerComponent::TowerType::LIGHTNING));
+
     towerGhostComponent = TowerGhostComponent::pool->obtain()->init(":/assets/maps/map2/");
     towerVolume = VolumeComponent::pool->obtain()->init(":/assets/ply/tower.ply");
-    enemyComponent = EnemyComponent::pool->obtain()->init(0, 10, 0);
+    enemyComponent = EnemyComponent::pool->obtain()->init(0, 25, 0);
     PathFollowerComponent *p = PathFollowerComponent::pool->
             obtain()->
             init(":/assets/maps/map2/",
@@ -63,13 +75,20 @@ void TestScene::initialize()
         e = Entity::pool->obtain();
         e->addComponent(v->clone());
         e->addComponent(enemyComponent->clone());
-        e->addComponent(p->clone()->setSpeed((qrand() % 100) * 0.001));
+        e->addComponent(p->clone()->setSpeed((qrand() % 100) * 0.001 + 0.04));
         e->setScale(2.5, 2.5, 2.5);
         e->setPosition(16, static_cast<MapComponent*>(map->getComponent(MapComponent::name))->getHeight() - 70, 0);
         e->setRotation(90, -90, 0);
         map->addChild(e);
         enemies->append(e);
     }
+
+    boss = Entity::pool->obtain()->
+            addComponent(v->clone())->
+            addComponent(p->clone())->
+            setScale(4, 4, 4)->
+            setPosition(16, static_cast<MapComponent*>(map->getComponent(MapComponent::name))->getHeight() - 70, 0)->
+            addComponent(enemyComponent->init(0.03, 2000, 0)->clone());
 
     glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);
@@ -84,12 +103,12 @@ void TestScene::initialize()
     glLightfv(GL_LIGHT0, GL_SPECULAR, specularLight);
     glLightfv(GL_LIGHT0, GL_POSITION, position);
 
-    slowTowerButton = new QPushButton(this);
-    slowTowerButton->move(WIDTH * 0.5 - slowTowerButton->width() * 0.5,
-                          HEIGHT - slowTowerButton->height() * 2);
-    slowTowerButton->setFocusPolicy(Qt::NoFocus);
+//    slowTowerButton = new QPushButton(this);
+//    slowTowerButton->move(WIDTH * 0.5 - slowTowerButton->width() * 0.5,
+//                          HEIGHT - slowTowerButton->height() * 2);
+//    slowTowerButton->setFocusPolicy(Qt::NoFocus);
 
-    connect(slowTowerButton, SIGNAL(clicked(bool)), this, SLOT(onAddTowerButtonClicked()));
+//    connect(slowTowerButton, SIGNAL(clicked(bool)), this, SLOT(onAddTowerButtonClicked()));
 
     towerGhost = nullptr;
 
@@ -98,6 +117,13 @@ void TestScene::initialize()
 
     dummy = Entity::pool->obtain();
     map->addChild(dummy);
+
+    Player::getInstance()->setMaxLifePoints(10);
+    Player::getInstance()->heal(10);
+
+    FMODManager::getInstance()->setCurrentMusic("event:/musique");
+    FMODManager::getInstance()->startCurrentMusic();
+    FMODManager::getInstance()->setCurrentMusicVolume(0.5);
 }
 
 void TestScene::update(float delta) {
@@ -109,10 +135,21 @@ void TestScene::update(float delta) {
     v.setY(v.y() / 624);
     FMODManager::getInstance()->setListenerPosition(v);
 
+    qDebug() <<  pow(Player::getInstance()->getMissingLifePercentage(), 2);
+    FMODManager::getInstance()->setCurrentMusicParameterValue("life", pow(Player::getInstance()->getMissingLifePercentage(), 2));
+
     for(auto i : *enemies) {
-        if(i->getParent() == nullptr) {
+        if(i->getComponents().size() == 0) {
             enemies->removeAt(enemies->indexOf(i));
         }
+    }
+
+    if(enemies->size() == 0 && boss->getComponents().size() > 0) {
+        FMODManager::getInstance()->setCurrentMusicParameterValue("boss", 1);
+        FMODManager::getInstance()->setCurrentMusicVolume(0.2);
+
+        enemies->append(boss);
+        map->addChild(boss);
     }
 
     if(towerGhost != nullptr) {
@@ -141,13 +178,13 @@ void TestScene::update(float delta) {
     Scene::update(delta);
 }
 
-void TestScene::onAddTowerButtonClicked()
+void TestScene::onAddTowerButtonClicked(TowerComponent::TowerType type)
 {
     if(towerGhost == nullptr) {
         towerGhost = Entity::pool->obtain()->
                 addComponent(towerVolume->clone())->
                 addComponent(towerGhostComponent->clone())->
-                addComponent(towerComponent->clone())->
+                addComponent(towerComponents[type]->clone())->
                 setScale(10, 10, 10)->
                 setRotation(90, 0, 0);
         map->addChild(towerGhost);
@@ -240,32 +277,44 @@ bool TestScene::handleEvent(QEvent *event)
             camera->setScale(v);
             return true;
 
+//        case Qt::Key_Eacute:
+//            v = camera->getPosition();
+//            v.setY(v.y() + 5);
+//            camera->setPosition(v);
+//            return true;
+
+//        case Qt::Key_U:
+//            v = camera->getPosition();
+//            v.setY(v.y() - 5);
+//            camera->setPosition(v);
+//            return true;
+
+//        case Qt::Key_A:
+//            v = camera->getPosition();
+//            v.setX(v.x() - 5);
+//            camera->setPosition(v);
+//            return true;
+
+//        case Qt::Key_I:
+//            v = camera->getPosition();
+//            v.setX(v.x() + 5);
+//            camera->setPosition(v);
+//            return true;
+
+        case Qt::Key_B:
+            onAddTowerButtonClicked(TowerComponent::TowerType::BULLET);
+            return true;
+
         case Qt::Key_Eacute:
-            v = camera->getPosition();
-            v.setY(v.y() + 5);
-            camera->setPosition(v);
+            onAddTowerButtonClicked(TowerComponent::TowerType::ICE);
             return true;
 
-        case Qt::Key_U:
-            v = camera->getPosition();
-            v.setY(v.y() - 5);
-            camera->setPosition(v);
+        case Qt::Key_P:
+            onAddTowerButtonClicked(TowerComponent::TowerType::FIRE);
             return true;
 
-        case Qt::Key_A:
-            v = camera->getPosition();
-            v.setX(v.x() - 5);
-            camera->setPosition(v);
-            return true;
-
-        case Qt::Key_I:
-            v = camera->getPosition();
-            v.setX(v.x() + 5);
-            camera->setPosition(v);
-            return true;
-
-        case Qt::Key_E:
-            onAddTowerButtonClicked();
+        case Qt::Key_O:
+            onAddTowerButtonClicked(TowerComponent::TowerType::LIGHTNING);
             return true;
 
         case Qt::Key_Space:
