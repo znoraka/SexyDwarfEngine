@@ -29,7 +29,7 @@ void Camera::update(float delta)
 {
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    glOrtho(0.0, width, 0.0, height, near, far);
+    glOrtho(0.0, width, 0.0, height, near * getScale().x(), far * getScale().y());
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
     glViewport(0, 0, width, height);
@@ -57,7 +57,7 @@ QVector3D Camera::getScale() const
     return this->scale;
 }
 
-QVector3D Camera::screenToWorld(QVector3D vec, QMatrix4x4 modelview, QMatrix4x4 projection, QVector3D &out1, QVector3D &out2)
+QVector3D Camera::screenToWorld(QVector3D vec, QMatrix4x4 modelview, QMatrix4x4 projection)
 {
 //    vec.setX(qMin(vec.x(), width));
 //    vec.setY(qMin(vec.y(), height));
@@ -90,11 +90,6 @@ QVector3D Camera::screenToWorld(QVector3D vec, QMatrix4x4 modelview, QMatrix4x4 
     t = v2 * mat.inverted();
     w = 1 / t.w();
     QVector3D pt2(t.x() * w, t.y() * w, t.z() * w);
-
-    QVector3D n(modelview.row(1).toVector3D());
-    QVector3D p(modelview.row(2).toVector3D());
-
-    out1 = pt1; out2 = pt2;
 
     QVector3D out;
     intersects(QVector3D(1, 0, 0), QVector3D(0, 1, 0), QVector3D(1, 1, 0),

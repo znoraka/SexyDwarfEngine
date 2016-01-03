@@ -46,14 +46,13 @@ EnemyComponent *EnemyComponent::clone()
 
 void EnemyComponent::takeDamage(float amount)
 {
-    if(!dead()) {
-        this->life -= amount;
-    } else {
-        kill();
+    this->life -= amount;
+    if(dead()) {
+        die();
     }
 }
 
-void EnemyComponent::kill()
+void EnemyComponent::die()
 {
     this->getEntity()->release();
 }
@@ -90,14 +89,11 @@ void EnemyComponent::displayLife()
     unRotate();
     glRotatef(90, 1, 0, 0);
 
-//    if(life / maxLife < 1)
-//        qDebug() << ((life / maxLife) * lifeDisplayWidth * 0.5) / getEntity()->getScale().x();
-
     float x1 = - ((life / maxLife) * lifeDisplayWidth * 0.5) / getEntity()->getScale().x();
     float x2 = ((life / maxLife) * lifeDisplayWidth * 0.5) / getEntity()->getScale().x();
 
-    float z1 = - lifeDisplayHeight * 0.5 / getEntity()->getScale().z() - 500;
-    float z2 = lifeDisplayHeight * 0.5 / getEntity()->getScale().z() - 500;
+    float z1 = - lifeDisplayHeight * 0.5 / getEntity()->getScale().z() - 20  / getEntity()->getScale().x();
+    float z2 = lifeDisplayHeight * 0.5 / getEntity()->getScale().z() - 20 / getEntity()->getScale().x();
 
     glBegin(GL_QUADS);
 

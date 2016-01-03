@@ -32,6 +32,9 @@ public:
     virtual void update(float delta);
     MapComponent *clone();
 
+    float getWidth() const;
+    float getHeight() const;
+
     static const QString name;
     float getZ(float i, float j);
     QVector3D toMapCoordinate(QVector3D coords);

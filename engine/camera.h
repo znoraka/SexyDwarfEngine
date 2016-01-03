@@ -26,7 +26,7 @@ public:
     QVector3D getRotation() const;
     QVector3D getScale() const;
 
-    static QVector3D screenToWorld(QVector3D vec, QMatrix4x4 modelview, QMatrix4x4 projection, QVector3D &out1, QVector3D &out2);
+    static QVector3D screenToWorld(QVector3D vec, QMatrix4x4 modelview, QMatrix4x4 projection);
     static bool intersects(QVector3D p1, QVector3D p2, QVector3D p3, QVector3D r1, QVector3D r2, QVector3D &out);
     static QPointF worldToScreen(QVector3D vec, QMatrix4x4 modelview, QMatrix4x4 projection);
 

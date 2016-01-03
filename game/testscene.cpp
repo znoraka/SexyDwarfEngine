@@ -23,27 +23,27 @@ void TestScene::initialize()
     //    pos.setX(WIDTH * 0.5); pos.setY(HEIGHT * 0.5); pos.setZ(0);
     //    camera->setPosition(WIDTH * 0.1, 0, 0);
     camera->setPosition(200, 0, 0);
-    camera->setRotation(54, -90, 0);
-    camera->setScale(camera->getScale() * 1);
+    camera->setRotation(41, -90, 0);
+    camera->setScale(camera->getScale() * 2.1);
 
     enemies = new QList<Entity*>();
 
     map = Entity::pool->obtain()->
-            addComponent(MapComponent::pool->obtain()->init(":/assets/maps/map1/"))->
+            addComponent(MapComponent::pool->obtain()->init(":/assets/maps/map2/"))->
             setPosition(0, 0, 0)->
             setScale(1, 1, 1)->
             setRotation(-90, 0, 100);
     this->addEntity(map);
 
     Entity *e;
-    VolumeComponent *v = VolumeComponent::pool->obtain()->init(":/assets/ply/galleon.ply");
+    VolumeComponent *v = VolumeComponent::pool->obtain()->init(":/assets/ply/beethoven.ply");
     towerComponent = TowerComponent::pool->obtain()->init(QVector3D(0, 0, 30), enemies, 150, 3);
-    towerGhostComponent = TowerGhostComponent::pool->obtain()->init(":/assets/maps/map1/");
+    towerGhostComponent = TowerGhostComponent::pool->obtain()->init(":/assets/maps/map2/");
     towerVolume = VolumeComponent::pool->obtain()->init(":/assets/ply/tower.ply");
     enemyComponent = EnemyComponent::pool->obtain()->init(0, 10, 0);
     PathFollowerComponent *p = PathFollowerComponent::pool->
             obtain()->
-            init(":/assets/maps/map1/",
+            init(":/assets/maps/map2/",
                  static_cast<MapComponent*>(map->getComponent(MapComponent::name)),
                  0.1);
 
@@ -52,9 +52,9 @@ void TestScene::initialize()
         e->addComponent(v->clone());
         e->addComponent(enemyComponent->clone());
         e->addComponent(p->clone()->setSpeed((qrand() % 100) * 0.001));
-        e->setScale(0.05, 0.05, 0.05);
-        e->setPosition(16, 416, 0);
-        e->setRotation(0, 0, 90);
+        e->setScale(2.5, 2.5, 2.5);
+        e->setPosition(16, static_cast<MapComponent*>(map->getComponent(MapComponent::name))->getHeight() - 70, 0);
+        e->setRotation(90, -90, 0);
         map->addChild(e);
         enemies->append(e);
     }
@@ -98,6 +98,42 @@ void TestScene::update(float delta) {
         if(i->getParent() == nullptr) {
             enemies->removeAt(enemies->indexOf(i));
         }
+    }
+
+    if(towerGhost != nullptr) {
+        QVector3D v = camera->screenToWorld(
+                    QVector3D(mouseX, mouseY, 0),
+                    towerGhost->getModelViewMatrix(), towerGhost->getProjectionMatrix());
+
+        towerGhost->setPosition(v);
+        v = towerGhost->getLocalPosition();
+        v.setZ(static_cast<MapComponent*>(map->getComponent(MapComponent::name))->getZ(v.x(), v.y()));
+
+        towerGhost->setPosition(v);
+    }
+
+    if(mouseX < WIDTH * 0.1) {
+        QVector3D v = camera->getPosition();
+        v.setX(v.x() + 5);
+        camera->setPosition(v);
+    }
+
+    if(mouseX > WIDTH * 0.9) {
+        QVector3D v = camera->getPosition();
+        v.setX(v.x() - 5);
+        camera->setPosition(v);
+    }
+
+    if(mouseY < HEIGHT * 0.1) {
+        QVector3D v = camera->getPosition();
+        v.setY(v.y() - 5);
+        camera->setPosition(v);
+    }
+
+    if(mouseY > HEIGHT * 0.9) {
+        QVector3D v = camera->getPosition();
+        v.setY(v.y() + 5);
+        camera->setPosition(v);
     }
 
     Scene::update(delta);
@@ -152,19 +188,9 @@ bool TestScene::handleEvent(QEvent *event)
         return true;
     case QEvent::MouseMove:
         mouseEvent = static_cast<QMouseEvent*>(event);
+        mouseX = mouseEvent->x();
+        mouseY = mouseEvent->y();
 
-        if(towerGhost != nullptr) {
-            v = camera->screenToWorld(
-                        QVector3D(mouseEvent->x(), mouseEvent->y(), 0),
-                        towerGhost->getModelViewMatrix(), towerGhost->getProjectionMatrix(),
-                        v1, v2);
-
-            towerGhost->setPosition(v);
-            v = towerGhost->getLocalPosition();
-            v.setZ(static_cast<MapComponent*>(map->getComponent(MapComponent::name))->getZ(v.x(), v.y()));
-
-            towerGhost->setPosition(v);
-        }
         return true;
     case QEvent::KeyPress:
         keyEvent = static_cast<QKeyEvent*>(event);
@@ -245,6 +271,8 @@ bool TestScene::handleEvent(QEvent *event)
                 glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
             }
             displayLines = !displayLines;
+
+            qDebug() << camera->getRotation();
             return true;
 
         }

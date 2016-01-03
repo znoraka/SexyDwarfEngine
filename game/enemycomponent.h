@@ -28,7 +28,7 @@ public:
     static const QString name;
 
     void takeDamage(float amount);
-    void kill();
+    void die();
     bool dead();
     void displayLife();
 

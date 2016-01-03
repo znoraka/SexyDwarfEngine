@@ -12,5 +12,10 @@
         <file>assets/sounds/Master Bank.strings.bank</file>
         <file>assets/sounds/Weapons.bank</file>
         <file>assets/sounds/Vehicles.bank</file>
+        <file>assets/maps/map2/h.png</file>
+        <file>assets/maps/map2/p.png</file>
+        <file>assets/maps/map2/t.png</file>
+        <file>assets/ply/spider.ply</file>
+        <file>assets/ply/beethoven.ply</file>
     </qresource>
 </RCC>

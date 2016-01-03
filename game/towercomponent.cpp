@@ -87,7 +87,7 @@ void TowerComponent::drawRange(QVector3D color)
     glColor3f(color.x(), color.y(), color.z());
     glBegin(GL_LINE_STRIP);
 
-    float range = this->range / this->getEntity()->getScale().x();
+    float range = this->range / this->getEntity()->getLocalScale().x();
 
     for (int i = 0; i < steps; ++i) {
         glVertex3f(cos(angle * i) * range, 0.1, sin(angle * i) * range);

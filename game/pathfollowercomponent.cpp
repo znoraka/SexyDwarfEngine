@@ -31,6 +31,8 @@ void PathFollowerComponent::update(float delta)
     delta *= speed;
     QVector3D v = getEntity()->getLocalPosition();
 
+    v.setZ(static_cast<MapComponent*>(getEntity()->getParent()->getComponent(MapComponent::name))->getZ(v.x(), v.y()));
+
     //    red = right
     //    blue = left
     //    green = down
@@ -66,7 +68,8 @@ void PathFollowerComponent::update(float delta)
         direction.setX(-1 * delta);
         direction.setY(0);
     }
-    getEntity()->setPosition(getEntity()->getLocalPosition() + direction);
+    getEntity()->setPosition(v + direction);
+
 
 }
 

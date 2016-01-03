@@ -83,8 +83,8 @@ bool TowerGhostComponent::hasRoom()
 
         QRectF bounds = vc->getBounds();
 
-        float width = bounds.width() * getEntity()->getScale().x();
-        float height = bounds.height() * getEntity()->getScale().y();
+        float width = bounds.width() * getEntity()->getLocalScale().x();
+        float height = bounds.height() * getEntity()->getLocalScale().y();
 
         width *= 0.5;
         height *= 0.5;

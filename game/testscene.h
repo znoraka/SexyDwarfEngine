@@ -37,6 +37,8 @@ private:
     EnemyComponent *enemyComponent;
 
     QList<Entity*> *enemies;
+
+    float mouseX, mouseY;
 };
 
 #endif // TESTSCENE_H

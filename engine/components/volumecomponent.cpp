@@ -151,9 +151,9 @@ VolumeComponent *VolumeComponent::init(QString filePath)
             c.setY(l.at(7).toFloat() / 255.0f);
             c.setZ(l.at(8).toFloat() / 255.0f);
         } else {
-            c.setX(0);
-            c.setY(0);
-            c.setZ(0);
+            c.setX(1);
+            c.setY(1);
+            c.setZ(1);
         }
         colorsArray.push_back(c);
     }
