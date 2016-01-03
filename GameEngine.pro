@@ -74,7 +74,7 @@ LIBS += -L"$$_PRO_FILE_PWD_/fmod/unix/api/lowlevel/lib/x86_64/" -lfmod
 LIBS += -lassimp
 }
 
-win64 {
+win32 {
 INCLUDEPATH += "./fmod/windows/api/lowlevel/inc/"
 INCLUDEPATH += "./fmod/windows/api/studio/inc/"
 LIBS += -L"$$_PRO_FILE_PWD_/fmod/windows/api/studio/lib/" -lfmodstudio
