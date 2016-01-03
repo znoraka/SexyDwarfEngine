@@ -50,7 +50,8 @@ private:
 
     bool animated = false;
 
-    float width, height, ratio, near, far;
+    float width, height, ratio;
+    qreal near, far;
 };
 
 #endif // CAMERA_H

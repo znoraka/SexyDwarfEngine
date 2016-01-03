@@ -12,9 +12,9 @@
 #include <QMatrix4x4>
 #include <QTemporaryFile>
 #include <QSharedPointer>
-#include <assimp/scene.h>
-#include <assimp/postprocess.h>
-#include <assimp/Importer.hpp>
+//#include <assimp/scene.h>
+//#include <assimp/postprocess.h>
+//#include <assimp/Importer.hpp>
 
 #include "engine/components/component.h"
 
@@ -69,20 +69,20 @@ public:
     static const QString name;
 
 private:
-    QSharedPointer<MaterialInfo> processMaterial(aiMaterial *material);
-    QSharedPointer<Mesh> processMesh(aiMesh *mesh);
-    void processNode(const aiScene *scene, aiNode *node, Node *parentNode, Node &newNode);
+//    QSharedPointer<MaterialInfo> processMaterial(aiMaterial *material);
+//    QSharedPointer<Mesh> processMesh(aiMesh *mesh);
+//    void processNode(const aiScene *scene, aiNode *node, Node *parentNode, Node &newNode);
 
-    void transformToUnitCoordinates();
-    void findObjectDimensions(Node *node, QMatrix4x4 transformation, QVector3D &minDimension, QVector3D &maxDimension);
+//    void transformToUnitCoordinates();
+//    void findObjectDimensions(Node *node, QMatrix4x4 transformation, QVector3D &minDimension, QVector3D &maxDimension);
 
     QVector<float> m_vertices;
     QVector<float> m_normals;
     QVector<unsigned int> m_indices;
 
-    QVector<QSharedPointer<MaterialInfo> > m_materials;
-    QVector<QSharedPointer<Mesh> > m_meshes;
-    QSharedPointer<Node> m_rootNode;
+//    QVector<QSharedPointer<MaterialInfo> > m_materials;
+//    QVector<QSharedPointer<Mesh> > m_meshes;
+//    QSharedPointer<Node> m_rootNode;
 
     QVector<QVector3D> verticesArray;
     QVector<QVector3D> normalsArray;

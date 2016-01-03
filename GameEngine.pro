@@ -66,12 +66,18 @@ HEADERS  += \
 FORMS    +=
 QMAKE_CXXFLAGS += -std=c++11 -lGL -lGLU -lglut -lassimp -libfmodstudio -libfmod -lfmod -lfmodstudio
 
-INCLUDEPATH += "./fmod/api/studio/inc"
-INCLUDEPATH += "./fmod/api/lowlevel/inc"
-
-LIBS += -L"$$_PRO_FILE_PWD_/fmod/api/studio/lib/x86_64/" -lfmodstudio
-LIBS += -L"$$_PRO_FILE_PWD_/fmod/api/lowlevel/lib/x86_64/" -lfmod
+unix {
+INCLUDEPATH += "./fmod/unix/api/lowlevel/inc"
+INCLUDEPATH += "./fmod/unix/api/studio/inc"
+LIBS += -L"$$_PRO_FILE_PWD_/fmod/unix/api/studio/lib/x86_64/" -lfmodstudio
+LIBS += -L"$$_PRO_FILE_PWD_/fmod/unix/api/lowlevel/lib/x86_64/" -lfmod
 LIBS += -lassimp
+}
+
+win64 {
+LIBS += -L"/home/noe/Downloads/FMOD Studio API Windows/api" -lfmodstudio
+LIBS += -L"/home/noe/Downloads/FMOD Studio API Windows/api" -lfmod
+}
 
 RESOURCES += \
     resource.qrc
