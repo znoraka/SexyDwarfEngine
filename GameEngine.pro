@@ -75,8 +75,10 @@ LIBS += -lassimp
 }
 
 win64 {
-LIBS += -L"/home/noe/Downloads/FMOD Studio API Windows/api" -lfmodstudio
-LIBS += -L"/home/noe/Downloads/FMOD Studio API Windows/api" -lfmod
+INCLUDEPATH += "./fmod/windows/api/lowlevel/inc"
+INCLUDEPATH += "./fmod/windows/api/studio/inc"
+LIBS += -L"$$_PRO_FILE_PWD_/fmod/windows/api/studio/lib/" -lfmodstudio
+LIBS += -L"$$_PRO_FILE_PWD_/fmod/windows/api/lowlevel/lib/" -lfmod
 }
 
 RESOURCES += \
