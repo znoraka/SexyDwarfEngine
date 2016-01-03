@@ -7,6 +7,12 @@ TestScene::TestScene()
 
 void TestScene::initialize()
 {
+    FMODManager::getInstance()->loadBank(":/assets/sounds/Master Bank.bank");
+    FMODManager::getInstance()->loadBank(":/assets/sounds/Master Bank.strings.bank");
+    FMODManager::getInstance()->loadBank(":/assets/sounds/bank.bank");
+
+    FMODManager::getInstance()->set3DSettings(1, 1, 20);
+
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);
     glEnable(GL_COLOR_MATERIAL);
@@ -37,7 +43,7 @@ void TestScene::initialize()
 
     Entity *e;
     VolumeComponent *v = VolumeComponent::pool->obtain()->init(":/assets/ply/beethoven.ply");
-    towerComponent = TowerComponent::pool->obtain()->init(QVector3D(0, 0, 30), enemies, 150, 3);
+    towerComponent = TowerComponent::pool->obtain()->init(QVector3D(0, 0, 30), enemies, 150, 6, TowerComponent::TowerType::ICE);
     towerGhostComponent = TowerGhostComponent::pool->obtain()->init(":/assets/maps/map2/");
     towerVolume = VolumeComponent::pool->obtain()->init(":/assets/ply/tower.ply");
     enemyComponent = EnemyComponent::pool->obtain()->init(0, 10, 0);
@@ -90,15 +96,18 @@ void TestScene::initialize()
     this->ready = true;
     this->setMouseTracking(true);
 
-    FMODManager::getInstance()->loadBank(":/assets/sounds/Master Bank.bank");
-    FMODManager::getInstance()->loadBank(":/assets/sounds/Master Bank.strings.bank");
-    FMODManager::getInstance()->loadBank(":/assets/sounds/Vehicles.bank");
-    FMODEventInstance ei = FMODManager::getInstance()->addEventInstance("event:/Vehicles/Basic Engine");
-    FMODManager::getInstance()->startEventInstance(ei);
-    FMODManager::getInstance()->setParameterValue(ei, "RPM", 650);
+    dummy = Entity::pool->obtain();
+    map->addChild(dummy);
 }
 
 void TestScene::update(float delta) {
+    QVector3D v = camera->screenToWorld(
+                QVector3D(WIDTH * 0.5, HEIGHT * 0.5, 0),
+                dummy->getModelViewMatrix(), dummy->getProjectionMatrix());
+
+    v.setX(v.x() / 768);
+    v.setY(v.y() / 624);
+    FMODManager::getInstance()->setListenerPosition(v);
 
     for(auto i : *enemies) {
         if(i->getParent() == nullptr) {
@@ -107,6 +116,7 @@ void TestScene::update(float delta) {
     }
 
     if(towerGhost != nullptr) {
+
         QVector3D v = camera->screenToWorld(
                     QVector3D(mouseX, mouseY, 0),
                     towerGhost->getModelViewMatrix(), towerGhost->getProjectionMatrix());
@@ -264,7 +274,9 @@ bool TestScene::handleEvent(QEvent *event)
             }
             displayLines = !displayLines;
 
-            qDebug() << camera->getRotation();
+            qDebug() << "center pos = " << camera->screenToWorld(
+                            QVector3D(WIDTH * 0.5, HEIGHT * 0.5, 0),
+                            dummy->getModelViewMatrix(), dummy->getProjectionMatrix());
             return true;
 
         }

@@ -7,6 +7,7 @@
 #include <QtGui/QOpenGLFunctions>
 #include <QImage>
 #include <engine/camera.h>
+#include <engine/fmodmanager.h>
 
 #include "engine/components/component.h"
 #include "engine/components/volumecomponent.h"
@@ -40,6 +41,8 @@ private:
 
     float lifeDisplayWidth;
     float lifeDisplayHeight;
+
+    FMODEventInstance eventInstance;
 };
 
 

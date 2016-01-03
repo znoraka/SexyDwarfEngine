@@ -10,13 +10,12 @@
         <file>assets/ply/sphere.ply</file>
         <file>assets/sounds/Master Bank.bank</file>
         <file>assets/sounds/Master Bank.strings.bank</file>
-        <file>assets/sounds/Weapons.bank</file>
-        <file>assets/sounds/Vehicles.bank</file>
         <file>assets/maps/map2/h.png</file>
         <file>assets/maps/map2/p.png</file>
         <file>assets/maps/map2/t.png</file>
         <file>assets/ply/spider.ply</file>
         <file>assets/ply/beethoven.ply</file>
         <file>assets/ply/church.ply</file>
+        <file>assets/sounds/bank.bank</file>
     </qresource>
 </RCC>

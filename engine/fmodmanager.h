@@ -3,10 +3,15 @@
 
 #include <QDebug>
 #include <QVector>
+#include <QVector3D>
 
 #include "fmod_studio.hpp"
 #include "fmod.hpp"
 #include "fmod_common.h"
+#include "fmod_dsp_effects.h"
+#include "fmod_codec.h"
+#include "fmod_output.h"
+#include "fmod_dsp.h"
 #include "fmod_errors.h"
 
 #include "engine/tools/fileutility.h"
@@ -27,6 +32,11 @@ public:
     void startEventInstance(FMODEventInstance eventInstance);
 
     void setParameterValue(FMODEventInstance eventInstance, QString parameter, float value);
+
+    void setListenerPosition(QVector3D position);
+    void setEventInstancePosition(FMODEventInstance ei, QVector3D position);
+
+    void set3DSettings(float dopplerScale, float distanceFactor, float rolloffScale);
 
     void update();
 

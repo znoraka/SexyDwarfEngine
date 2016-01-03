@@ -30,7 +30,7 @@ private:
     bool handleEvent(QEvent *event);
     QPushButton *slowTowerButton;
     Entity *towerGhost, *towerGhost2, *towerGhost3;
-    Entity *map;
+    Entity *map, *dummy;
     TowerComponent *towerComponent;
     VolumeComponent *towerVolume;
     TowerGhostComponent *towerGhostComponent;
