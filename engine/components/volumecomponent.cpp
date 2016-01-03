@@ -43,50 +43,50 @@ VolumeComponent *VolumeComponent::init(QString filePath)
     QString tempFilePath("./bnrpok");
     f.copy(tempFilePath);
 
-    Assimp::Importer importer;
-    const aiScene* scene = importer.ReadFile(tempFilePath.toStdString(),
-                                             aiProcess_GenSmoothNormals |
-                                             aiProcess_CalcTangentSpace |
-                                             aiProcess_Triangulate |
-                                             aiProcess_JoinIdenticalVertices |
-                                             aiProcess_SortByPType
-                                             );
+//    Assimp::Importer importer;
+//    const aiScene* scene = importer.ReadFile(tempFilePath.toStdString(),
+//                                             aiProcess_GenSmoothNormals |
+//                                             aiProcess_CalcTangentSpace |
+//                                             aiProcess_Triangulate |
+//                                             aiProcess_JoinIdenticalVertices |
+//                                             aiProcess_SortByPType
+//                                             );
 
     QFile tempFile(tempFilePath);
     tempFile.remove();
 
-    if (!scene) {
-        qDebug() << "Error loading file: (assimp:) " << importer.GetErrorString();
-        return this;
-    } else {
-        qDebug() << "asset loaded with assimp";
-    }
+//    if (!scene) {
+//        qDebug() << "Error loading file: (assimp:) " << importer.GetErrorString();
+//        return this;
+//    } else {
+//        qDebug() << "asset loaded with assimp";
+//    }
 
-    if (scene->HasMaterials()) {
-        for (unsigned int ii = 0; ii < scene->mNumMaterials; ++ii)
-        {
-            QSharedPointer<MaterialInfo> mater = processMaterial(scene->mMaterials[ii]);
-            m_materials.push_back(mater);
-        }
-    }
+//    if (scene->HasMaterials()) {
+//        for (unsigned int ii = 0; ii < scene->mNumMaterials; ++ii)
+//        {
+//            QSharedPointer<MaterialInfo> mater = processMaterial(scene->mMaterials[ii]);
+//            m_materials.push_back(mater);
+//        }
+//    }
 
-    if (scene->HasMeshes())  {
-        for (unsigned int ii = 0; ii < scene->mNumMeshes; ++ii) {
-            m_meshes.push_back(processMesh(scene->mMeshes[ii]));
-        }
-    } else {
-        qDebug() << "Error: No meshes found";
-        return false;
-    }
+//    if (scene->HasMeshes())  {
+//        for (unsigned int ii = 0; ii < scene->mNumMeshes; ++ii) {
+//            m_meshes.push_back(processMesh(scene->mMeshes[ii]));
+//        }
+//    } else {
+//        qDebug() << "Error: No meshes found";
+//        return false;
+//    }
 
-    if (scene->mRootNode != NULL) {
-        Node *rootNode = new Node;
-        processNode(scene, scene->mRootNode, 0, *rootNode);
-        m_rootNode.reset(rootNode);
-    } else {
-        qDebug() << "Error loading model";
-        return false;
-    }
+//    if (scene->mRootNode != NULL) {
+//        Node *rootNode = new Node;
+//        processNode(scene, scene->mRootNode, 0, *rootNode);
+//        m_rootNode.reset(rootNode);
+//    } else {
+//        qDebug() << "Error loading model";
+//        return false;
+//    }
 
     verticesArray.clear();
     normalsArray.clear();

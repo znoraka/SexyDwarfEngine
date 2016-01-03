@@ -52,6 +52,11 @@ void PathFollowerComponent::update(float delta)
         getEntity()->setRotation(0, 0, 0);
         direction.setX(0);
         direction.setY(1 * delta);
+    } else if (qRed(pixel) == 255 && qBlue(pixel) == 255) {
+        //reached base
+        EnemyComponent *e = static_cast<EnemyComponent*>(getEntity()->getComponent(EnemyComponent::name));
+        e->die();
+        qDebug() << "- 1 hp";
     } else if (qRed(pixel) == 255) {
         //right
         getEntity()->setRotation(0, 0, 0);

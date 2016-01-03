@@ -6,6 +6,7 @@
 #include <QImage>
 
 #include "engine/components/component.h"
+#include "game/enemycomponent.h"
 #include "game/mapcomponent.h"
 
 class PathFollowerComponent : public Component

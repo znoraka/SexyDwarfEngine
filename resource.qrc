@@ -17,5 +17,6 @@
         <file>assets/maps/map2/t.png</file>
         <file>assets/ply/spider.ply</file>
         <file>assets/ply/beethoven.ply</file>
+        <file>assets/ply/church.ply</file>
     </qresource>
 </RCC>

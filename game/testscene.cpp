@@ -24,7 +24,7 @@ void TestScene::initialize()
     //    camera->setPosition(WIDTH * 0.1, 0, 0);
     camera->setPosition(200, 0, 0);
     camera->setRotation(41, -90, 0);
-    camera->setScale(camera->getScale() * 2.1);
+    camera->setScale(camera->getScale() * 1.3);
 
     enemies = new QList<Entity*>();
 
@@ -46,6 +46,12 @@ void TestScene::initialize()
             init(":/assets/maps/map2/",
                  static_cast<MapComponent*>(map->getComponent(MapComponent::name)),
                  0.1);
+
+    map->addChild(Entity::pool->obtain()->
+                  addComponent(VolumeComponent::pool->obtain()->init(":/assets/ply/church.ply"))->
+                  setPosition(16, 170, 0)->
+                  setRotation(90, 0, 0)->
+                  setScale(10, 10, 10));
 
     for (int i = 0; i < 10; ++i) {
         e = Entity::pool->obtain();
@@ -115,7 +121,7 @@ void TestScene::update(float delta) {
     QVector3D center(WIDTH * 0.5, HEIGHT * 0.5, 0);
     QVector3D mousePos(mouseX, mouseY, 0);
     QVector3D dir = center - mousePos;
-    dir.setY(- dir.y());
+    dir.setY(- dir.y() * (WIDTH / HEIGHT));
 
 
     if(dir.length() > (sqrt(WIDTH * WIDTH) + sqrt(HEIGHT * HEIGHT)) * 0.11) {

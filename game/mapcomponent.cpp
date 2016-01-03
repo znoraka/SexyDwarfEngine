@@ -59,7 +59,7 @@ MapComponent *MapComponent::init(QString mapFolder)
         }
     };
 
-    step(0, 0, heightmap.width(), heightmap.height(), 0.0000);
+    step(0, 0, heightmap.width(), heightmap.height(), 1.0000);
 
     del_point2d_t	points_[verticesSet.size()];
     QList<QVector3D> l = verticesSet.toList();
