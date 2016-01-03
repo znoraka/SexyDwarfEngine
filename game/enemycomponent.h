@@ -41,8 +41,6 @@ private:
 
     float lifeDisplayWidth;
     float lifeDisplayHeight;
-
-    FMODEventInstance eventInstance;
 };
 
 

@@ -37,6 +37,15 @@ void BulletComponent::update(float delta)
     if(dir.length() < 5) {
         if(enemy != nullptr) {
             enemy->takeDamage(damage);
+            QVector3D v = getEntity()->getPosition();
+            v.setX(v.x() / 768);
+            v.setY(v.y() / 624);
+            v.setZ(0);
+
+            FMODManager::getInstance()->setCurrentEvent("event:/hit");
+            FMODManager::getInstance()->setEventInstancePosition(v);
+            FMODManager::getInstance()->setParameterValue("pitch", 0.3 + (qrand() % 200) * 0.001);
+            FMODManager::getInstance()->startEventInstance();
         }
 
         this->getEntity()->release();

@@ -46,8 +46,6 @@ private:
 
     void setTarget();
     void shoot();
-
-    FMODEventInstance fireInstance, iceInstance, regularInstance, lightningInstance;
 };
 
 #endif // TOWERCOMPONENT_H

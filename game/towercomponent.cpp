@@ -27,10 +27,6 @@ TowerComponent *TowerComponent::init(QVector3D canonPosition, QList<Entity *> *e
     this->elapsed = 0;
     this->attackSpeed = attackSpeed;
     this->volume = VolumeComponent::pool->obtain()->init(":/assets/ply/sphere.ply");
-    this->regularInstance = FMODManager::getInstance()->addEventInstance("event:/firebullet");
-    this->iceInstance = FMODManager::getInstance()->addEventInstance("event:/iceshot");
-    this->fireInstance = FMODManager::getInstance()->addEventInstance("event:/fireshot");
-    this->lightningInstance = FMODManager::getInstance()->addEventInstance("event:/lightning");
     this->type = type;
     this->ready = false;
     return this;
@@ -76,10 +72,6 @@ TowerComponent *TowerComponent::clone()
     t->elapsed = elapsed;
     t->volume = volume;
     t->ready = false;
-    t->fireInstance = fireInstance;
-    t->iceInstance = iceInstance;
-    t->regularInstance = regularInstance;
-    t->lightningInstance = lightningInstance;
     t->type = type;
     return t;
 }
@@ -138,24 +130,23 @@ void TowerComponent::shoot()
     v.setY(v.y() / 624);
     v.setZ(0);
 
-    FMODEventInstance eventInstance;
     switch (type) {
     case FIRE:
-        eventInstance = FMODManager::getInstance()->addEventInstance("event:/firebullet");;
+        FMODManager::getInstance()->setCurrentEvent("event:/fireshot");
         break;
     case ICE:
-        eventInstance = FMODManager::getInstance()->addEventInstance("event:/iceshot");;
+        FMODManager::getInstance()->setCurrentEvent("event:/iceshot");
         break;
     case LIGHTNING:
-        eventInstance = FMODManager::getInstance()->addEventInstance("event:/fireshot");;
+        FMODManager::getInstance()->setCurrentEvent("event:/lightning");
        break;
     case BULLET:
-        eventInstance = FMODManager::getInstance()->addEventInstance("event:/lightning");;
+        FMODManager::getInstance()->setCurrentEvent("event:/firebullet");
         break;
     }
-    FMODManager::getInstance()->setEventInstancePosition(eventInstance, v);
-    FMODManager::getInstance()->setParameterValue(eventInstance, "pitch", 0.4 + (qrand() % 100) * 0.001);
-    FMODManager::getInstance()->startEventInstance(eventInstance);
+    FMODManager::getInstance()->setEventInstancePosition(v);
+    FMODManager::getInstance()->setParameterValue("pitch", 0.4 + (qrand() % 100) * 0.001);
+    FMODManager::getInstance()->startEventInstance();
 
     Entity *e = Entity::pool->obtain()->
             addComponent(BulletComponent::pool->obtain()->init(target, 0.5, 1))->

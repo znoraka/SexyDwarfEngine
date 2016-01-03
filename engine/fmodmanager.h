@@ -16,25 +16,20 @@
 
 #include "engine/tools/fileutility.h"
 
-typedef int FMODBank;
-typedef int FMODEventInstance;
-typedef int FMODParameterInstance;
-
 class FMODManager
 {
 public:
     static FMODManager *getInstance();
 
-    FMODBank loadBank(QString path);
-    FMOD::Studio::Bank *getBank(int bankId);
+    void loadBank(QString path);
 
-    FMODEventInstance addEventInstance(QString description);
-    void startEventInstance(FMODEventInstance eventInstance);
+    void setCurrentEvent(QString description);
+    void startEventInstance();
 
-    void setParameterValue(FMODEventInstance eventInstance, QString parameter, float value);
+    void setParameterValue(QString parameter, float value);
 
     void setListenerPosition(QVector3D position);
-    void setEventInstancePosition(FMODEventInstance ei, QVector3D position);
+    void setEventInstancePosition(QVector3D position);
 
     void set3DSettings(float dopplerScale, float distanceFactor, float rolloffScale);
 
@@ -47,8 +42,7 @@ private:
     FMOD::Studio::System* system;
     FMOD::System* lowLevelSystem;
 
-    QVector<FMOD::Studio::Bank*> banks;
-    QVector<FMOD::Studio::EventInstance*> eventInstances;
+    FMOD::Studio::EventInstance* eventInstance;
 
 };
 

@@ -25,7 +25,6 @@ EnemyComponent *EnemyComponent::init(float speed, float life, float goldOnDeath)
     this->maxLife = life;
     this->speed = speed;
     this->goldOnDeath = goldOnDeath;
-    this->eventInstance = FMODManager::getInstance()->addEventInstance("event:/death");
     return this;
 }
 
@@ -41,7 +40,6 @@ EnemyComponent *EnemyComponent::clone()
     t->maxLife = maxLife;
     t->speed = speed;
     t->goldOnDeath = goldOnDeath;
-    t->eventInstance = eventInstance;
 
     return t;
 }
@@ -61,10 +59,9 @@ void EnemyComponent::die()
     v.setY(v.y() / 624);
     qDebug() << v;
 
-    FMODEventInstance ei = FMODManager::getInstance()->addEventInstance("event:/death");
-//    FMODManager::getInstance()->setParameterValue(eventInstance, "pitch", 0.4 + (qrand() % 100) * 0.001);
-    FMODManager::getInstance()->setEventInstancePosition(ei, v);
-    FMODManager::getInstance()->startEventInstance(ei);
+    FMODManager::getInstance()->setCurrentEvent("event:/death");
+    FMODManager::getInstance()->setEventInstancePosition(v);
+    FMODManager::getInstance()->startEventInstance();
     this->getEntity()->release();
 }
 

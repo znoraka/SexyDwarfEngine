@@ -134,7 +134,7 @@ void TestScene::update(float delta) {
     dir.setY(- dir.y() * (WIDTH / HEIGHT));
 
 
-    if(dir.length() > (sqrt(WIDTH * WIDTH) + sqrt(HEIGHT * HEIGHT)) * 0.11) {
+    if(dir.length() > (sqrt(WIDTH * WIDTH) + sqrt(HEIGHT * HEIGHT)) * 0.15) {
         camera->setPosition(camera->getPosition() + dir * 0.03 * dir.length() * 0.001);
     }
 
@@ -166,6 +166,9 @@ bool TestScene::handleEvent(QEvent *event)
         mouseEvent = static_cast<QMouseEvent*>(event);
         if(mouseEvent->button() == Qt::LeftButton) {
             if(towerGhost != nullptr) {
+                FMODManager::getInstance()->setCurrentEvent("event:/build");
+                FMODManager::getInstance()->setEventInstancePosition(v);
+                FMODManager::getInstance()->startEventInstance();
                 if(static_cast<TowerGhostComponent*>(towerGhost->getComponent(TowerGhostComponent::name))->hasRoom()) {
 
                     //                v = towerGhost->getLocalPosition();
