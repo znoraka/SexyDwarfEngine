@@ -11,7 +11,7 @@ void TestScene::initialize()
     FMODManager::getInstance()->loadBank(":/assets/sounds/Master Bank.strings.bank");
     FMODManager::getInstance()->loadBank(":/assets/sounds/bank.bank");
 
-    FMODManager::getInstance()->set3DSettings(1, 1, 20);
+    FMODManager::getInstance()->set3DSettings(1, 1, 10);
 
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);
@@ -135,7 +135,6 @@ void TestScene::update(float delta) {
     v.setY(v.y() / 624);
     FMODManager::getInstance()->setListenerPosition(v);
 
-    qDebug() <<  pow(Player::getInstance()->getMissingLifePercentage(), 2);
     FMODManager::getInstance()->setCurrentMusicParameterValue("life", pow(Player::getInstance()->getMissingLifePercentage(), 2));
 
     for(auto i : *enemies) {

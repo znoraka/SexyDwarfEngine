@@ -37,6 +37,12 @@ void FMODManager::setCurrentEvent(QString description)
     ERRCHECK( system->getEvent(description.toStdString().c_str(), &eventDescription) );
 
     ERRCHECK( eventDescription->createInstance(&eventInstance) );
+//    FMOD::ChannelGroup *channelgroup;
+//    eventInstance->getChannelGroup(&channelgroup);
+//    FMOD::Channel *channel;
+//    channelgroup->getGroup(0, &channelgroup);
+//    channel->setPriority(127);
+
 //    qDebug() << "[FMODManager]:" << "added event instance of" << description;
 }
 
@@ -57,8 +63,8 @@ void FMODManager::setParameterValue(QString parameter, float value)
 void FMODManager::setListenerPosition(QVector3D position)
 {
     FMOD_3D_ATTRIBUTES attributes = { { 0 } };
-    attributes.forward.z = 1.0f;
-    attributes.up.y = 1.0f;
+    attributes.forward.y = 1.0f;
+    attributes.up.z = 1.0f;
     attributes.position.x = position.x();
     attributes.position.y = position.y();
     attributes.position.z = position.z();
@@ -68,7 +74,7 @@ void FMODManager::setListenerPosition(QVector3D position)
 void FMODManager::setEventInstancePosition(QVector3D position)
 {
     FMOD_3D_ATTRIBUTES attributes = { { 0 } };
-    attributes.up.y = 1.0f;
+    attributes.up.z = 1.0f;
     attributes.position.x = position.x();
     attributes.position.y = position.y();
     attributes.position.z = position.z();
@@ -108,6 +114,7 @@ void FMODManager::setCurrentMusicParameterValue(QString parameter, float value)
     FMOD::Studio::ParameterInstance* param = NULL;
     ERRCHECK(currentMusic->getParameter(parameter.toStdString().c_str(), &param) );
     ERRCHECK(param->setValue(value));
+    ERRCHECK(currentMusic->setPaused(false));
 }
 
 void FMODManager::setNextMusicCurrent()
@@ -142,6 +149,8 @@ FMODManager::FMODManager()
     ERRCHECK( system->getLowLevelSystem(&lowLevelSystem) );
     ERRCHECK( lowLevelSystem->setSoftwareFormat(0, FMOD_SPEAKERMODE_5POINT1, 0) );
     ERRCHECK( system->initialize(32, FMOD_STUDIO_INIT_NORMAL, FMOD_INIT_NORMAL, 0) );
+    ERRCHECK( lowLevelSystem->createChannelGroup("music", &musicGroup));
+    ERRCHECK( lowLevelSystem->createChannelGroup("events", &eventsGroup));
 }
 
 void FMODManager::ERRCHECK(FMOD_RESULT result) {

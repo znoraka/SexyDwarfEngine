@@ -55,6 +55,8 @@ private:
     FMOD::Studio::EventInstance *eventInstance;
     FMOD::Studio::EventInstance *currentMusic, *nextMusic;
 
+    FMOD::ChannelGroup *eventsGroup, *musicGroup;
+
 };
 
 #endif // FMODMANAGER_H
