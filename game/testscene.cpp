@@ -11,7 +11,7 @@ void TestScene::initialize()
     FMODManager::getInstance()->loadBank(":/assets/sounds/Master Bank.strings.bank");
     FMODManager::getInstance()->loadBank(":/assets/sounds/bank.bank");
 
-    FMODManager::getInstance()->set3DSettings(1, 1, 10);
+    FMODManager::getInstance()->set3DSettings(1, 1, 5);
 
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);
@@ -203,6 +203,7 @@ bool TestScene::handleEvent(QEvent *event)
         if(mouseEvent->button() == Qt::LeftButton) {
             if(towerGhost != nullptr) {
                 FMODManager::getInstance()->setCurrentEvent("event:/build");
+                FMODManager::getInstance()->setEventInstanceVolume(2);
                 FMODManager::getInstance()->setEventInstancePosition(v);
                 FMODManager::getInstance()->startEventInstance();
                 if(static_cast<TowerGhostComponent*>(towerGhost->getComponent(TowerGhostComponent::name))->hasRoom()) {
