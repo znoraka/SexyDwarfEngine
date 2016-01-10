@@ -31,9 +31,6 @@ void Scene::update(float delta)
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
     camera->update(delta);
 
-//    glLoadIdentity();
-//    glOrtho(0.0, width * ratio, 0.0, height * ratio, near, far);
-
     while(!callbacks.empty()) {
         auto f = callbacks.dequeue();
         f();
@@ -44,8 +41,6 @@ void Scene::update(float delta)
             e->update(delta);
         }
     }
-//    glPopMatrix();
-
 }
 
 void Scene::addCallBack(std::function<void()> f)

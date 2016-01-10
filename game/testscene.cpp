@@ -164,15 +164,27 @@ void TestScene::update(float delta) {
         towerGhost->setPosition(v);
     }
 
-    QVector3D center(WIDTH * 0.5, HEIGHT * 0.5, 0);
-    QVector3D mousePos(mouseX, mouseY, 0);
-    QVector3D dir = center - mousePos;
-    dir.setY(- dir.y() * (WIDTH / HEIGHT));
+    QVector3D cam = camera->getPosition();
 
-
-    if(dir.length() > (sqrt(WIDTH * WIDTH) + sqrt(HEIGHT * HEIGHT)) * 0.15) {
-        camera->setPosition(camera->getPosition() + dir * 0.03 * dir.length() * 0.001);
+    if(mouseX > WIDTH * 0.95) {
+        cam.setX(cam.x() - 5);
     }
+
+    if(mouseX < WIDTH * 0.05) {
+        cam.setX(cam.x() + 5);
+    }
+
+    if(mouseY > HEIGHT * 0.95) {
+        cam.setY(cam.y() + 5);
+    }
+
+    if(mouseY < HEIGHT * 0.05) {
+        cam.setY(cam.y() - 5);
+    }
+
+    camera->setPosition(cam);
+
+    this->lockCursorInsideWindow();
 
     Scene::update(delta);
 }
@@ -335,4 +347,29 @@ bool TestScene::handleEvent(QEvent *event)
     default: return false;
     }
     return false;
+}
+
+void TestScene::lockCursorInsideWindow()
+{
+    QPoint p(QCursor::pos() - mapToGlobal(this->pos()));
+
+
+    if(p.x() > WIDTH) {
+        p.setX(WIDTH);
+    }
+
+    if(p.x() < 0) {
+        p.setX(0);
+    }
+
+    if(p.y() > HEIGHT) {
+        p.setY(HEIGHT);
+    }
+
+    if(p.y() < 0) {
+        p.setY(0);
+    }
+
+    QCursor::setPos(p + mapToGlobal(this->pos()));
+
 }

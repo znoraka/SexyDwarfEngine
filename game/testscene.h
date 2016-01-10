@@ -16,6 +16,8 @@
 #include "player.h"
 #include "consts.h"
 
+#include <QCursor>
+
 class TestScene : public Scene
 {
     Q_OBJECT
@@ -41,6 +43,8 @@ private:
     QHash<TowerComponent::TowerType, TowerComponent*> towerComponents;
 
     float mouseX, mouseY;
+
+    void lockCursorInsideWindow();
 };
 
 #endif // TESTSCENE_H
