@@ -1,0 +1,26 @@
+{
+  "enemies": {
+    "enemy1": {
+      "plyfile": "ply.ply",
+      "speed": 10,
+      "life": 10,
+      "goldOnDeath": 10
+    },
+    "enemy2": {
+      "plyfile": "ply.ply",
+      "speed": 20,
+      "life": 20,
+      "goldOnDeath": 20
+    }
+  },
+  "waves": {
+    "wave1": [
+      {"name":"enemy1", "time":5, "x":16, "y":544},
+      {"name":"enemy1", "time":8, "x":16, "y":544}
+    ],
+    "wave2": [
+      {"name":"enemy1", "time":10, "x":16, "y":544},
+      {"name":"enemy2", "time":20, "x":16, "y":544}
+    ]
+  }
+}

@@ -39,7 +39,6 @@ private:
     TowerGhostComponent *towerGhostComponent;
     EnemyComponent *enemyComponent;
 
-    QList<Entity*> *enemies;
     QHash<TowerComponent::TowerType, TowerComponent*> towerComponents;
 
     float mouseX, mouseY;

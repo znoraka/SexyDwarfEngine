@@ -1,4 +1,5 @@
 #include "mapcomponent.h"
+#include "game/pathfollowercomponent.h"
 
 QString const MapComponent::name = "mapcomponent";
 Pool<MapComponent *> *MapComponent::pool = new Pool<MapComponent*>([] () {return new MapComponent();});
@@ -35,7 +36,18 @@ void MapComponent::release()
 
 MapComponent *MapComponent::init(QString mapFolder)
 {
+    this->elapsed = 0;
+    this->waveIndex = 0;
+    this->enemies = new QList<Entity *>();
+    this->volumeComponent = VolumeComponent::pool->obtain()->init(":/assets/ply/beethoven.ply");
+    this->pathFollowerComponent = PathFollowerComponent::pool->obtain()->init(mapFolder, this, 0.1);
+
     heightmap = QImage(mapFolder + "h.png").mirrored();
+    QFile f(mapFolder + "waves.json");
+    f.open(QIODevice::ReadOnly | QIODevice::Text);
+    wavesDocument = QJsonDocument::fromJson(f.readAll());
+    f.close();
+    parseJsonWaves();
     glTexture = new QOpenGLTexture(QImage(mapFolder + "t.png").mirrored());
     glTexture->setMinificationFilter(QOpenGLTexture::LinearMipMapLinear);
     glTexture->setMagnificationFilter(QOpenGLTexture::Linear);
@@ -190,19 +202,12 @@ void MapComponent::step(int startx, int starty, int width, int height, float thr
 
 void MapComponent::update(float delta)
 {
+    elapsed += delta * 0.001;
     shader->bind();
     shader->setUniformValue("textureWidth", (float) heightmap.width());
     shader->setUniformValue("textureHeight", (float) heightmap.height());
 
     glTexture->bind();
-
-//    glPushMatrix();
-
-//    glRotatef(getEntity()->getRotation().x(), 1, 0, 0);
-//    glRotatef(getEntity()->getRotation().y(), 0, 1, 0);
-//    glRotatef(getEntity()->getRotation().z(), 0, 0, 1);
-//    glTranslatef(getEntity()->getPosition().x(), getEntity()->getPosition().y(), getEntity()->getPosition().z());
-//    glScalef(getEntity()->getScale().x(), getEntity()->getScale().y(), getEntity()->getScale().z());
 
     vao.bind();
     glDrawArrays(GL_TRIANGLES, 0, normalsArray.size());
@@ -211,7 +216,30 @@ void MapComponent::update(float delta)
     glTexture->release();
     shader->release();
 
-//    glPopMatrix();
+    while(!waves[waveIndex].isEmpty() && waves[waveIndex].top().time < elapsed) {
+        EnemyStruct s = waves[waveIndex].pop();
+        EnemyComponent *ec = enemiesTemplate[s.name];
+        Entity *e = Entity::pool->obtain()->
+                addComponent(ec->clone())->
+                addComponent(volumeComponent->clone())->
+                addComponent(pathFollowerComponent->clone())->
+                setPosition(s.x, s.y, getZ(s.x, s.y))->
+                setRotation(90, -90, 0)->
+                setScale(2.5, 2.5, 2.5);
+        this->getEntity()->addChild(e);
+        this->enemies->append(e);
+        qDebug() << "added enemy";
+    }
+
+    for(auto i : *enemies) {
+        if(i->getComponents().size() == 0) {
+            enemies->removeAt(enemies->indexOf(i));
+        }
+    }
+
+    if(enemies->size() == 0 && waves[waveIndex].isEmpty()) {
+        nextWave();
+    }
 }
 
 MapComponent *MapComponent::clone()
@@ -227,6 +255,18 @@ float MapComponent::getWidth() const
 float MapComponent::getHeight() const
 {
     return heightmap.height();
+}
+
+QList<Entity *> *MapComponent::getEnemies() const
+{
+    return enemies;
+}
+
+void MapComponent::nextWave()
+{
+    waveIndex++;
+    elapsed = 0;
+    qDebug() << "next wave!";
 }
 
 float MapComponent::getZ(float i, float j)
@@ -287,5 +327,40 @@ void MapComponent::computeColorWithLights(QVector3D color, QVector3D normal, QVe
 
     finalColor += amb + diff + spec;
     color = finalColor;
+}
+
+void MapComponent::parseJsonWaves()
+{
+    QJsonObject obj = wavesDocument.object();
+    QJsonObject enemies = obj["enemies"].toObject();
+    QJsonObject jsonWaves = obj["waves"].toObject();
+
+    for(auto key : enemies.keys()) {
+        EnemyComponent *e = EnemyComponent::pool->obtain();
+        QJsonObject o = enemies[key].toObject();
+        e->init(o.value("speed").toDouble(), o.value("life").toDouble(), o.value("goldOnDeath").toDouble());
+        enemiesTemplate.insert(key, e);
+    }
+
+    for(auto key : jsonWaves.keys()) {
+        QJsonArray o = jsonWaves[key].toArray();
+        QStack<EnemyStruct> s;
+        QVector<EnemyStruct> e;
+
+        for(auto i : o) {
+            QJsonObject o1 = i.toObject();
+            e.push_back(EnemyStruct(o1.value("name").toString(), o1.value("time").toInt(), o1.value("x").toInt(), o1.value("y").toInt()));
+        }
+
+        std::sort(e.begin(), e.end(), [](EnemyStruct a, EnemyStruct b) {
+            return a.time > b.time;
+        });
+
+        for(auto i : e) {
+            s.append(i);
+        }
+
+        waves.push_back(s);
+    }
 }
 

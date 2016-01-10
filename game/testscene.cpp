@@ -32,8 +32,6 @@ void TestScene::initialize()
     camera->setRotation(41, -90, 0);
     camera->setScale(camera->getScale() * 1.3);
 
-    enemies = new QList<Entity*>();
-
     map = Entity::pool->obtain()->
             addComponent(MapComponent::pool->obtain()->init(":/assets/maps/map2/"))->
             setPosition(0, 0, 0)->
@@ -41,20 +39,19 @@ void TestScene::initialize()
             setRotation(-90, 0, 100);
     this->addEntity(map);
 
-    Entity *e;
-    VolumeComponent *v = VolumeComponent::pool->obtain()->init(":/assets/ply/beethoven.ply");
+    MapComponent *mapComponent = static_cast<MapComponent*>(map->getComponent(MapComponent::name));
     towerComponents.insert(
                 TowerComponent::TowerType::ICE,
-                TowerComponent::pool->obtain()->init(QVector3D(0, 0, 30), enemies, 100, 6, 3, TowerComponent::TowerType::ICE));
+                TowerComponent::pool->obtain()->init(QVector3D(0, 0, 30), mapComponent->getEnemies(), 100, 6, 3, TowerComponent::TowerType::ICE));
     towerComponents.insert(
                 TowerComponent::TowerType::BULLET,
-                TowerComponent::pool->obtain()->init(QVector3D(0, 0, 30), enemies, 150, 3, 1, TowerComponent::TowerType::BULLET));
+                TowerComponent::pool->obtain()->init(QVector3D(0, 0, 30), mapComponent->getEnemies(), 150, 3, 1, TowerComponent::TowerType::BULLET));
     towerComponents.insert(
                 TowerComponent::TowerType::FIRE,
-                TowerComponent::pool->obtain()->init(QVector3D(0, 0, 30), enemies, 200, 5, 2, TowerComponent::TowerType::FIRE));
+                TowerComponent::pool->obtain()->init(QVector3D(0, 0, 30), mapComponent->getEnemies(), 200, 5, 2, TowerComponent::TowerType::FIRE));
     towerComponents.insert(
                 TowerComponent::TowerType::LIGHTNING,
-                TowerComponent::pool->obtain()->init(QVector3D(0, 0, 30), enemies, 350, 10, 2, TowerComponent::TowerType::LIGHTNING));
+                TowerComponent::pool->obtain()->init(QVector3D(0, 0, 30), mapComponent->getEnemies(), 350, 10, 2, TowerComponent::TowerType::LIGHTNING));
 
     towerGhostComponent = TowerGhostComponent::pool->obtain()->init(":/assets/maps/map2/");
     towerVolume = VolumeComponent::pool->obtain()->init(":/assets/ply/tower.ply");
@@ -70,25 +67,6 @@ void TestScene::initialize()
                   setPosition(16, 170, 0)->
                   setRotation(90, 0, 0)->
                   setScale(10, 10, 10));
-
-    for (int i = 0; i < 10; ++i) {
-        e = Entity::pool->obtain();
-        e->addComponent(v->clone());
-        e->addComponent(enemyComponent->clone());
-        e->addComponent(p->clone()->setSpeed((qrand() % 100) * 0.001 + 0.04));
-        e->setScale(2.5, 2.5, 2.5);
-        e->setPosition(16, static_cast<MapComponent*>(map->getComponent(MapComponent::name))->getHeight() - 70, 0);
-        e->setRotation(90, -90, 0);
-        map->addChild(e);
-        enemies->append(e);
-    }
-
-    boss = Entity::pool->obtain()->
-            addComponent(v->clone())->
-            addComponent(p->clone())->
-            setScale(4, 4, 4)->
-            setPosition(16, static_cast<MapComponent*>(map->getComponent(MapComponent::name))->getHeight() - 70, 0)->
-            addComponent(enemyComponent->init(0.03, 2000, 0)->clone());
 
     glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);
@@ -137,20 +115,6 @@ void TestScene::update(float delta) {
 
     FMODManager::getInstance()->setCurrentMusicParameterValue("life", pow(Player::getInstance()->getMissingLifePercentage(), 2));
 
-    for(auto i : *enemies) {
-        if(i->getComponents().size() == 0) {
-            enemies->removeAt(enemies->indexOf(i));
-        }
-    }
-
-    if(enemies->size() == 0 && boss->getComponents().size() > 0) {
-        FMODManager::getInstance()->setCurrentMusicParameterValue("boss", 1);
-        FMODManager::getInstance()->setCurrentMusicVolume(0.2);
-
-        enemies->append(boss);
-        map->addChild(boss);
-    }
-
     if(towerGhost != nullptr) {
 
         QVector3D v = camera->screenToWorld(
@@ -167,19 +131,19 @@ void TestScene::update(float delta) {
     QVector3D cam = camera->getPosition();
 
     if(mouseX > WIDTH * 0.95) {
-        cam.setX(cam.x() - 5);
+        cam.setX(cam.x() - 10);
     }
 
     if(mouseX < WIDTH * 0.05) {
-        cam.setX(cam.x() + 5);
+        cam.setX(cam.x() + 10);
     }
 
     if(mouseY > HEIGHT * 0.95) {
-        cam.setY(cam.y() + 5);
+        cam.setY(cam.y() + 10);
     }
 
     if(mouseY < HEIGHT * 0.05) {
-        cam.setY(cam.y() - 5);
+        cam.setY(cam.y() - 10);
     }
 
     camera->setPosition(cam);

@@ -14,7 +14,6 @@ const QString TowerComponent::componentName() const
 
 void TowerComponent::release()
 {
-    //    delete enemies;
     TowerComponent::pool->release(this);
 }
 

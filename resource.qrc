@@ -17,5 +17,6 @@
         <file>assets/ply/beethoven.ply</file>
         <file>assets/ply/church.ply</file>
         <file>assets/sounds/bank.bank</file>
+        <file>assets/maps/map2/waves.json</file>
     </qresource>
 </RCC>

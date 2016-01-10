@@ -1,4 +1,5 @@
 #include "pathfollowercomponent.h"
+#include "game/mapcomponent.h"
 
 QString const PathFollowerComponent::name = "pathfollowercomponent";
 Pool<PathFollowerComponent *> *PathFollowerComponent::pool = new Pool<PathFollowerComponent*>([] () {return new PathFollowerComponent();});

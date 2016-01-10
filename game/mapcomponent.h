@@ -12,10 +12,19 @@
 #include <QOpenGLTexture>
 #include <QOpenGLVertexArrayObject>
 #include <QSet>
+#include <QStack>
 #include <QtCore/qmath.h>
+#include <QHash>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QJsonArray>
 
 #include "engine/components/component.h"
 #include "engine/tools/delaunay.h"
+#include "game/enemycomponent.h"
+
+class PathFollowerComponent;
+class EnemyComponent;
 
 class MapComponent : public Component
 {
@@ -35,11 +44,29 @@ public:
     float getWidth() const;
     float getHeight() const;
 
+    QList<Entity *> *getEnemies() const;
+
+    void nextWave();
+
     static const QString name;
     float getZ(float i, float j);
     QVector3D toMapCoordinate(QVector3D coords);
 
 private:
+    struct EnemyStruct {QString name;
+                        int time;
+                        int x, y;
+                        QString toString() {
+                            return QString() + "{" + "name:" + name + ", time:" + QString::number(time) + ", x:" + QString::number(x) + ", y:" + QString::number(y) + "}";
+                        }
+                        EnemyStruct(){}
+                        EnemyStruct(QString name, int time, int x, int y) {
+                            this->name = name;
+                            this->time = time;
+                            this->x = x;
+                            this->y = y;
+                        }};
+
     QSet<QVector3D> verticesSet;
 
     QVector<QVector3D> verticesArray;
@@ -61,7 +88,20 @@ private:
 
     int posAttr, colAttr, normalAttr;
 
+    QJsonDocument wavesDocument;
+    QHash<QString, EnemyComponent*> enemiesTemplate;
+    VolumeComponent *volumeComponent;
+    PathFollowerComponent *pathFollowerComponent;
+
+    QVector<QStack<EnemyStruct> > waves;
+
+    QList<Entity*> *enemies;
+
+    float elapsed;
+    int waveIndex;
+
     void step(int startx, int starty, int width, int height, float threshold);
     void computeColorWithLights(QVector3D color, QVector3D normal, QVector3D vertex);
+    void parseJsonWaves();
 };
 #endif // MAPCOMPONENT_H

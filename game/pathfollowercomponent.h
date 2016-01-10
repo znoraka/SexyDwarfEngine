@@ -7,9 +7,10 @@
 
 #include "engine/components/component.h"
 #include "game/enemycomponent.h"
-#include "game/mapcomponent.h"
 #include "engine/fmodmanager.h"
 #include "game/player.h"
+
+class MapComponent;
 
 class PathFollowerComponent : public Component
 {
