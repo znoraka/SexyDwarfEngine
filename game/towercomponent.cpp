@@ -17,7 +17,7 @@ void TowerComponent::release()
     TowerComponent::pool->release(this);
 }
 
-TowerComponent *TowerComponent::init(QVector3D canonPosition, QList<Entity *> *enemies, float range, float attackSpeed, float damage, TowerType type)
+TowerComponent *TowerComponent::init(QVector3D canonPosition, QList<Entity *> *enemies, float range, float attackSpeed, float damage, int price, TowerType type)
 {
     this->canonPosition = canonPosition;
     this->enemies = enemies;
@@ -28,6 +28,7 @@ TowerComponent *TowerComponent::init(QVector3D canonPosition, QList<Entity *> *e
     this->volume = VolumeComponent::pool->obtain()->init(":/assets/ply/sphere.ply");
     this->type = type;
     this->damage = damage;
+    this->price = price;
     this->ready = false;
     return this;
 }
@@ -58,6 +59,7 @@ TowerComponent *TowerComponent::clone()
     t->ready = false;
     t->type = type;
     t->damage = damage;
+    t->price = price;
     return t;
 }
 
@@ -86,6 +88,11 @@ void TowerComponent::drawRange(QVector3D color)
 void TowerComponent::setReady()
 {
     this->ready = true;
+}
+
+int TowerComponent::getPrice() const
+{
+    return this->price;
 }
 
 void TowerComponent::setTarget()

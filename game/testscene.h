@@ -17,6 +17,9 @@
 #include "consts.h"
 
 #include <QCursor>
+#include <QHBoxLayout>
+#include <QSignalMapper>
+#include <QLabel>
 
 class TestScene : public Scene
 {
@@ -28,6 +31,8 @@ public:
 
 public slots:
     void onAddTowerButtonClicked(TowerComponent::TowerType type);
+    void onAddTowerButtonClickedInt(int type);
+
 
 private:
     bool handleEvent(QEvent *event);
@@ -39,11 +44,17 @@ private:
     TowerGhostComponent *towerGhostComponent;
     EnemyComponent *enemyComponent;
 
+    QHBoxLayout *towersIconsLayout;
+
     QHash<TowerComponent::TowerType, TowerComponent*> towerComponents;
+
+    QLabel *lifeLabel;
+    QLabel *goldLabel;
 
     float mouseX, mouseY;
 
     void lockCursorInsideWindow();
+    void createUiButton(QString bgImage, TowerComponent::TowerType type);
 };
 
 #endif // TESTSCENE_H

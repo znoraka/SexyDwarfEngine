@@ -14,6 +14,7 @@ public:
     int getLifePoints() const;
     float getMissingLifePercentage() const;
     void takeDamage(int amount);
+    int getGold() const;
 
     void earnGold(int amount);
     void spendGold(int amount);

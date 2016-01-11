@@ -18,5 +18,10 @@
         <file>assets/ply/church.ply</file>
         <file>assets/sounds/bank.bank</file>
         <file>assets/maps/map2/waves.json</file>
+        <file>assets/ui/fire.png</file>
+        <file>assets/ui/ice.png</file>
+        <file>assets/ui/lightning.png</file>
+        <file>assets/ui/poison.png</file>
+        <file>assets/ui/towerslot.png</file>
     </qresource>
 </RCC>

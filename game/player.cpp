@@ -34,6 +34,11 @@ void Player::takeDamage(int amount)
     lifePoints -= amount;
 }
 
+int Player::getGold() const
+{
+    return golds;
+}
+
 void Player::earnGold(int amount)
 {
     golds += amount;
@@ -41,6 +46,7 @@ void Player::earnGold(int amount)
 
 void Player::spendGold(int amount)
 {
+    qDebug() << "amount =" << amount;
     golds -= amount;
 }
 
@@ -53,4 +59,5 @@ Player::Player()
 {
     waveCount = 0;
     lifePoints = 0;
+    golds = 0;
 }

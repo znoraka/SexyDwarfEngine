@@ -20,7 +20,7 @@ public:
 
     void release() override;
 
-    TowerComponent *init(QVector3D canonPosition, QList<Entity*> *enemies, float range, float attackSpeed, float damage, TowerType type);
+    TowerComponent *init(QVector3D canonPosition, QList<Entity*> *enemies, float range, float attackSpeed, float damage, int price, TowerType type);
     virtual void update(float delta);
     TowerComponent *clone();
 
@@ -29,6 +29,8 @@ public:
     float getRange() const;
     void drawRange(QVector3D color);
     void setReady();
+
+    int getPrice() const;
 
 
 private:
@@ -40,6 +42,7 @@ private:
     float elapsed;
     TowerType type;
     float damage;
+    int price;
 
     bool ready;
 
@@ -48,5 +51,7 @@ private:
     void setTarget();
     void shoot();
 };
+
+Q_DECLARE_METATYPE(TowerComponent::TowerType)
 
 #endif // TOWERCOMPONENT_H

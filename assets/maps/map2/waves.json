@@ -2,13 +2,13 @@
   "enemies": {
     "enemy1": {
       "plyfile": "ply.ply",
-      "speed": 10,
+      "speed": 0.1,
       "life": 10,
       "goldOnDeath": 10
     },
     "enemy2": {
       "plyfile": "ply.ply",
-      "speed": 20,
+      "speed": 0.2,
       "life": 20,
       "goldOnDeath": 20
     }

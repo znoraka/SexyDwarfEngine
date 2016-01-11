@@ -29,6 +29,12 @@ PathFollowerComponent *PathFollowerComponent::init(QString mapFolder, MapCompone
 
 void PathFollowerComponent::update(float delta)
 {
+    EnemyComponent *e = static_cast<EnemyComponent*>(getEntity()->getComponent(EnemyComponent::name));
+
+    if(e != nullptr) {
+        speed = e->getSpeed();
+    }
+
     delta *= speed;
     QVector3D v = getEntity()->getLocalPosition();
 

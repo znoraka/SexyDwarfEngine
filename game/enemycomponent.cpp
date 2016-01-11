@@ -73,6 +73,8 @@ void EnemyComponent::die()
         FMODManager::getInstance()->setEventInstancePosition(v);
         FMODManager::getInstance()->startEventInstance();
     }
+
+    Player::getInstance()->earnGold(goldOnDeath);
     this->getEntity()->release();
 }
 
@@ -123,4 +125,9 @@ void EnemyComponent::displayLife()
 
     glEnd();
     glPopMatrix();
+}
+
+float EnemyComponent::getSpeed() const
+{
+    return this->speed;
 }

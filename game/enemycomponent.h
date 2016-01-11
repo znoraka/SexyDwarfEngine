@@ -12,6 +12,7 @@
 #include "engine/components/component.h"
 #include "engine/components/volumecomponent.h"
 #include "consts.h"
+#include "game/player.h"
 
 class EnemyComponent : public Component
 {
@@ -32,6 +33,7 @@ public:
     void die();
     bool dead();
     void displayLife();
+    float getSpeed() const;
 
 private:
     float speed;

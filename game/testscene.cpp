@@ -26,8 +26,7 @@ void TestScene::initialize()
     glClearDepth(1.0f);
     camera->initialize(WIDTH / HEIGHT, WIDTH, HEIGHT, -1000, 1000);
     QVector3D pos = camera->getPosition();
-    //    pos.setX(WIDTH * 0.5); pos.setY(HEIGHT * 0.5); pos.setZ(0);
-    //    camera->setPosition(WIDTH * 0.1, 0, 0);
+
     camera->setPosition(200, 0, 0);
     camera->setRotation(41, -90, 0);
     camera->setScale(camera->getScale() * 1.3);
@@ -41,26 +40,21 @@ void TestScene::initialize()
 
     MapComponent *mapComponent = static_cast<MapComponent*>(map->getComponent(MapComponent::name));
     towerComponents.insert(
-                TowerComponent::TowerType::ICE,
-                TowerComponent::pool->obtain()->init(QVector3D(0, 0, 30), mapComponent->getEnemies(), 100, 6, 3, TowerComponent::TowerType::ICE));
-    towerComponents.insert(
                 TowerComponent::TowerType::BULLET,
-                TowerComponent::pool->obtain()->init(QVector3D(0, 0, 30), mapComponent->getEnemies(), 150, 3, 1, TowerComponent::TowerType::BULLET));
+                TowerComponent::pool->obtain()->init(QVector3D(0, 0, 30), mapComponent->getEnemies(), 150, 3, 1, 50, TowerComponent::TowerType::BULLET));
     towerComponents.insert(
                 TowerComponent::TowerType::FIRE,
-                TowerComponent::pool->obtain()->init(QVector3D(0, 0, 30), mapComponent->getEnemies(), 200, 5, 2, TowerComponent::TowerType::FIRE));
+                TowerComponent::pool->obtain()->init(QVector3D(0, 0, 30), mapComponent->getEnemies(), 200, 5, 2, 100, TowerComponent::TowerType::FIRE));
+    towerComponents.insert(
+                TowerComponent::TowerType::ICE,
+                TowerComponent::pool->obtain()->init(QVector3D(0, 0, 30), mapComponent->getEnemies(), 100, 6, 3, 200, TowerComponent::TowerType::ICE));
     towerComponents.insert(
                 TowerComponent::TowerType::LIGHTNING,
-                TowerComponent::pool->obtain()->init(QVector3D(0, 0, 30), mapComponent->getEnemies(), 350, 10, 2, TowerComponent::TowerType::LIGHTNING));
+                TowerComponent::pool->obtain()->init(QVector3D(0, 0, 30), mapComponent->getEnemies(), 350, 10, 2, 350, TowerComponent::TowerType::LIGHTNING));
 
     towerGhostComponent = TowerGhostComponent::pool->obtain()->init(":/assets/maps/map2/");
     towerVolume = VolumeComponent::pool->obtain()->init(":/assets/ply/tower.ply");
     enemyComponent = EnemyComponent::pool->obtain()->init(0, 25, 0);
-    PathFollowerComponent *p = PathFollowerComponent::pool->
-            obtain()->
-            init(":/assets/maps/map2/",
-                 static_cast<MapComponent*>(map->getComponent(MapComponent::name)),
-                 0.1);
 
     map->addChild(Entity::pool->obtain()->
                   addComponent(VolumeComponent::pool->obtain()->init(":/assets/ply/church.ply"))->
@@ -81,12 +75,25 @@ void TestScene::initialize()
     glLightfv(GL_LIGHT0, GL_SPECULAR, specularLight);
     glLightfv(GL_LIGHT0, GL_POSITION, position);
 
-//    slowTowerButton = new QPushButton(this);
-//    slowTowerButton->move(WIDTH * 0.5 - slowTowerButton->width() * 0.5,
-//                          HEIGHT - slowTowerButton->height() * 2);
-//    slowTowerButton->setFocusPolicy(Qt::NoFocus);
+    QWidget *container = new QWidget(this);
+    towersIconsLayout = new QHBoxLayout(container);
+    createUiButton(":/assets/ui/poison.png", TowerComponent::TowerType::BULLET);
+    createUiButton(":/assets/ui/fire.png", TowerComponent::TowerType::FIRE);
+    createUiButton(":/assets/ui/ice.png", TowerComponent::TowerType::ICE);
+    createUiButton(":/assets/ui/lightning.png", TowerComponent::TowerType::LIGHTNING);
+    container->resize(towersIconsLayout->count() * 75, 69);
+    container->move(WIDTH * 0.5 - container->width() * 0.5,
+                          HEIGHT - container->height() * 1.2);
 
-//    connect(slowTowerButton, SIGNAL(clicked(bool)), this, SLOT(onAddTowerButtonClicked()));
+    lifeLabel = new QLabel(this);
+    lifeLabel->resize(100, 50);
+    lifeLabel->move(20, 20);
+
+    goldLabel = new QLabel(this);
+    goldLabel->resize(100, 50);
+    goldLabel->move(20, 50);
+
+    Player::getInstance()->earnGold(75);
 
     towerGhost = nullptr;
 
@@ -128,6 +135,9 @@ void TestScene::update(float delta) {
         towerGhost->setPosition(v);
     }
 
+    lifeLabel->setText(QString() + "life = " + QString::number(Player::getInstance()->getLifePoints()));
+    goldLabel->setText(QString() + "golds = " + QString::number(Player::getInstance()->getGold()));
+
     QVector3D cam = camera->getPosition();
 
     if(mouseX > WIDTH * 0.95) {
@@ -155,7 +165,9 @@ void TestScene::update(float delta) {
 
 void TestScene::onAddTowerButtonClicked(TowerComponent::TowerType type)
 {
-    if(towerGhost == nullptr) {
+    qDebug() << "type = " << type;
+
+    if(towerComponents[type]->getPrice() <= Player::getInstance()->getGold() && towerGhost == nullptr) {
         towerGhost = Entity::pool->obtain()->
                 addComponent(towerVolume->clone())->
                 addComponent(towerGhostComponent->clone())->
@@ -164,6 +176,11 @@ void TestScene::onAddTowerButtonClicked(TowerComponent::TowerType type)
                 setRotation(90, 0, 0);
         map->addChild(towerGhost);
     }
+}
+
+void TestScene::onAddTowerButtonClickedInt(int type)
+{
+   onAddTowerButtonClicked(static_cast<TowerComponent::TowerType>(type));
 }
 
 bool TestScene::handleEvent(QEvent *event)
@@ -182,6 +199,7 @@ bool TestScene::handleEvent(QEvent *event)
                 FMODManager::getInstance()->setEventInstanceVolume(2);
                 FMODManager::getInstance()->setEventInstancePosition(v);
                 FMODManager::getInstance()->startEventInstance();
+                Player::getInstance()->spendGold(static_cast<TowerComponent*>(towerGhost->getComponent(TowerComponent::name))->getPrice());
                 if(static_cast<TowerGhostComponent*>(towerGhost->getComponent(TowerGhostComponent::name))->hasRoom()) {
 
                     //                v = towerGhost->getLocalPosition();
@@ -282,11 +300,11 @@ bool TestScene::handleEvent(QEvent *event)
             return true;
 
         case Qt::Key_Eacute:
-            onAddTowerButtonClicked(TowerComponent::TowerType::ICE);
+            onAddTowerButtonClicked(TowerComponent::TowerType::FIRE);
             return true;
 
         case Qt::Key_P:
-            onAddTowerButtonClicked(TowerComponent::TowerType::FIRE);
+            onAddTowerButtonClicked(TowerComponent::TowerType::ICE);
             return true;
 
         case Qt::Key_O:
@@ -336,4 +354,21 @@ void TestScene::lockCursorInsideWindow()
 
     QCursor::setPos(p + mapToGlobal(this->pos()));
 
+}
+
+void TestScene::createUiButton(QString bgImage, TowerComponent::TowerType type)
+{
+    QPushButton *button = new QPushButton();
+    QSignalMapper *mapper = new QSignalMapper(this);
+    int n = type;
+    mapper->setMapping(button, type);
+    towersIconsLayout->addWidget(button);
+    button->setFocusPolicy(Qt::NoFocus);
+    button->setText(bgImage.split("/").last().split(".").first());
+//    button->setStyleSheet(QString() + "background-image:url(" + bgImage + ");");
+    button->setFixedSize(69, 69);
+    connect(button, SIGNAL(clicked(bool)), mapper, SLOT(map()));
+    connect(mapper, SIGNAL(mapped(int)), this, SLOT(onAddTowerButtonClickedInt(int)));
+    towersIconsLayout->setMargin(0);
+//    button->setDisabled(towersIconsLayout->count() > 2);
 }
