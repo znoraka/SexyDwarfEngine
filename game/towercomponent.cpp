@@ -29,6 +29,8 @@ TowerComponent *TowerComponent::init(QVector3D canonPosition, QList<Entity *> *e
     this->type = type;
     this->damage = damage;
     this->price = price;
+    this->damageUpgradePrice = price * 0.3;
+    this->speedUpgradePrice = price * 0.5;
     this->ready = false;
     return this;
 }
@@ -60,6 +62,8 @@ TowerComponent *TowerComponent::clone()
     t->type = type;
     t->damage = damage;
     t->price = price;
+    t->damageUpgradePrice = damageUpgradePrice;
+    t->speedUpgradePrice = speedUpgradePrice;
     return t;
 }
 
@@ -93,6 +97,28 @@ void TowerComponent::setReady()
 int TowerComponent::getPrice() const
 {
     return this->price;
+}
+
+void TowerComponent::upgradeDamage()
+{
+    this->damage *= 1.5;
+    this->damageUpgradePrice *= 2;
+}
+
+void TowerComponent::upgradeSpeed()
+{
+    this->speedUpgradePrice *= 2;
+    this->speedUpgradePrice *= 4;
+}
+
+int TowerComponent::getDamageUpgradePrice() const
+{
+    return damageUpgradePrice;
+}
+
+int TowerComponent::getSpeedUpgradePrice() const
+{
+    return speedUpgradePrice;
 }
 
 void TowerComponent::setTarget()

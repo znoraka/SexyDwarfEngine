@@ -43,6 +43,11 @@ void Component::release()
     Component::pool->release(this);
 }
 
+bool Component::clicked(Qt::MouseButton button, int x, int y)
+{
+    return false;
+}
+
 Component *Component::init()
 {
     return this;

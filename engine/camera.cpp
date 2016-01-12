@@ -92,7 +92,7 @@ QVector3D Camera::screenToWorld(QVector3D vec, QMatrix4x4 modelview, QMatrix4x4 
     QVector3D pt2(t.x() * w, t.y() * w, t.z() * w);
 
     QVector3D out;
-    intersects(QVector3D(1, 0, 0), QVector3D(0, 1, 0), QVector3D(1, 1, 0),
+    intersects(QVector3D(1, 0, vec.z()), QVector3D(0, 1, vec.z()), QVector3D(1, 1, vec.z()),
                pt1, pt2, out);
     return out;
 }
@@ -134,6 +134,7 @@ QPointF Camera::worldToScreen(QVector3D vec, QMatrix4x4 modelview, QMatrix4x4 pr
     tmp = tmp * modelview;
     tmp = tmp * projection;
 
+
     tmp.setX(tmp.x() / tmp.w());
     tmp.setY(tmp.y() / tmp.w());
     tmp.setZ(tmp.z() / tmp.w());
@@ -145,8 +146,11 @@ QPointF Camera::worldToScreen(QVector3D vec, QMatrix4x4 modelview, QMatrix4x4 pr
     int viewport[4];
     glGetIntegerv(GL_VIEWPORT, viewport);
 
-    p.setX(tmp.x()  * viewport[2] + viewport[0]);
-    p.setY(tmp.y()  * viewport[3] + viewport[1]);
+//    p.setX(tmp.x() * (viewport[2] - viewport[0]));
+//    p.setY(tmp.y() * (viewport[3] - viewport[1]));
+
+    p.setX(tmp.x() * WIDTH);
+    p.setY(HEIGHT - tmp.y() * HEIGHT);
 
     return p;
 }

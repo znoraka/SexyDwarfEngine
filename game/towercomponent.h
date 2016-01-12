@@ -31,6 +31,10 @@ public:
     void setReady();
 
     int getPrice() const;
+    void upgradeDamage();
+    void upgradeSpeed();
+    int getDamageUpgradePrice() const;
+    int getSpeedUpgradePrice() const;
 
 
 private:
@@ -43,6 +47,8 @@ private:
     TowerType type;
     float damage;
     int price;
+    int damageUpgradePrice;
+    int speedUpgradePrice;
 
     bool ready;
 

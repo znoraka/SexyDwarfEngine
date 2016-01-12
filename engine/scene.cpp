@@ -48,6 +48,15 @@ void Scene::addCallBack(std::function<void()> f)
     this->callbacks.enqueue(f);
 }
 
+Entity *Scene::clicked(Qt::MouseButton button, int x, int y)
+{
+    foreach (Entity *e, entities) {
+        Entity *e1 = e->clicked(button, x, y);
+        if(e1 != nullptr) return e1;
+    }
+    return nullptr;
+}
+
 
 bool Scene::handleEvent(QEvent *event)
 {

@@ -32,19 +32,23 @@ public:
 public slots:
     void onAddTowerButtonClicked(TowerComponent::TowerType type);
     void onAddTowerButtonClickedInt(int type);
+    void upgradeDamageClicked();
+    void upgradeSpeedClicked();
 
 
 private:
     bool handleEvent(QEvent *event);
     QPushButton *slowTowerButton;
     Entity *towerGhost, *towerGhost2, *towerGhost3;
-    Entity *map, *dummy, *boss;
+    Entity *map, *dummy, *boss, *clickedEntity;
     TowerComponent *towerComponent;
     VolumeComponent *towerVolume;
     TowerGhostComponent *towerGhostComponent;
     EnemyComponent *enemyComponent;
 
     QHBoxLayout *towersIconsLayout;
+    QWidget *upgradeTowersContainer;
+    QLabel *towersInfosLabel;
 
     QHash<TowerComponent::TowerType, TowerComponent*> towerComponents;
 

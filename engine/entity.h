@@ -10,6 +10,7 @@
 #include <QOpenGLFunctions>
 
 #include "engine/components/component.h"
+#include "engine/camera.h"
 
 class Compenent;
 
@@ -25,6 +26,7 @@ public:
     static Pool<Entity *> *pool;
     void release();
     void update(float delta);
+    Entity *clicked(Qt::MouseButton button, int x, int y);
 
     void addChild(Entity *child);
     void removeChild(Entity *child);

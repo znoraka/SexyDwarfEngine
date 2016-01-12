@@ -189,30 +189,81 @@ VolumeComponent *VolumeComponent::init(QString filePath)
 
     float minX = verticesArray[0].x(), maxX = verticesArray[0].x();
     float minY = verticesArray[0].y(), maxY = verticesArray[0].y();
+    float minZ = verticesArray[0].z(), maxZ = verticesArray[0].z();
 
     for(auto i : verticesArray) {
         minX = qMin(i.x(), minX);
         maxX = qMax(i.x(), maxX);
         minY = qMin(i.y(), minY);
         maxY = qMax(i.y(), maxY);
+        minZ = qMin(i.z(), minZ);
+        maxZ = qMax(i.z(), maxZ);
     }
 
     this->bounds = QRectF(QPointF(minX, minY), QPointF(maxX, maxY));
+    this->size = QVector3D(maxX - minX, maxY - minY, maxZ - minZ);
 
     return this;
 }
 
 void VolumeComponent::update(float delta)
 {
-//    glPushMatrix();
 
-//    qDebug() << "position = " << getEntity()->getPosition();
+    auto unRotate = []() {
+        GLfloat m[16];
+        glGetFloatv (GL_MODELVIEW_MATRIX, m);
 
-//    glTranslatef(getEntity()->getPosition().x(), getEntity()->getPosition().y(), getEntity()->getPosition().z());
-//    glRotatef(getEntity()->getRotation().x(), 1, 0, 0);
-//    glRotatef(getEntity()->getRotation().y(), 0, 1, 0);
-//    glRotatef(getEntity()->getRotation().z(), 0, 0, 1);
-//    glScalef(getEntity()->getScale().x(), getEntity()->getScale().y(), getEntity()->getScale().z());
+        float d = sqrt(m[0] * m[0] + m[4] * m[4] + m[8] * m[8]);
+
+        m[0] = d;
+        m[1] = 0;
+        m[2] = 0;
+        m[4] = 0;
+        m[5] = d;
+        m[6] = 0;
+        m[8] = 0;
+        m[9] = 0;
+        m[10] = d;
+
+        glLoadMatrixf(m);
+    };
+
+    auto sendVertex = [](QVector3D p) {
+        glVertex3f(p.x(), p.y(), p.z());
+//        qDebug() << p;
+    };
+
+    glPushMatrix();
+//    unRotate();
+
+//    glRotatef(90, 1, 0, 0);
+    glColor3f(1, 0, 1);
+    glBegin(GL_LINE_STRIP);
+
+
+    sendVertex(QVector3D(-size.x() * 0.5, 0, size.z() * 0.5));
+    sendVertex(QVector3D(size.x() * 0.5, 0, size.z() * 0.5));
+    sendVertex(QVector3D(size.x() * 0.5, size.y(), size.z() * 0.5));
+    sendVertex(QVector3D(-size.x() * 0.5, size.y(), size.z() * 0.5));
+
+    sendVertex(QVector3D(-size.x() * 0.5, 0, size.z() * 0.5));
+    sendVertex(QVector3D(-size.x() * 0.5, 0, -size.z() * 0.5));
+    sendVertex(QVector3D(-size.x() * 0.5, size.y(), -size.z() * 0.5));
+    sendVertex(QVector3D(-size.x() * 0.5, size.y(), size.z() * 0.5));
+
+    sendVertex(QVector3D(size.x() * 0.5, size.y(), size.z() * 0.5));
+    sendVertex(QVector3D(size.x() * 0.5, size.y(), -size.z() * 0.5));
+    sendVertex(QVector3D(-size.x() * 0.5, size.y(), -size.z() * 0.5));
+    sendVertex(QVector3D(-size.x() * 0.5, 0, -size.z() * 0.5));
+
+    sendVertex(QVector3D(size.x() * 0.5, 0, -size.z() * 0.5));
+    sendVertex(QVector3D(size.x() * 0.5, 0, size.z() * 0.5));
+    sendVertex(QVector3D(size.x() * 0.5, 0, -size.z() * 0.5));
+    sendVertex(QVector3D(size.x() * 0.5, size.y(), -size.z() * 0.5));
+
+    glEnd();
+
+    glPopMatrix();
 
     glEnable(GL_COLOR_MATERIAL);
     glColor4f(0, 1, 0, 0.5);
@@ -229,22 +280,18 @@ void VolumeComponent::update(float delta)
     glColorPointer(3, GL_FLOAT, 0, NULL);
     m_colorbuffer.release();
 
-    //    m_indexbuffer.bind();
-    //    glDrawElements(GL_TRIANGLES, 1, GL_UNSIGNED_INT, NULL);
     glDrawElements(GL_TRIANGLES, indexesArray.size(), GL_UNSIGNED_INT, indexesArray.constData());
-    //    m_indexbuffer.release();
 
     glDisableClientState(GL_COLOR_ARRAY);
     glDisableClientState(GL_NORMAL_ARRAY);
     glDisableClientState(GL_VERTEX_ARRAY);
-
-//    glPopMatrix();
 }
 
 VolumeComponent *VolumeComponent::clone()
 {
     VolumeComponent *v = VolumeComponent::pool->obtain();
     v->bounds = bounds;
+    v->size = size;
     v->verticesArray = verticesArray;
     v->normalsArray = normalsArray;
     v->colorsArray = colorsArray;
@@ -258,9 +305,50 @@ VolumeComponent *VolumeComponent::clone()
     return v;
 }
 
+bool VolumeComponent::clicked(Qt::MouseButton button, int x, int y)
+{
+    QVector4D minsAndMaxs(99999, -99999, 99999, -99999);
+
+    auto getRect = [=] (QVector4D minsAndMaxs, QVector3D v) {
+        QPointF p = Camera::worldToScreen(v * getEntity()->getScale() + getEntity()->getPosition(), getEntity()->getModelViewMatrix(), getEntity()->getProjectionMatrix());
+        if(p.x() < minsAndMaxs.x()) minsAndMaxs.setX(p.x());
+        if(p.x() > minsAndMaxs.y()) minsAndMaxs.setY(p.x());
+        if(p.y() < minsAndMaxs.z()) minsAndMaxs.setZ(p.y());
+        if(p.y() > minsAndMaxs.w()) minsAndMaxs.setW(p.y());
+        return minsAndMaxs;
+    };
+
+    minsAndMaxs = getRect(minsAndMaxs, QVector3D(-size.x() * 0.5, 0, size.z() * 0.5));
+    minsAndMaxs = getRect(minsAndMaxs, QVector3D(size.x() * 0.5, 0, size.z() * 0.5));
+    minsAndMaxs = getRect(minsAndMaxs, QVector3D(size.x() * 0.5, size.y(), size.z() * 0.5));
+    minsAndMaxs = getRect(minsAndMaxs, QVector3D(-size.x() * 0.5, size.y(), size.z() * 0.5));
+
+    minsAndMaxs = getRect(minsAndMaxs, QVector3D(-size.x() * 0.5, 0, size.z() * 0.5));
+    minsAndMaxs = getRect(minsAndMaxs, QVector3D(-size.x() * 0.5, 0, -size.z() * 0.5));
+    minsAndMaxs = getRect(minsAndMaxs, QVector3D(-size.x() * 0.5, size.y(), -size.z() * 0.5));
+    minsAndMaxs = getRect(minsAndMaxs, QVector3D(-size.x() * 0.5, size.y(), size.z() * 0.5));
+
+    minsAndMaxs = getRect(minsAndMaxs, QVector3D(size.x() * 0.5, size.y(), size.z() * 0.5));
+    minsAndMaxs = getRect(minsAndMaxs, QVector3D(size.x() * 0.5, size.y(), -size.z() * 0.5));
+    minsAndMaxs = getRect(minsAndMaxs, QVector3D(-size.x() * 0.5, size.y(), -size.z() * 0.5));
+    minsAndMaxs = getRect(minsAndMaxs, QVector3D(-size.x() * 0.5, 0, -size.z() * 0.5));
+
+    minsAndMaxs = getRect(minsAndMaxs, QVector3D(size.x() * 0.5, 0, -size.z() * 0.5));
+    minsAndMaxs = getRect(minsAndMaxs, QVector3D(size.x() * 0.5, 0, size.z() * 0.5));
+    minsAndMaxs = getRect(minsAndMaxs, QVector3D(size.x() * 0.5, 0, -size.z() * 0.5));
+    minsAndMaxs = getRect(minsAndMaxs, QVector3D(size.x() * 0.5, size.y(), -size.z() * 0.5));
+
+    return x > minsAndMaxs.x() && x < minsAndMaxs.y() && y > minsAndMaxs.z() && y < minsAndMaxs.w();
+}
+
 QRectF VolumeComponent::getBounds() const
 {
     return bounds;
+}
+
+QVector3D VolumeComponent::getSize() const
+{
+    return size;
 }
 
 //QSharedPointer<MaterialInfo> VolumeComponent::processMaterial(aiMaterial *material)

@@ -64,7 +64,10 @@ public:
     virtual void update(float delta);
     VolumeComponent *clone();
 
+    bool clicked(Qt::MouseButton button, int x, int y);
+
     QRectF getBounds() const;
+    QVector3D getSize() const;
 
     static const QString name;
 
@@ -99,6 +102,7 @@ private:
     QOpenGLBuffer m_indexbuffer;
 
     QRectF bounds;
+    QVector3D size;
 };
 
 #endif // VOLUMECOMPONENT_H

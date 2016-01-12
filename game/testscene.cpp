@@ -85,6 +85,19 @@ void TestScene::initialize()
     container->move(WIDTH * 0.5 - container->width() * 0.5,
                           HEIGHT - container->height() * 1.2);
 
+    upgradeTowersContainer = new QWidget(this);
+    QHBoxLayout *layout = new QHBoxLayout(upgradeTowersContainer);
+
+    QPushButton *button = new QPushButton();
+    connect(button, SIGNAL(clicked(bool)), this, SLOT(upgradeDamageClicked()));
+    layout->addWidget(button);
+
+    button = new QPushButton();
+    connect(button, SIGNAL(clicked(bool)), this, SLOT(upgradeSpeedClicked()));
+    layout->addWidget(button);
+
+    upgradeTowersContainer->setVisible(false);
+
     lifeLabel = new QLabel(this);
     lifeLabel->resize(100, 50);
     lifeLabel->move(20, 20);
@@ -93,7 +106,7 @@ void TestScene::initialize()
     goldLabel->resize(100, 50);
     goldLabel->move(20, 50);
 
-    Player::getInstance()->earnGold(75);
+    Player::getInstance()->earnGold(175);
 
     towerGhost = nullptr;
 
@@ -108,7 +121,8 @@ void TestScene::initialize()
 
     FMODManager::getInstance()->setCurrentMusic("event:/musique");
     FMODManager::getInstance()->startCurrentMusic();
-    FMODManager::getInstance()->setCurrentMusicVolume(0.5);
+//    FMODManager::getInstance()->setCurrentMusicVolume(0.5);
+    FMODManager::getInstance()->setCurrentMusicVolume(0);
 }
 
 void TestScene::update(float delta) {
@@ -125,7 +139,7 @@ void TestScene::update(float delta) {
     if(towerGhost != nullptr) {
 
         QVector3D v = camera->screenToWorld(
-                    QVector3D(mouseX, mouseY, 0),
+                    QVector3D(mouseX, mouseY, towerGhost->getPosition().z()),
                     towerGhost->getModelViewMatrix(), towerGhost->getProjectionMatrix());
 
         towerGhost->setPosition(v);
@@ -180,7 +194,27 @@ void TestScene::onAddTowerButtonClicked(TowerComponent::TowerType type)
 
 void TestScene::onAddTowerButtonClickedInt(int type)
 {
-   onAddTowerButtonClicked(static_cast<TowerComponent::TowerType>(type));
+    onAddTowerButtonClicked(static_cast<TowerComponent::TowerType>(type));
+}
+
+void TestScene::upgradeDamageClicked()
+{
+    TowerComponent *t = static_cast<TowerComponent*>(clickedEntity->getComponent(TowerComponent::name));
+    if(t->getDamageUpgradePrice() < Player::getInstance()->getGold()) {
+        Player::getInstance()->spendGold(t->getDamageUpgradePrice());
+        t->upgradeDamage();
+        upgradeTowersContainer->setVisible(false);
+    }
+}
+
+void TestScene::upgradeSpeedClicked()
+{
+    TowerComponent *t = static_cast<TowerComponent*>(clickedEntity->getComponent(TowerComponent::name));
+    if(t->getSpeedUpgradePrice() < Player::getInstance()->getGold()) {
+        Player::getInstance()->spendGold(t->getSpeedUpgradePrice());
+        t->upgradeSpeed();
+        upgradeTowersContainer->setVisible(false);
+    }
 }
 
 bool TestScene::handleEvent(QEvent *event)
@@ -199,8 +233,8 @@ bool TestScene::handleEvent(QEvent *event)
                 FMODManager::getInstance()->setEventInstanceVolume(2);
                 FMODManager::getInstance()->setEventInstancePosition(v);
                 FMODManager::getInstance()->startEventInstance();
-                Player::getInstance()->spendGold(static_cast<TowerComponent*>(towerGhost->getComponent(TowerComponent::name))->getPrice());
                 if(static_cast<TowerGhostComponent*>(towerGhost->getComponent(TowerGhostComponent::name))->hasRoom()) {
+                    Player::getInstance()->spendGold(static_cast<TowerComponent*>(towerGhost->getComponent(TowerComponent::name))->getPrice());
 
                     //                v = towerGhost->getLocalPosition();
                     //                int nx = v.x() / TILE_SIZE;
@@ -214,12 +248,22 @@ bool TestScene::handleEvent(QEvent *event)
                     towerGhost->removeComponent(TowerGhostComponent::name);
                     towerGhost = nullptr;
                 }
+            } else {
+                clickedEntity = Scene::clicked(mouseEvent->button(), mouseX, mouseY);
+                if(clickedEntity != nullptr) {
+                    if(clickedEntity->getComponent(TowerComponent::name) != nullptr) {
+                        upgradeTowersContainer->move(mouseX, mouseY);
+                        upgradeTowersContainer->setVisible(true);
+                    }
+                }
             }
         } else if (mouseEvent->button() == Qt::RightButton) {
             if(towerGhost != nullptr) {
                 towerGhost->release();
                 towerGhost = nullptr;
             }
+            clickedEntity = nullptr;
+            upgradeTowersContainer->setVisible(false);
         }
         return true;
     case QEvent::MouseMove:

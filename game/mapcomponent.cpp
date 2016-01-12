@@ -39,7 +39,7 @@ MapComponent *MapComponent::init(QString mapFolder)
     this->elapsed = 0;
     this->waveIndex = 0;
     this->enemies = new QList<Entity *>();
-    this->volumeComponent = VolumeComponent::pool->obtain()->init(":/assets/ply/beethoven.ply");
+    this->volumeComponent = VolumeComponent::pool->obtain()->init(":/assets/ply/tower.ply");
     this->pathFollowerComponent = PathFollowerComponent::pool->obtain()->init(mapFolder, this, 0.1);
 
     heightmap = QImage(mapFolder + "h.png").mirrored();
@@ -225,7 +225,7 @@ void MapComponent::update(float delta)
                 addComponent(pathFollowerComponent->clone())->
                 setPosition(s.x, s.y, getZ(s.x, s.y))->
                 setRotation(90, -90, 0)->
-                setScale(2.5, 2.5, 2.5);
+                setScale(10.05, 10.05, 10.05);
         this->getEntity()->addChild(e);
         this->enemies->append(e);
         qDebug() << "added enemy";

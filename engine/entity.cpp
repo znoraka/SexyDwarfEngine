@@ -103,6 +103,25 @@ void Entity::update(float delta)
     glPopMatrix();
 }
 
+Entity *Entity::clicked(Qt::MouseButton button, int x, int y)
+{
+    foreach (Component *c, components) {
+        qDebug() << c->componentName() << ":" << c->clicked(button, x, y);
+        if(c->clicked(button, x, y)) return this;
+    }
+
+    foreach (Entity *child, children) {
+        Entity *e = child->clicked(button, x, y);
+        if(e != nullptr) {
+            for(Component *c : e->getComponents()) {
+                qDebug() << c->componentName();
+            }
+            return e;
+        }
+    }
+    return nullptr;
+}
+
 void Entity::addChild(Entity *child)
 {
     this->children.insert(child);

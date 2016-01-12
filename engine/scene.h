@@ -39,6 +39,7 @@ public:
     bool isReady() const;
     virtual void update(float delta);
     void addCallBack(std::function<void()> f);
+    Entity *clicked(Qt::MouseButton button, int x, int y);
 
     virtual bool handleEvent(QEvent *event);
 

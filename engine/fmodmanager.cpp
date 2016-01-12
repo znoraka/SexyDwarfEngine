@@ -37,10 +37,6 @@ void FMODManager::setCurrentEvent(QString description)
     ERRCHECK( system->getEvent(description.toStdString().c_str(), &eventDescription) );
 
     ERRCHECK( eventDescription->createInstance(&eventInstance) );
-//    eventInstance->getChannelGroup(&channelgroup);
-//    FMOD::Channel *channel;
-//    channelgroup->getGroup(0, &channelgroup);
-//    channel->setPriority(127);
 
     qDebug() << "[FMODManager]:" << "added event instance of" << description;
 }

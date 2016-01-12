@@ -24,6 +24,7 @@ public:
     Entity *getEntity() const;
 
     virtual void release();
+    virtual bool clicked(Qt::MouseButton button, int x, int y);
     virtual Component *init();
     virtual void update(float delta);
     virtual Component *clone() = 0;
