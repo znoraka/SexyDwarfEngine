@@ -107,7 +107,7 @@ void TowerComponent::upgradeDamage()
 
 void TowerComponent::upgradeSpeed()
 {
-    this->speedUpgradePrice *= 2;
+    this->attackSpeed /= 1.2;
     this->speedUpgradePrice *= 4;
 }
 

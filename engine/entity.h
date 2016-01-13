@@ -57,6 +57,7 @@ public:
     Entity *setScale(float x, float y, float z);
 
     Entity *getParent() const;
+    QSet<Entity *> getChildren() const;
 
     bool hasParent() const;
 

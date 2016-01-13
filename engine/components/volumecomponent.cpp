@@ -233,37 +233,37 @@ void VolumeComponent::update(float delta)
 //        qDebug() << p;
     };
 
-    glPushMatrix();
-//    unRotate();
+//    glPushMatrix();
+////    unRotate();
 
-//    glRotatef(90, 1, 0, 0);
-    glColor3f(1, 0, 1);
-    glBegin(GL_LINE_STRIP);
+////    glRotatef(90, 1, 0, 0);
+//    glColor3f(1, 0, 1);
+//    glBegin(GL_LINE_STRIP);
 
 
-    sendVertex(QVector3D(-size.x() * 0.5, 0, size.z() * 0.5));
-    sendVertex(QVector3D(size.x() * 0.5, 0, size.z() * 0.5));
-    sendVertex(QVector3D(size.x() * 0.5, size.y(), size.z() * 0.5));
-    sendVertex(QVector3D(-size.x() * 0.5, size.y(), size.z() * 0.5));
+//    sendVertex(QVector3D(-size.x() * 0.5, 0, size.z() * 0.5));
+//    sendVertex(QVector3D(size.x() * 0.5, 0, size.z() * 0.5));
+//    sendVertex(QVector3D(size.x() * 0.5, size.y(), size.z() * 0.5));
+//    sendVertex(QVector3D(-size.x() * 0.5, size.y(), size.z() * 0.5));
 
-    sendVertex(QVector3D(-size.x() * 0.5, 0, size.z() * 0.5));
-    sendVertex(QVector3D(-size.x() * 0.5, 0, -size.z() * 0.5));
-    sendVertex(QVector3D(-size.x() * 0.5, size.y(), -size.z() * 0.5));
-    sendVertex(QVector3D(-size.x() * 0.5, size.y(), size.z() * 0.5));
+//    sendVertex(QVector3D(-size.x() * 0.5, 0, size.z() * 0.5));
+//    sendVertex(QVector3D(-size.x() * 0.5, 0, -size.z() * 0.5));
+//    sendVertex(QVector3D(-size.x() * 0.5, size.y(), -size.z() * 0.5));
+//    sendVertex(QVector3D(-size.x() * 0.5, size.y(), size.z() * 0.5));
 
-    sendVertex(QVector3D(size.x() * 0.5, size.y(), size.z() * 0.5));
-    sendVertex(QVector3D(size.x() * 0.5, size.y(), -size.z() * 0.5));
-    sendVertex(QVector3D(-size.x() * 0.5, size.y(), -size.z() * 0.5));
-    sendVertex(QVector3D(-size.x() * 0.5, 0, -size.z() * 0.5));
+//    sendVertex(QVector3D(size.x() * 0.5, size.y(), size.z() * 0.5));
+//    sendVertex(QVector3D(size.x() * 0.5, size.y(), -size.z() * 0.5));
+//    sendVertex(QVector3D(-size.x() * 0.5, size.y(), -size.z() * 0.5));
+//    sendVertex(QVector3D(-size.x() * 0.5, 0, -size.z() * 0.5));
 
-    sendVertex(QVector3D(size.x() * 0.5, 0, -size.z() * 0.5));
-    sendVertex(QVector3D(size.x() * 0.5, 0, size.z() * 0.5));
-    sendVertex(QVector3D(size.x() * 0.5, 0, -size.z() * 0.5));
-    sendVertex(QVector3D(size.x() * 0.5, size.y(), -size.z() * 0.5));
+//    sendVertex(QVector3D(size.x() * 0.5, 0, -size.z() * 0.5));
+//    sendVertex(QVector3D(size.x() * 0.5, 0, size.z() * 0.5));
+//    sendVertex(QVector3D(size.x() * 0.5, 0, -size.z() * 0.5));
+//    sendVertex(QVector3D(size.x() * 0.5, size.y(), -size.z() * 0.5));
 
-    glEnd();
+//    glEnd();
 
-    glPopMatrix();
+//    glPopMatrix();
 
     glEnable(GL_COLOR_MATERIAL);
     glColor4f(0, 1, 0, 0.5);
@@ -339,6 +339,32 @@ bool VolumeComponent::clicked(Qt::MouseButton button, int x, int y)
     minsAndMaxs = getRect(minsAndMaxs, QVector3D(size.x() * 0.5, size.y(), -size.z() * 0.5));
 
     return x > minsAndMaxs.x() && x < minsAndMaxs.y() && y > minsAndMaxs.z() && y < minsAndMaxs.w();
+}
+
+bool VolumeComponent::collides(VolumeComponent *other)
+{
+    QVector3D thispos(getEntity()->getPosition().x() + getSize().x() * 0.5 * getEntity()->getScale().x(),
+                      getEntity()->getPosition().y() + getSize().y() * 0.5 * getEntity()->getScale().y(),
+                      getEntity()->getPosition().z() + getSize().z() * 0.5 * getEntity()->getScale().z());
+
+    QVector3D otherpos(other->getEntity()->getPosition().x() + other->getSize().x() * 0.5 * other->getEntity()->getScale().x(),
+                       other->getEntity()->getPosition().y() + other->getSize().y() * 0.5 * other->getEntity()->getScale().y(),
+                       other->getEntity()->getPosition().z() + other->getSize().z() * 0.5 * other->getEntity()->getScale().z());
+
+    return thispos.distanceToPoint(otherpos) < qMin(qMin(getSize().x() * 0.5 * getEntity()->getScale().x() +
+                                                    other->getSize().x() * 0.5 * other->getEntity()->getScale().x(),
+                                                    getSize().y() * 0.5 * getEntity()->getScale().y() +
+                                                    other->getSize().y() * 0.5 * other->getEntity()->getScale().y()),
+                                                    getSize().z() * 0.5 * getEntity()->getScale().z() +
+                                                    other->getSize().z() * 0.5 * other->getEntity()->getScale().z());
+
+//    qDebug() << "this =" << this->getEntity()->getPosition() << this->getSize();
+//    qDebug() << "other =" << other->getEntity()->getPosition() << other->getSize();
+//    return (getEntity()->getPosition().x() > other->getEntity()->getPosition().x() &&
+//            getEntity()->getPosition().x() + getSize().x() * getEntity()->getScale().x() < other->getEntity()->getPosition().x());// &&
+//            (/*getEntity()->getPosition().y() > other->getEntity()->getPosition().y() &&*/
+//             getEntity()->getPosition().y() + getSize().y() < other->getEntity()->getPosition().y());
+//    return false;
 }
 
 QRectF VolumeComponent::getBounds() const

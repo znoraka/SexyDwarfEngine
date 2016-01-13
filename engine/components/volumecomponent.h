@@ -66,6 +66,8 @@ public:
 
     bool clicked(Qt::MouseButton button, int x, int y);
 
+    bool collides(VolumeComponent *other);
+
     QRectF getBounds() const;
     QVector3D getSize() const;
 

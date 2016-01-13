@@ -97,7 +97,7 @@ void TestScene::initialize()
     goldLabel->resize(100, 50);
     goldLabel->move(20, 50);
 
-    Player::getInstance()->earnGold(175);
+    Player::getInstance()->earnGold(2175);
 
     towerGhost = nullptr;
 

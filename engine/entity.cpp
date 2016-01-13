@@ -251,6 +251,11 @@ Entity *Entity::getParent() const
     return this->parent;
 }
 
+QSet<Entity *> Entity::getChildren() const
+{
+    return this->children;
+}
+
 bool Entity::hasParent() const
 {
     return parent != nullptr;

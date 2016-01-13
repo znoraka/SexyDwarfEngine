@@ -57,12 +57,12 @@ TowerGhostComponent *TowerGhostComponent::clone()
 void TowerGhostComponent::initDependencies()
 {
     if(tc == nullptr || vc == nullptr) {
-        tc = static_cast<TowerComponent*>(getEntity()->getComponent(TowerComponent::name));
+        tc = getEntity()->getComponent<TowerComponent>();
         if(tc == nullptr) {
             qDebug() << "no TowerComponent found";
             return;
         }
-        vc = static_cast<VolumeComponent*>(getEntity()->getComponent(VolumeComponent::name));
+        vc = getEntity()->getComponent<VolumeComponent>();
         if(vc == nullptr) {
             qDebug() << "no VolumeComponent found";
             return;
@@ -96,7 +96,20 @@ bool TowerGhostComponent::hasRoom()
         sum += qAlpha(map.pixel(v.x() - width, map.height() - v.y() + height));
         sum += qAlpha(map.pixel(v.x() + width, map.height() - v.y() + height));
 
-        return sum == 0;
+        if (sum != 0) return false;
     }
-    return false;
+
+    QVector<VolumeComponent *> otherTowers;
+    for(auto i : getEntity()->getParent()->getChildren()) {
+        VolumeComponent *v = i->getComponent<VolumeComponent>();
+        if(i != getEntity() && v != nullptr) {
+            otherTowers.push_back(v);
+        }
+    }
+
+    for(auto i : otherTowers) {
+       if(vc->collides(i)) return false;
+    }
+
+    return true;
 }
