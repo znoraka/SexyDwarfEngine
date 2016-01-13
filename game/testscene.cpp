@@ -85,18 +85,9 @@ void TestScene::initialize()
     container->move(WIDTH * 0.5 - container->width() * 0.5,
                           HEIGHT - container->height() * 1.2);
 
-    upgradeTowersContainer = new QWidget(this);
-    QHBoxLayout *layout = new QHBoxLayout(upgradeTowersContainer);
-
-    QPushButton *button = new QPushButton();
-    connect(button, SIGNAL(clicked(bool)), this, SLOT(upgradeDamageClicked()));
-    layout->addWidget(button);
-
-    button = new QPushButton();
-    connect(button, SIGNAL(clicked(bool)), this, SLOT(upgradeSpeedClicked()));
-    layout->addWidget(button);
-
-    upgradeTowersContainer->setVisible(false);
+    tiuw = new TowerInfoUpgradeWindow(this);
+    connect(tiuw->getDamageUpgradeButton(), SIGNAL(clicked(bool)), this, SLOT(upgradeDamageClicked()));
+    connect(tiuw->getSpeedUpgrageButton(), SIGNAL(clicked(bool)), this, SLOT(upgradeSpeedClicked()));
 
     lifeLabel = new QLabel(this);
     lifeLabel->resize(100, 50);
@@ -199,21 +190,21 @@ void TestScene::onAddTowerButtonClickedInt(int type)
 
 void TestScene::upgradeDamageClicked()
 {
-    TowerComponent *t = static_cast<TowerComponent*>(clickedEntity->getComponent(TowerComponent::name));
+    TowerComponent *t = clickedEntity->getComponent<TowerComponent>();
     if(t->getDamageUpgradePrice() < Player::getInstance()->getGold()) {
         Player::getInstance()->spendGold(t->getDamageUpgradePrice());
         t->upgradeDamage();
-        upgradeTowersContainer->setVisible(false);
+        tiuw->update();
     }
 }
 
 void TestScene::upgradeSpeedClicked()
 {
-    TowerComponent *t = static_cast<TowerComponent*>(clickedEntity->getComponent(TowerComponent::name));
+    TowerComponent *t = clickedEntity->getComponent<TowerComponent>();
     if(t->getSpeedUpgradePrice() < Player::getInstance()->getGold()) {
         Player::getInstance()->spendGold(t->getSpeedUpgradePrice());
         t->upgradeSpeed();
-        upgradeTowersContainer->setVisible(false);
+        tiuw->update();
     }
 }
 
@@ -227,24 +218,16 @@ bool TestScene::handleEvent(QEvent *event)
     {
     case QEvent::MouseButtonRelease:
         mouseEvent = static_cast<QMouseEvent*>(event);
+        tiuw->hide();
         if(mouseEvent->button() == Qt::LeftButton) {
             if(towerGhost != nullptr) {
                 FMODManager::getInstance()->setCurrentEvent("event:/build");
                 FMODManager::getInstance()->setEventInstanceVolume(2);
                 FMODManager::getInstance()->setEventInstancePosition(v);
                 FMODManager::getInstance()->startEventInstance();
-                if(static_cast<TowerGhostComponent*>(towerGhost->getComponent(TowerGhostComponent::name))->hasRoom()) {
-                    Player::getInstance()->spendGold(static_cast<TowerComponent*>(towerGhost->getComponent(TowerComponent::name))->getPrice());
-
-                    //                v = towerGhost->getLocalPosition();
-                    //                int nx = v.x() / TILE_SIZE;
-                    //                v.setX(TILE_SIZE * nx);
-
-                    //                int ny = v.y() / TILE_SIZE;
-                    //                v.setY(TILE_SIZE * ny);
-                    //                towerGhost->setPosition(v);
-
-                    static_cast<TowerComponent*>(towerGhost->getComponent(TowerComponent::name))->setReady();
+                if(towerGhost->getComponent<TowerGhostComponent>()->hasRoom()) {
+                    Player::getInstance()->spendGold(towerGhost->getComponent<TowerComponent>()->getPrice());
+                    towerGhost->getComponent<TowerComponent>()->setReady();
                     towerGhost->removeComponent(TowerGhostComponent::name);
                     towerGhost = nullptr;
                 }
@@ -252,8 +235,7 @@ bool TestScene::handleEvent(QEvent *event)
                 clickedEntity = Scene::clicked(mouseEvent->button(), mouseX, mouseY);
                 if(clickedEntity != nullptr) {
                     if(clickedEntity->getComponent(TowerComponent::name) != nullptr) {
-                        upgradeTowersContainer->move(mouseX, mouseY);
-                        upgradeTowersContainer->setVisible(true);
+                        tiuw->show(mouseX, mouseY, clickedEntity);
                     }
                 }
             }
@@ -263,7 +245,6 @@ bool TestScene::handleEvent(QEvent *event)
                 towerGhost = nullptr;
             }
             clickedEntity = nullptr;
-            upgradeTowersContainer->setVisible(false);
         }
         return true;
     case QEvent::MouseMove:

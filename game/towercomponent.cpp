@@ -121,6 +121,16 @@ int TowerComponent::getSpeedUpgradePrice() const
     return speedUpgradePrice;
 }
 
+float TowerComponent::getDamage() const
+{
+    return damage;
+}
+
+float TowerComponent::getSpeed() const
+{
+    return attackSpeed;
+}
+
 void TowerComponent::setTarget()
 {
     if(target != nullptr) {

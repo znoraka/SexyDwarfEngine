@@ -22,6 +22,7 @@ public:
     Entity *addComponent(Component *component);
     void removeComponent(const QString componentName);
     Component *getComponent(const QString componentId);
+    template<typename T> T *getComponent();
     QVector<Component *> getComponents();
     static Pool<Entity *> *pool;
     void release();
@@ -75,5 +76,12 @@ private:
     bool ready;
     bool dirty;
 };
+
+template<typename T>
+T *Entity::getComponent()
+{
+    Component *t = getComponent(T::name);
+    return static_cast<T*>(t);
+}
 
 #endif // ENTITY_H

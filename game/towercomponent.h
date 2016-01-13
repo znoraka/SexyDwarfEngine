@@ -35,7 +35,8 @@ public:
     void upgradeSpeed();
     int getDamageUpgradePrice() const;
     int getSpeedUpgradePrice() const;
-
+    float getDamage() const;
+    float getSpeed() const;
 
 private:
     QVector3D canonPosition;

@@ -15,6 +15,7 @@
 #include "engine/fmodmanager.h"
 #include "player.h"
 #include "consts.h"
+#include "gui.h"
 
 #include <QCursor>
 #include <QHBoxLayout>
@@ -47,8 +48,10 @@ private:
     EnemyComponent *enemyComponent;
 
     QHBoxLayout *towersIconsLayout;
-    QWidget *upgradeTowersContainer;
-    QLabel *towersInfosLabel;
+//    QWidget *upgradeTowersContainer;
+//    QLabel *towersInfosLabel;
+
+    TowerInfoUpgradeWindow *tiuw;
 
     QHash<TowerComponent::TowerType, TowerComponent*> towerComponents;
 
