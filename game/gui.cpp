@@ -71,3 +71,52 @@ QPushButton *TowerInfoUpgradeWindow::getSpeedUpgrageButton()
     return this->upgradeSpeed;
 }
 
+
+LifeAndGoldWindow::LifeAndGoldWindow(QWidget *parent) : QWidget(parent)
+{
+    layout = new QHBoxLayout(this);
+    life = new QLabel("10000");
+    gold = new QLabel("10000");
+    healthImage = new QLabel("+");
+    goldImage = new QLabel("$");
+
+    container1 = new QWidget();
+    container1->setStyleSheet("border:1px solid black;");
+    life->setStyleSheet("border:0px");
+    healthImage->setStyleSheet("border:0px");
+    sublayoutLeft = new QHBoxLayout(container1);
+    QPixmap pic("://assets/ui/health.png");
+    healthImage->resize(20, 20);
+    container1->updateGeometry();
+    QPixmap scaled = pic.scaled ( 20, 20, Qt::IgnoreAspectRatio, Qt::FastTransformation );
+
+    healthImage->setPixmap(scaled);
+    sublayoutLeft->addWidget(healthImage);
+    sublayoutLeft->addWidget(life);
+
+    container2 = new QWidget();
+    container2->setStyleSheet("border:1px solid black;");
+    gold->setStyleSheet("border:0px");
+    goldImage->setStyleSheet("border:0px");
+    sublayoutRight = new QHBoxLayout(container2);
+    QPixmap pic1("://assets/ui/coin.png");
+    goldImage->resize(20, 20);
+    container2->updateGeometry();
+    QPixmap scaled1 = pic1.scaled ( 20, 20, Qt::IgnoreAspectRatio, Qt::FastTransformation );
+
+    goldImage->setPixmap(scaled1);
+    sublayoutRight->addWidget(goldImage);
+    sublayoutRight->addWidget(gold);
+
+    layout->addWidget(container1);
+    layout->addWidget(container2);
+    this->setStyleSheet("background-color:white;");
+    this->setVisible(true);
+}
+
+void LifeAndGoldWindow::update()
+{
+    life->setText(QString::number(Player::getInstance()->getLifePoints()));
+    gold->setText(QString::number(Player::getInstance()->getGold()));
+    move(WIDTH * 0.5 - this->width() * 0.5, this->height() * 0.2);
+}

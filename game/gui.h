@@ -35,4 +35,15 @@ private:
     Entity *lastEntity;
 };
 
+class LifeAndGoldWindow : public QWidget{
+public:
+    LifeAndGoldWindow(QWidget *parent = 0);
+    void update();
+
+private:
+    QHBoxLayout *layout, *sublayoutLeft, *sublayoutRight;
+    QWidget *container1, *container2;
+    QLabel *life, *gold, *healthImage, *goldImage;
+};
+
 #endif // GUI_H

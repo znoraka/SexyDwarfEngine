@@ -52,11 +52,9 @@ private:
 //    QLabel *towersInfosLabel;
 
     TowerInfoUpgradeWindow *tiuw;
+    LifeAndGoldWindow *lag;
 
     QHash<TowerComponent::TowerType, TowerComponent*> towerComponents;
-
-    QLabel *lifeLabel;
-    QLabel *goldLabel;
 
     float mouseX, mouseY;
 

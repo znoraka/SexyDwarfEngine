@@ -89,13 +89,7 @@ void TestScene::initialize()
     connect(tiuw->getDamageUpgradeButton(), SIGNAL(clicked(bool)), this, SLOT(upgradeDamageClicked()));
     connect(tiuw->getSpeedUpgrageButton(), SIGNAL(clicked(bool)), this, SLOT(upgradeSpeedClicked()));
 
-    lifeLabel = new QLabel(this);
-    lifeLabel->resize(100, 50);
-    lifeLabel->move(20, 20);
-
-    goldLabel = new QLabel(this);
-    goldLabel->resize(100, 50);
-    goldLabel->move(20, 50);
+    lag = new LifeAndGoldWindow(this);
 
     Player::getInstance()->earnGold(2175);
 
@@ -140,9 +134,6 @@ void TestScene::update(float delta) {
         towerGhost->setPosition(v);
     }
 
-    lifeLabel->setText(QString() + "life = " + QString::number(Player::getInstance()->getLifePoints()));
-    goldLabel->setText(QString() + "golds = " + QString::number(Player::getInstance()->getGold()));
-
     QVector3D cam = camera->getPosition();
 
     if(mouseX > WIDTH * 0.95) {
@@ -164,6 +155,7 @@ void TestScene::update(float delta) {
     camera->setPosition(cam);
 
     this->lockCursorInsideWindow();
+    lag->update();
 
     Scene::update(delta);
 }
