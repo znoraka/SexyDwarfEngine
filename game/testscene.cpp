@@ -29,7 +29,7 @@ void TestScene::initialize()
 
     camera->setPosition(200, 0, 0);
     camera->setRotation(41, -90, 0);
-    camera->setScale(camera->getScale() * 1.3);
+    camera->setScale(camera->getScale() * 2.3);
 
     map = Entity::pool->obtain()->
             addComponent(MapComponent::pool->obtain()->init(":/assets/maps/map2/"))->

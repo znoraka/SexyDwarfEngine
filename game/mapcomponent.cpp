@@ -237,7 +237,7 @@ void MapComponent::update(float delta)
         }
     }
 
-    if(enemies->size() == 0 && waves[waveIndex].isEmpty()) {
+    if(enemies->size() == 0 && waveIndex < waves.size() - 1 && waves[waveIndex].isEmpty()) {
         nextWave();
     }
 }
@@ -266,7 +266,11 @@ void MapComponent::nextWave()
 {
     waveIndex++;
     elapsed = 0;
-    qDebug() << "next wave!";
+    if(waveIndex > waves.size()) {
+        qDebug() << "win!";
+    } else {
+        qDebug() << "next wave!";
+    }
 }
 
 float MapComponent::getZ(float i, float j)
