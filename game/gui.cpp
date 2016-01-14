@@ -231,3 +231,75 @@ void YouLoseWindow::paintEvent(QPaintEvent *pe)
   style()->drawPrimitive(
     QStyle::PE_Widget, &o, &p, this);
 }
+
+TowerButtons::TowerButtons(QWidget *parent) : QWidget(parent)
+{
+    auto createButton = [=] (QString text, QSignalMapper *mapper) {
+        QPushButton *p = new QPushButton(text);
+        p->setFixedSize(69, 69);
+        p->setFocusPolicy(Qt::NoFocus);
+        layout->addWidget(p);
+        connect(p, SIGNAL(clicked(bool)), mapper, SLOT(map()));
+        return p;
+    };
+
+    layout = new QHBoxLayout(this);
+    poisonMapper = new QSignalMapper();
+    fireMapper = new QSignalMapper();
+    iceMapper = new QSignalMapper();
+    lightningMapper = new QSignalMapper();
+
+    poison = createButton("Poison", poisonMapper);
+    fire = createButton("Fire", fireMapper);
+    ice = createButton("Ice", iceMapper);
+    lightning = createButton("Lightning", lightningMapper);
+
+//    QPushButton *button = new QPushButton();
+//    QSignalMapper *mapper = new QSignalMapper(this);
+//    int n = type;
+//    towersIconsLayout->addWidget(button);
+//    button->setText(bgImage.split("/").last().split(".").first());
+//    //    button->setStyleSheet(QString() + "background-image:url(" + bgImage + ");");
+//    button->setFixedSize(69, 69);
+//    towersIconsLayout->setMargin(0);
+    //    //    button->setDisabled(towersIconsLayout->count() > 2);
+}
+
+void TowerButtons::update()
+{
+    this->setFixedSize(Game::Graphics::width() * 0.17, Game::Graphics::width() * 0.1);
+    this->move(Game::Graphics::width() * 0.5 - this->width() * 0.5, Game::Graphics::height() - this->height() * 0.8);
+
+    poison->setEnabled(poisonPrice < Player::getInstance()->getGold());
+    fire->setEnabled(firePrice < Player::getInstance()->getGold());
+    ice->setEnabled(icePrice < Player::getInstance()->getGold());
+    lightning->setEnabled(lightningPrice < Player::getInstance()->getGold());
+}
+
+void TowerButtons::connectPoisonButton(TowerComponent::TowerType type, int price, TestScene *scene)
+{
+    poisonMapper->setMapping(poison, type);
+    poisonPrice = price;
+    connect(poisonMapper, SIGNAL(mapped(int)), scene, SLOT(onAddTowerButtonClickedInt(int)));
+}
+
+void TowerButtons::connectFireButton(TowerComponent::TowerType type, int price, TestScene *scene)
+{
+    fireMapper->setMapping(fire, type);
+    firePrice = price;
+    connect(fireMapper, SIGNAL(mapped(int)), scene, SLOT(onAddTowerButtonClickedInt(int)));
+}
+
+void TowerButtons::connectIceButton(TowerComponent::TowerType type, int price, TestScene *scene)
+{
+    iceMapper->setMapping(ice, type);
+    icePrice = price;
+    connect(iceMapper, SIGNAL(mapped(int)), scene, SLOT(onAddTowerButtonClickedInt(int)));
+}
+
+void TowerButtons::connectLightningButton(TowerComponent::TowerType type, int price, TestScene *scene)
+{
+    lightningMapper->setMapping(lightning, type);
+    lightningPrice = price;
+    connect(lightningMapper, SIGNAL(mapped(int)), scene, SLOT(onAddTowerButtonClickedInt(int)));
+}

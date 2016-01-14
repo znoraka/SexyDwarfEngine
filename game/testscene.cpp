@@ -90,18 +90,18 @@ void TestScene::initialize()
     glLightfv(GL_LIGHT0, GL_SPECULAR, specularLight);
     glLightfv(GL_LIGHT0, GL_POSITION, position);
 
-    QWidget *container = new QWidget(this);
-    towersIconsLayout = new QHBoxLayout(container);
-    createUiButton(":/assets/ui/poison.png", TowerComponent::TowerType::BULLET);
-    createUiButton(":/assets/ui/fire.png", TowerComponent::TowerType::FIRE);
-    createUiButton(":/assets/ui/ice.png", TowerComponent::TowerType::ICE);
-    createUiButton(":/assets/ui/lightning.png", TowerComponent::TowerType::LIGHTNING);
-    container->resize(towersIconsLayout->count() * 75, 69);
+//    QWidget *container = new QWidget(this);
+//    towersIconsLayout = new QHBoxLayout(container);
+//    createUiButton(":/assets/ui/poison.png", TowerComponent::TowerType::BULLET);
+//    createUiButton(":/assets/ui/fire.png", TowerComponent::TowerType::FIRE);
+//    createUiButton(":/assets/ui/ice.png", TowerComponent::TowerType::ICE);
+//    createUiButton(":/assets/ui/lightning.png", TowerComponent::TowerType::LIGHTNING);
+//    container->resize(towersIconsLayout->count() * 75, 69);
 
-    this->addCallBack([=]() {
-        container->move(Game::Graphics::width() * 0.5 - container->width() * 0.5,
-                        Game::Graphics::height() - container->height() * 1.2);
-    });
+//    this->addCallBack([=]() {
+//        container->move(Game::Graphics::width() * 0.5 - container->width() * 0.5,
+//                        Game::Graphics::height() - container->height() * 1.2);
+//    });
 
     tiuw = new TowerInfoUpgradeWindow(this);
     connect(tiuw->getDamageUpgradeButton(), SIGNAL(clicked(bool)), this, SLOT(upgradeDamageClicked()));
@@ -109,6 +109,12 @@ void TestScene::initialize()
 
     lag = new LifeAndGoldWindow(this);
     ylw = new YouLoseWindow(this);
+    tb = new TowerButtons(this);
+
+    tb->connectPoisonButton(TowerComponent::TowerType::BULLET, 50, this);
+    tb->connectFireButton(TowerComponent::TowerType::FIRE, 100, this);
+    tb->connectIceButton(TowerComponent::TowerType::ICE, 200, this);
+    tb->connectLightningButton(TowerComponent::TowerType::LIGHTNING, 350, this);
 
     towerGhost = nullptr;
 
@@ -131,6 +137,9 @@ void TestScene::update(float delta) {
     if(Player::getInstance()->getLifePoints() <= 0) {
         ylw->show(delta);
     } else {
+        tb->update();
+        if(tiuw != nullptr && tiuw->isVisible())
+            tiuw->update();
         QVector3D v = camera->screenToWorld(
                     QVector3D(Game::Graphics::width() * 0.5, Game::Graphics::height() * 0.5, 0),
                     dummy->getModelViewMatrix(), dummy->getProjectionMatrix());

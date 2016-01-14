@@ -54,6 +54,7 @@ private:
     TowerInfoUpgradeWindow *tiuw;
     LifeAndGoldWindow *lag;
     YouLoseWindow *ylw;
+    TowerButtons *tb;
 
     QHash<TowerComponent::TowerType, TowerComponent*> towerComponents;
 

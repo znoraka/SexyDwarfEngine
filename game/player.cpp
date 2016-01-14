@@ -11,7 +11,7 @@ void Player::init(int life, int gold)
     this->lifePoints = life;
     this->maxLifePoints = life;
     this->golds = gold;
-    this->waveCount = 0;
+    this->waveCount = 1;
 }
 
 void Player::setMaxLifePoints(int amount)

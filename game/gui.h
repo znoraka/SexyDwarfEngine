@@ -7,6 +7,7 @@
 #include <QPushButton>
 #include <QLabel>
 #include <QStyleOption>
+#include <QSignalMapper>
 
 #include "engine/entity.h"
 #include "game/towercomponent.h"
@@ -74,6 +75,25 @@ private:
     QPushButton *restart, *quit;
 
     float opacity;
+};
+
+class TowerButtons : public QWidget
+{
+public:
+    TowerButtons(QWidget *parent = 0);
+    void update();
+
+    void connectPoisonButton(TowerComponent::TowerType type, int price, TestScene *scene);
+    void connectFireButton(TowerComponent::TowerType type, int price, TestScene *scene);
+    void connectIceButton(TowerComponent::TowerType type, int price, TestScene *scene);
+    void connectLightningButton(TowerComponent::TowerType type, int price, TestScene *scene);
+
+private:
+    QPushButton *poison, *fire, *ice, *lightning;
+    QSignalMapper *poisonMapper, *fireMapper, *iceMapper, *lightningMapper;
+    QHBoxLayout *layout;
+
+    int poisonPrice, firePrice, icePrice, lightningPrice;
 };
 
 #endif // GUI_H
