@@ -25,5 +25,6 @@
         <file>assets/ui/towerslot.png</file>
         <file>assets/ui/health.png</file>
         <file>assets/ui/coin.png</file>
+        <file>assets/ui/wave.png</file>
     </qresource>
 </RCC>

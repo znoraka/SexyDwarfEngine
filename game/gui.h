@@ -49,9 +49,9 @@ public:
     void update();
 
 private:
-    QHBoxLayout *layout, *sublayoutLeft, *sublayoutRight;
-    QWidget *container1, *container2;
-    QLabel *life, *gold, *healthImage, *goldImage;
+    QHBoxLayout *layout, *sublayoutLeft, *sublayoutRight, *sublayoutRight2;
+    QWidget *container1, *container2, *container3;
+    QLabel *life, *gold, *healthImage, *goldImage, *wave, *waveImage;
 };
 
 class YouLoseWindow : public QWidget

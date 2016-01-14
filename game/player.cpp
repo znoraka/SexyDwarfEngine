@@ -11,6 +11,7 @@ void Player::init(int life, int gold)
     this->lifePoints = life;
     this->maxLifePoints = life;
     this->golds = gold;
+    this->waveCount = 0;
 }
 
 void Player::setMaxLifePoints(int amount)
@@ -46,6 +47,11 @@ void Player::takeDamage(int amount)
 int Player::getGold() const
 {
     return golds;
+}
+
+int Player::getWave() const
+{
+    return waveCount;
 }
 
 void Player::earnGold(int amount)

@@ -93,8 +93,10 @@ LifeAndGoldWindow::LifeAndGoldWindow(QWidget *parent) : QWidget(parent)
     layout = new QHBoxLayout(this);
     life = new QLabel("10000");
     gold = new QLabel("10000");
+    wave = new QLabel("10000");
     healthImage = new QLabel("+");
     goldImage = new QLabel("$");
+    waveImage = new QLabel("w");
 
     container1 = new QWidget();
     container1->setStyleSheet("border:1px solid black;");
@@ -124,8 +126,24 @@ LifeAndGoldWindow::LifeAndGoldWindow(QWidget *parent) : QWidget(parent)
     sublayoutRight->addWidget(goldImage);
     sublayoutRight->addWidget(gold);
 
+    container3 = new QWidget();
+    container3->setStyleSheet("border:1px solid black;");
+    wave->setStyleSheet("border:0px");
+    waveImage->setStyleSheet("border:0px");
+    sublayoutRight2 = new QHBoxLayout(container3);
+    QPixmap pic2("://assets/ui/wave.png");
+    waveImage->resize(20, 20);
+    container3->updateGeometry();
+    QPixmap scaled2 = pic2.scaled ( 20, 20, Qt::IgnoreAspectRatio, Qt::FastTransformation );
+
+    waveImage->setPixmap(scaled2);
+    sublayoutRight2->addWidget(waveImage);
+    sublayoutRight2->addWidget(wave);
+
+
     layout->addWidget(container1);
     layout->addWidget(container2);
+    layout->addWidget(container3);
     this->setStyleSheet("background-color:white;");
     this->setVisible(true);
 }
@@ -147,6 +165,7 @@ void LifeAndGoldWindow::update()
 {
     life->setText(QString::number(Player::getInstance()->getLifePoints()));
     gold->setText(QString::number(Player::getInstance()->getGold()));
+    wave->setText(QString::number(Player::getInstance()->getWave()));
     move(Game::Graphics::width() * 0.5 - this->width() * 0.5, this->height() * 0.2);
 }
 

@@ -289,6 +289,7 @@ void MapComponent::nextWave()
 {
     waveIndex++;
     elapsed = 0;
+    Player::getInstance()->clearedWave();
     if(waveIndex > waves.size()) {
         qDebug() << "win!";
     } else {
