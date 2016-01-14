@@ -7,17 +7,19 @@ Game *Game::getInstance()
     return instance;
 }
 
+void Game::exit()
+{
+    qApp->exit();
+}
+
 void Game::initialize()
 {
     mainWindow = new MainWindow();
-//    mainWindow->resize(WIDTH, HEIGHT);
     container = new QWidget();
     mainWindow->setCentralWidget(container);
     mainWindow->setVisible(true);
     mainWindow->setMouseTracking(true);
     mainWindow->showFullScreen();
-//    WIDTH = mainWindow->width();
-//    HEIGHT = mainWindow->height();
 
     QObject::connect(&timer, SIGNAL(timeout()), this, SLOT(update()));
     firstEventList = true;
@@ -72,6 +74,11 @@ void Game::resume()
 
 void Game::setScene(Scene *scene)
 {
+    if(this->currentScene != nullptr) {
+        this->currentScene->destroyData();
+        this->currentScene->doneCurrent();
+        delete this->currentScene;
+    }
     this->currentScene = scene;
     scene->setParent(mainWindow);
     scene->initialize();

@@ -8,6 +8,7 @@
 #include <QSurface>
 #include <QLabel>
 #include <QQueue>
+#include <QtCore>
 
 #include "fmod_studio.hpp"
 #include "fmod.hpp"
@@ -27,6 +28,7 @@ class Game : public QObject
     Q_OBJECT
 public:
     static Game *getInstance();
+    static void exit();
     void initialize();
     void update(float delta);
     void pause();

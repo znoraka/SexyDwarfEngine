@@ -9,6 +9,7 @@ class Player
 public:
     static Player *getInstance();
 
+    void init(int life, int gold);
     void setMaxLifePoints(int amount);
     void heal(int amount);
     int getLifePoints() const;

@@ -14,6 +14,7 @@ const QString TowerComponent::componentName() const
 
 void TowerComponent::release()
 {
+    volume->deleteBuffersData();
     TowerComponent::pool->release(this);
 }
 

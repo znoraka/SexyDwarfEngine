@@ -5,6 +5,21 @@ TestScene::TestScene()
 
 }
 
+void TestScene::destroyData()
+{
+    towerVolume->deleteBuffersData();
+    delete towersIconsLayout;
+    delete tiuw;
+    delete lag;
+    delete ylw;
+
+    qDebug() << "deleting";
+}
+
+TestScene::~TestScene()
+{
+}
+
 void TestScene::initialize()
 {
     FMODManager::getInstance()->loadBank(":/assets/sounds/Master Bank.bank");
@@ -82,9 +97,10 @@ void TestScene::initialize()
     createUiButton(":/assets/ui/ice.png", TowerComponent::TowerType::ICE);
     createUiButton(":/assets/ui/lightning.png", TowerComponent::TowerType::LIGHTNING);
     container->resize(towersIconsLayout->count() * 75, 69);
+
     this->addCallBack([=]() {
         container->move(Game::Graphics::width() * 0.5 - container->width() * 0.5,
-                              Game::Graphics::height() - container->height() * 1.2);
+                        Game::Graphics::height() - container->height() * 1.2);
     });
 
     tiuw = new TowerInfoUpgradeWindow(this);
@@ -92,8 +108,7 @@ void TestScene::initialize()
     connect(tiuw->getSpeedUpgrageButton(), SIGNAL(clicked(bool)), this, SLOT(upgradeSpeedClicked()));
 
     lag = new LifeAndGoldWindow(this);
-
-    Player::getInstance()->earnGold(135);
+    ylw = new YouLoseWindow(this);
 
     towerGhost = nullptr;
 
@@ -103,64 +118,65 @@ void TestScene::initialize()
     dummy = Entity::pool->obtain();
     map->addChild(dummy);
 
-    Player::getInstance()->setMaxLifePoints(10);
-    Player::getInstance()->heal(10);
+    Player::getInstance()->init(10, 135);
 
     FMODManager::getInstance()->setCurrentMusic("event:/musique");
     FMODManager::getInstance()->startCurrentMusic();
-//    FMODManager::getInstance()->setCurrentMusicVolume(0.5);
+    //    FMODManager::getInstance()->setCurrentMusicVolume(0.5);
     FMODManager::getInstance()->setCurrentMusicVolume(0);
 }
 
 void TestScene::update(float delta) {
-    QVector3D v = camera->screenToWorld(
-                QVector3D(Game::Graphics::width() * 0.5, Game::Graphics::height() * 0.5, 0),
-                dummy->getModelViewMatrix(), dummy->getProjectionMatrix());
-
-    v.setX(v.x() / 768);
-    v.setY(v.y() / 624);
-    FMODManager::getInstance()->setListenerPosition(v);
-
-    FMODManager::getInstance()->setCurrentMusicParameterValue("life", pow(Player::getInstance()->getMissingLifePercentage(), 2));
-
-    if(towerGhost != nullptr) {
-
-        QVector3D v = camera->screenToWorld(
-                    QVector3D(mouseX, mouseY, towerGhost->getPosition().z()),
-                    towerGhost->getModelViewMatrix(), towerGhost->getProjectionMatrix());
-
-        towerGhost->setPosition(v);
-        v = towerGhost->getLocalPosition();
-        v.setZ(map->getComponent<MapComponent>()->getZ(v.x(), v.y()));
-//        v.setZ(static_cast<MapComponent*>(map->getComponent(MapComponent::name))->getZ(v.x(), v.y()));
-
-        towerGhost->setPosition(v);
-    }
-
-    QVector3D cam = camera->getPosition();
-
-    if(mouseX > Game::Graphics::width() * 0.95) {
-        cam.setX(cam.x() - 10);
-    }
-
-    if(mouseX < Game::Graphics::width() * 0.05) {
-        cam.setX(cam.x() + 10);
-    }
-
-    if(mouseY > Game::Graphics::height() * 0.95) {
-        cam.setY(cam.y() + 10);
-    }
-
-    if(mouseY < Game::Graphics::height() * 0.05) {
-        cam.setY(cam.y() - 10);
-    }
-
-    camera->setPosition(cam);
-
-    this->lockCursorInsideWindow();
     lag->update();
+    if(Player::getInstance()->getLifePoints() <= 0) {
+        ylw->show(delta);
+    } else {
+        QVector3D v = camera->screenToWorld(
+                    QVector3D(Game::Graphics::width() * 0.5, Game::Graphics::height() * 0.5, 0),
+                    dummy->getModelViewMatrix(), dummy->getProjectionMatrix());
 
-    Scene::update(delta);
+        v.setX(v.x() / 768);
+        v.setY(v.y() / 624);
+        FMODManager::getInstance()->setListenerPosition(v);
+
+        FMODManager::getInstance()->setCurrentMusicParameterValue("life", pow(Player::getInstance()->getMissingLifePercentage(), 2));
+
+        if(towerGhost != nullptr) {
+
+            QVector3D v = camera->screenToWorld(
+                        QVector3D(mouseX, mouseY, towerGhost->getPosition().z()),
+                        towerGhost->getModelViewMatrix(), towerGhost->getProjectionMatrix());
+
+            towerGhost->setPosition(v);
+            v = towerGhost->getLocalPosition();
+            v.setZ(map->getComponent<MapComponent>()->getZ(v.x(), v.y()));
+            towerGhost->setPosition(v);
+        }
+
+        QVector3D cam = camera->getPosition();
+
+        if(mouseX > Game::Graphics::width() * 0.95) {
+            cam.setX(cam.x() - 10);
+        }
+
+        if(mouseX < Game::Graphics::width() * 0.05) {
+            cam.setX(cam.x() + 10);
+        }
+
+        if(mouseY > Game::Graphics::height() * 0.95) {
+            cam.setY(cam.y() + 10);
+        }
+
+        if(mouseY < Game::Graphics::height() * 0.05) {
+            cam.setY(cam.y() - 10);
+        }
+
+        camera->setPosition(cam);
+
+        this->lockCursorInsideWindow();
+
+        Scene::update(delta);
+    }
 }
 
 void TestScene::onAddTowerButtonClicked(TowerComponent::TowerType type)
@@ -291,29 +307,29 @@ bool TestScene::handleEvent(QEvent *event)
             camera->setScale(v);
             return true;
 
-//        case Qt::Key_Eacute:
-//            v = camera->getPosition();
-//            v.setY(v.y() + 5);
-//            camera->setPosition(v);
-//            return true;
+            //        case Qt::Key_Eacute:
+            //            v = camera->getPosition();
+            //            v.setY(v.y() + 5);
+            //            camera->setPosition(v);
+            //            return true;
 
-//        case Qt::Key_U:
-//            v = camera->getPosition();
-//            v.setY(v.y() - 5);
-//            camera->setPosition(v);
-//            return true;
+            //        case Qt::Key_U:
+            //            v = camera->getPosition();
+            //            v.setY(v.y() - 5);
+            //            camera->setPosition(v);
+            //            return true;
 
-//        case Qt::Key_A:
-//            v = camera->getPosition();
-//            v.setX(v.x() - 5);
-//            camera->setPosition(v);
-//            return true;
+            //        case Qt::Key_A:
+            //            v = camera->getPosition();
+            //            v.setX(v.x() - 5);
+            //            camera->setPosition(v);
+            //            return true;
 
-//        case Qt::Key_I:
-//            v = camera->getPosition();
-//            v.setX(v.x() + 5);
-//            camera->setPosition(v);
-//            return true;
+            //        case Qt::Key_I:
+            //            v = camera->getPosition();
+            //            v.setX(v.x() + 5);
+            //            camera->setPosition(v);
+            //            return true;
 
         case Qt::Key_B:
             onAddTowerButtonClicked(TowerComponent::TowerType::BULLET);
@@ -333,6 +349,7 @@ bool TestScene::handleEvent(QEvent *event)
 
         case Qt::Key_Space:
             makeCurrent();
+            Player::getInstance()->takeDamage(10);
             if(displayLines) {
                 glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
             } else {
@@ -385,10 +402,10 @@ void TestScene::createUiButton(QString bgImage, TowerComponent::TowerType type)
     towersIconsLayout->addWidget(button);
     button->setFocusPolicy(Qt::NoFocus);
     button->setText(bgImage.split("/").last().split(".").first());
-//    button->setStyleSheet(QString() + "background-image:url(" + bgImage + ");");
+    //    button->setStyleSheet(QString() + "background-image:url(" + bgImage + ");");
     button->setFixedSize(69, 69);
     connect(button, SIGNAL(clicked(bool)), mapper, SLOT(map()));
     connect(mapper, SIGNAL(mapped(int)), this, SLOT(onAddTowerButtonClickedInt(int)));
     towersIconsLayout->setMargin(0);
-//    button->setDisabled(towersIconsLayout->count() > 2);
+    //    button->setDisabled(towersIconsLayout->count() > 2);
 }

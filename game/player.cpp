@@ -6,6 +6,13 @@ Player *Player::getInstance()
     return instance;
 }
 
+void Player::init(int life, int gold)
+{
+    this->lifePoints = life;
+    this->maxLifePoints = life;
+    this->golds = gold;
+}
+
 void Player::setMaxLifePoints(int amount)
 {
     maxLifePoints = amount;
@@ -32,6 +39,8 @@ void Player::takeDamage(int amount)
     FMODManager::getInstance()->startEventInstance();
 
     lifePoints -= amount;
+
+    if(lifePoints < 0) lifePoints = 0;
 }
 
 int Player::getGold() const
@@ -46,7 +55,6 @@ void Player::earnGold(int amount)
 
 void Player::spendGold(int amount)
 {
-    qDebug() << "amount =" << amount;
     golds -= amount;
 }
 

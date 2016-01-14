@@ -25,6 +25,7 @@
 #include "game/trianglecomponent.h"
 #include "game/testscene.h"
 #include "engine/tools/fileutility.h"
+#include "engine/components/volumecomponent.h"
 
 #include "consts.h"
 
@@ -33,7 +34,6 @@ int main(int argc, char **argv)
     srand(time(NULL));
 
     QApplication app(argc, argv);
-
     Game::getInstance()->initialize();
 
     Game::getInstance()->setScene(new TestScene());

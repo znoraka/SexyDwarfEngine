@@ -28,6 +28,7 @@ void Camera::initialize(qreal ratio, qreal width, qreal height, qreal near, qrea
 
 void Camera::update(float delta)
 {
+
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     glOrtho(0.0, WIDTH, 0.0, HEIGHT, near * getScale().x(), far * getScale().y());
@@ -35,6 +36,13 @@ void Camera::update(float delta)
     glLoadIdentity();
 
     glViewport(0, 0, Game::Graphics::width(), Game::Graphics::height());
+
+    glColor3f(1, 0, 0);
+    glBegin(GL_TRIANGLES);
+    glVertex3f(10000, 0, 0);
+    glVertex3f(0, 10000, 0);
+    glVertex3f(10000, 10000, 0);
+    glEnd();
 
     glTranslatef(position.x(), position.y(), position.z());
     glRotatef(rotation.x(), 1, 0, 0);

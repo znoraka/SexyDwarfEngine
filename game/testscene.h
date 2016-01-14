@@ -28,6 +28,8 @@ class TestScene : public Scene
     Q_OBJECT
 public:
     TestScene();
+    void destroyData();
+    ~TestScene();
     void initialize();
     void update(float delta);
 
@@ -40,8 +42,7 @@ public slots:
 
 private:
     bool handleEvent(QEvent *event);
-    QPushButton *slowTowerButton;
-    Entity *towerGhost, *towerGhost2, *towerGhost3;
+    Entity *towerGhost;
     Entity *map, *dummy, *boss, *clickedEntity;
     TowerComponent *towerComponent;
     VolumeComponent *towerVolume;
@@ -52,6 +53,7 @@ private:
 
     TowerInfoUpgradeWindow *tiuw;
     LifeAndGoldWindow *lag;
+    YouLoseWindow *ylw;
 
     QHash<TowerComponent::TowerType, TowerComponent*> towerComponents;
 

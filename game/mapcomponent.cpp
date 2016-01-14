@@ -31,6 +31,28 @@ const QString MapComponent::componentName() const
 
 void MapComponent::release()
 {
+    vao.destroy();
+    m_vertexbuffer.destroy();
+    m_normalbuffer.destroy();
+    m_colorbuffer.destroy();
+    m_indexbuffer.destroy();
+
+    glTexture->destroy();
+
+    verticesSet.clear();
+
+    verticesArray.clear();
+    normalsArray.clear();
+    colorsArray.clear();
+    indexesArray.clear();
+
+    enemiesTemplate.clear();
+    waves.clear();
+
+    volumeComponent->deleteBuffersData();
+
+    delete enemies;
+    delete shader;
     MapComponent::pool->release(this);
 }
 
@@ -39,7 +61,7 @@ MapComponent *MapComponent::init(QString mapFolder)
     this->elapsed = 0;
     this->waveIndex = 0;
     this->enemies = new QList<Entity *>();
-    this->volumeComponent = VolumeComponent::pool->obtain()->init(":/assets/ply/tower.ply");
+    this->volumeComponent = VolumeComponent::pool->obtain()->init(":/assets/ply/sphere.ply");
     this->pathFollowerComponent = PathFollowerComponent::pool->obtain()->init(mapFolder, this, 0.1);
 
     heightmap = QImage(mapFolder + "h.png").mirrored();
@@ -221,11 +243,12 @@ void MapComponent::update(float delta)
         EnemyComponent *ec = enemiesTemplate[s.name];
         Entity *e = Entity::pool->obtain()->
                 addComponent(ec->clone())->
+//                addComponent(VolumeComponent::pool->obtain()->init(":/assets/ply/sphere.ply"))->
                 addComponent(volumeComponent->clone())->
                 addComponent(pathFollowerComponent->clone())->
                 setPosition(s.x, s.y, getZ(s.x, s.y))->
                 setRotation(90, -90, 0)->
-                setScale(10.05, 10.05, 10.05);
+                setScale(.05, .05, .05);
         this->getEntity()->addChild(e);
         this->enemies->append(e);
         qDebug() << "added enemy";

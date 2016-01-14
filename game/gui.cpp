@@ -1,5 +1,6 @@
 #include "gui.h"
 #include "engine/game.h"
+#include "testscene.h"
 
 Gui::Gui()
 {
@@ -35,6 +36,20 @@ TowerInfoUpgradeWindow::TowerInfoUpgradeWindow(QWidget *parent) : QWidget(parent
     this->setStyleSheet("background-color:white;");
 
     this->setVisible(false);
+}
+
+TowerInfoUpgradeWindow::~TowerInfoUpgradeWindow()
+{
+    delete vlayout;
+    delete hlayout;
+    delete upgradeDamage;
+    delete upgradeSpeed;
+    delete damagePrice;
+    delete speedPrice;
+    delete damage;
+    delete range;
+    delete speed;
+    delete container;
 }
 
 void TowerInfoUpgradeWindow::show(int x, int y, Entity *tower)
@@ -115,9 +130,85 @@ LifeAndGoldWindow::LifeAndGoldWindow(QWidget *parent) : QWidget(parent)
     this->setVisible(true);
 }
 
+LifeAndGoldWindow::~LifeAndGoldWindow()
+{
+    delete layout;
+    delete sublayoutLeft;
+    delete sublayoutRight;
+    delete container1;
+    delete container2;
+//    delete life;
+//    delete gold;
+//    delete healthImage;
+//    delete goldImage;
+}
+
 void LifeAndGoldWindow::update()
 {
     life->setText(QString::number(Player::getInstance()->getLifePoints()));
     gold->setText(QString::number(Player::getInstance()->getGold()));
     move(Game::Graphics::width() * 0.5 - this->width() * 0.5, this->height() * 0.2);
+}
+
+YouLoseWindow::YouLoseWindow(QWidget *parent) : QWidget(parent)
+{
+    this->setVisible(false);
+    youlose = new QLabel("Perdu !");
+    youlose->setAlignment(Qt::AlignCenter);
+//    youlose->setStyleSheet("font:136pt;background-color:rgba(20, 20, 20, 0);");
+//    this->setStyleSheet("background-color:rgba(120, 20, 20, 0)");
+
+    container = new QWidget();
+    container->setStyleSheet("background-color:rgba(20, 20, 20, 0)");
+    restart = new QPushButton("Recommencer");
+    quit = new QPushButton("Quitter");
+    restart->setStyleSheet("background-color: white; font:30pt");
+    quit->setStyleSheet("background-color: white; font:30pt");
+    hlayout = new QHBoxLayout(container);
+    hlayout->addWidget(restart);
+    hlayout->addWidget(quit);
+
+    layout = new QVBoxLayout(this);
+    layout->addWidget(youlose);
+    layout->addWidget(container);
+    this->opacity = 0;
+
+    connect(restart, SIGNAL(clicked(bool)), this, SLOT(onRestartClick()));
+    connect(quit, SIGNAL(clicked(bool)), this, SLOT(onQuitClick()));
+}
+
+void YouLoseWindow::show(float delta)
+{
+    this->setVisible(true);
+    opacity += delta * 0.1;
+    if(opacity > 150) {
+        opacity = 150;
+    }
+    restart->setMaximumWidth(Game::Graphics::width() * 0.2);
+    restart->setMinimumHeight(Game::Graphics::height() * 0.1);
+    quit->setMaximumWidth(Game::Graphics::width() * 0.2);
+    quit->setMinimumHeight(Game::Graphics::height() * 0.1);
+    youlose->setStyleSheet("font:136pt;background-color:rgba(20, 20, 20, 0)");
+    this->setStyleSheet("background:rgba(120, 20, 20, " + QString::number(opacity) + ")");
+    this->resize(Game::Graphics::width(), Game::Graphics::height());
+    this->move(Game::Graphics::width() * 0.5 - this->width() * 0.5, Game::Graphics::height() * 0.5 - this->height() * 0.5);
+}
+
+void YouLoseWindow::onRestartClick()
+{
+    Game::getInstance()->setScene(new TestScene());
+}
+
+void YouLoseWindow::onQuitClick()
+{
+    Game::exit();
+}
+
+void YouLoseWindow::paintEvent(QPaintEvent *pe)
+{
+  QStyleOption o;
+  o.initFrom(this);
+  QPainter p(this);
+  style()->drawPrimitive(
+    QStyle::PE_Widget, &o, &p, this);
 }

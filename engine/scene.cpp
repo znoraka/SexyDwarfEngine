@@ -6,9 +6,22 @@ Scene::Scene()
     camera = new Camera();
 }
 
+Scene::~Scene()
+{
+}
+
+void Scene::destroyData()
+{
+    this->makeCurrent();
+    for(auto i : entities) {
+        i->release();
+    }
+    delete camera;
+}
+
 void Scene::initialize()
 {
-    camera->initialize(Game::Graphics::width() / Game::Graphics::height(), Game::Graphics::width(), Game::Graphics::height(), -1000, 1000);
+
 }
 
 void Scene::addEntity(Entity *entity)

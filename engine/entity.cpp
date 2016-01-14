@@ -50,10 +50,12 @@ QVector<Component *> Entity::getComponents()
 void Entity::release()
 {
     foreach (Component *var, components) {
+        qDebug() << "releasing " << var->componentName();
         var->release();
     }
     this->dirty = true;
-    this->parent->removeChild(this);
+    if(this->parent != nullptr)
+        this->parent->removeChild(this);
     this->parent = nullptr;
     components.clear();
     foreach (Entity *e, children) {

@@ -34,6 +34,8 @@ class Scene : public QOpenGLWidget
 
 public:
     Scene();
+    ~Scene();
+    void destroyData();
     void addEntity(Entity *entity);
     void removeEntity(Entity *entity);
     bool isReady() const;
