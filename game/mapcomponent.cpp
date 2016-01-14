@@ -353,7 +353,7 @@ void MapComponent::parseJsonWaves()
 
         for(auto i : o) {
             QJsonObject o1 = i.toObject();
-            e.push_back(EnemyStruct(o1.value("name").toString(), o1.value("time").toInt(), o1.value("x").toInt(), o1.value("y").toInt()));
+            e.push_back(EnemyStruct(o1.value("name").toString(), o1.value("time").toDouble(), o1.value("x").toInt(), o1.value("y").toInt()));
         }
 
         std::sort(e.begin(), e.end(), [](EnemyStruct a, EnemyStruct b) {

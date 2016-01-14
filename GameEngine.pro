@@ -37,7 +37,8 @@ SOURCES += \
     game/enemycomponent.cpp \
     engine/fmodmanager.cpp \
     game/player.cpp \
-    game/gui.cpp
+    game/gui.cpp \
+    game/goldearnedcomponent.cpp
 
 HEADERS  += \
     engine/camera.h \
@@ -65,7 +66,8 @@ HEADERS  += \
     game/enemycomponent.h \
     engine/fmodmanager.h \
     game/player.h \
-    game/gui.h
+    game/gui.h \
+    game/goldearnedcomponent.h
 
 FORMS    +=
 QMAKE_CXXFLAGS += -std=c++11 -lGL -lGLU -lglut -lassimp -libfmodstudio -libfmod -lfmod -lfmodstudio

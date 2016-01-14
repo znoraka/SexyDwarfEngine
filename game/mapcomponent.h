@@ -54,13 +54,13 @@ public:
 
 private:
     struct EnemyStruct {QString name;
-                        int time;
+                        float time;
                         int x, y;
                         QString toString() {
                             return QString() + "{" + "name:" + name + ", time:" + QString::number(time) + ", x:" + QString::number(x) + ", y:" + QString::number(y) + "}";
                         }
                         EnemyStruct(){}
-                        EnemyStruct(QString name, int time, int x, int y) {
+                        EnemyStruct(QString name, float time, int x, int y) {
                             this->name = name;
                             this->time = time;
                             this->x = x;

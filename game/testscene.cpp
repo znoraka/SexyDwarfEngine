@@ -93,7 +93,7 @@ void TestScene::initialize()
 
     lag = new LifeAndGoldWindow(this);
 
-    Player::getInstance()->earnGold(2175);
+    Player::getInstance()->earnGold(135);
 
     towerGhost = nullptr;
 

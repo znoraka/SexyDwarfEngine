@@ -35,7 +35,8 @@ private:
     Entity *lastEntity;
 };
 
-class LifeAndGoldWindow : public QWidget{
+class LifeAndGoldWindow : public QWidget
+{
 public:
     LifeAndGoldWindow(QWidget *parent = 0);
     void update();

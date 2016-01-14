@@ -49,8 +49,6 @@ private:
     EnemyComponent *enemyComponent;
 
     QHBoxLayout *towersIconsLayout;
-//    QWidget *upgradeTowersContainer;
-//    QLabel *towersInfosLabel;
 
     TowerInfoUpgradeWindow *tiuw;
     LifeAndGoldWindow *lag;
