@@ -1,4 +1,5 @@
 #include "scene.h"
+#include "game.h"
 
 Scene::Scene()
 {
@@ -7,7 +8,7 @@ Scene::Scene()
 
 void Scene::initialize()
 {
-    camera->initialize(WIDTH / HEIGHT, WIDTH, HEIGHT, -1000, 1000);
+    camera->initialize(Game::Graphics::width() / Game::Graphics::height(), Game::Graphics::width(), Game::Graphics::height(), -1000, 1000);
 }
 
 void Scene::addEntity(Entity *entity)

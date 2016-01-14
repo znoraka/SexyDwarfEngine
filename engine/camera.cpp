@@ -1,4 +1,5 @@
 #include "camera.h"
+#include "game.h"
 
 Camera::Camera()
 {
@@ -29,10 +30,11 @@ void Camera::update(float delta)
 {
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    glOrtho(0.0, width, 0.0, height, near * getScale().x(), far * getScale().y());
+    glOrtho(0.0, WIDTH, 0.0, HEIGHT, near * getScale().x(), far * getScale().y());
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-    glViewport(0, 0, width, height);
+
+    glViewport(0, 0, Game::Graphics::width(), Game::Graphics::height());
 
     glTranslatef(position.x(), position.y(), position.z());
     glRotatef(rotation.x(), 1, 0, 0);
@@ -149,8 +151,8 @@ QPointF Camera::worldToScreen(QVector3D vec, QMatrix4x4 modelview, QMatrix4x4 pr
 //    p.setX(tmp.x() * (viewport[2] - viewport[0]));
 //    p.setY(tmp.y() * (viewport[3] - viewport[1]));
 
-    p.setX(tmp.x() * WIDTH);
-    p.setY(HEIGHT - tmp.y() * HEIGHT);
+    p.setX(tmp.x() * Game::Graphics::width());
+    p.setY(Game::Graphics::height() - tmp.y() * Game::Graphics::height());
 
     return p;
 }

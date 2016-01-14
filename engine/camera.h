@@ -11,9 +11,10 @@
 
 #include "consts.h"
 
+class Game;
+
 class Camera
 {
-#define EPSILON 0.000001
 public:
     Camera();
 

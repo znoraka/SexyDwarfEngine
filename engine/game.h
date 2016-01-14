@@ -36,6 +36,12 @@ public:
 
     QWidget *getWidgetContainer() const;
 
+    class Graphics {
+    public:
+        static float width();
+        static float height();
+    };
+
 public slots:
     void update();
 

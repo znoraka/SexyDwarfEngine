@@ -24,7 +24,7 @@ void TestScene::initialize()
     glShadeModel(GL_SMOOTH);
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
     glClearDepth(1.0f);
-    camera->initialize(WIDTH / HEIGHT, WIDTH, HEIGHT, -1000, 1000);
+    camera->initialize(Game::Graphics::width() / Game::Graphics::height(), Game::Graphics::width(), Game::Graphics::height(), -1000, 1000);
     QVector3D pos = camera->getPosition();
 
     camera->setPosition(200, 0, 0);
@@ -82,8 +82,10 @@ void TestScene::initialize()
     createUiButton(":/assets/ui/ice.png", TowerComponent::TowerType::ICE);
     createUiButton(":/assets/ui/lightning.png", TowerComponent::TowerType::LIGHTNING);
     container->resize(towersIconsLayout->count() * 75, 69);
-    container->move(WIDTH * 0.5 - container->width() * 0.5,
-                          HEIGHT - container->height() * 1.2);
+    this->addCallBack([=]() {
+        container->move(Game::Graphics::width() * 0.5 - container->width() * 0.5,
+                              Game::Graphics::height() - container->height() * 1.2);
+    });
 
     tiuw = new TowerInfoUpgradeWindow(this);
     connect(tiuw->getDamageUpgradeButton(), SIGNAL(clicked(bool)), this, SLOT(upgradeDamageClicked()));
@@ -112,7 +114,7 @@ void TestScene::initialize()
 
 void TestScene::update(float delta) {
     QVector3D v = camera->screenToWorld(
-                QVector3D(WIDTH * 0.5, HEIGHT * 0.5, 0),
+                QVector3D(Game::Graphics::width() * 0.5, Game::Graphics::height() * 0.5, 0),
                 dummy->getModelViewMatrix(), dummy->getProjectionMatrix());
 
     v.setX(v.x() / 768);
@@ -129,26 +131,27 @@ void TestScene::update(float delta) {
 
         towerGhost->setPosition(v);
         v = towerGhost->getLocalPosition();
-        v.setZ(static_cast<MapComponent*>(map->getComponent(MapComponent::name))->getZ(v.x(), v.y()));
+        v.setZ(map->getComponent<MapComponent>()->getZ(v.x(), v.y()));
+//        v.setZ(static_cast<MapComponent*>(map->getComponent(MapComponent::name))->getZ(v.x(), v.y()));
 
         towerGhost->setPosition(v);
     }
 
     QVector3D cam = camera->getPosition();
 
-    if(mouseX > WIDTH * 0.95) {
+    if(mouseX > Game::Graphics::width() * 0.95) {
         cam.setX(cam.x() - 10);
     }
 
-    if(mouseX < WIDTH * 0.05) {
+    if(mouseX < Game::Graphics::width() * 0.05) {
         cam.setX(cam.x() + 10);
     }
 
-    if(mouseY > HEIGHT * 0.95) {
+    if(mouseY > Game::Graphics::height() * 0.95) {
         cam.setY(cam.y() + 10);
     }
 
-    if(mouseY < HEIGHT * 0.05) {
+    if(mouseY < Game::Graphics::height() * 0.05) {
         cam.setY(cam.y() - 10);
     }
 
@@ -338,7 +341,7 @@ bool TestScene::handleEvent(QEvent *event)
             displayLines = !displayLines;
 
             qDebug() << "center pos = " << camera->screenToWorld(
-                            QVector3D(WIDTH * 0.5, HEIGHT * 0.5, 0),
+                            QVector3D(Game::Graphics::width() * 0.5, Game::Graphics::height() * 0.5, 0),
                             dummy->getModelViewMatrix(), dummy->getProjectionMatrix());
             return true;
 
@@ -353,16 +356,16 @@ void TestScene::lockCursorInsideWindow()
     QPoint p(QCursor::pos() - mapToGlobal(this->pos()));
 
 
-    if(p.x() > WIDTH) {
-        p.setX(WIDTH);
+    if(p.x() > Game::Graphics::width()) {
+        p.setX(Game::Graphics::width());
     }
 
     if(p.x() < 0) {
         p.setX(0);
     }
 
-    if(p.y() > HEIGHT) {
-        p.setY(HEIGHT);
+    if(p.y() > Game::Graphics::height()) {
+        p.setY(Game::Graphics::height());
     }
 
     if(p.y() < 0) {

@@ -10,11 +10,14 @@ Game *Game::getInstance()
 void Game::initialize()
 {
     mainWindow = new MainWindow();
-    mainWindow->resize(WIDTH, HEIGHT);
+//    mainWindow->resize(WIDTH, HEIGHT);
     container = new QWidget();
     mainWindow->setCentralWidget(container);
     mainWindow->setVisible(true);
     mainWindow->setMouseTracking(true);
+    mainWindow->showFullScreen();
+//    WIDTH = mainWindow->width();
+//    HEIGHT = mainWindow->height();
 
     QObject::connect(&timer, SIGNAL(timeout()), this, SLOT(update()));
     firstEventList = true;
@@ -143,4 +146,14 @@ void MainWindow::mouseReleaseEvent(QMouseEvent *event)
 //    QMouseEvent *q = new QMouseEvent(*event);
 //    Game::getInstance()->addEvent(q);
     Game::getInstance()->addEvent(event);
+}
+
+float Game::Graphics::width()
+{
+    return instance->mainWindow->width();
+}
+
+float Game::Graphics::height()
+{
+    return instance->mainWindow->height();
 }

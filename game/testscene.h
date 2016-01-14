@@ -16,6 +16,7 @@
 #include "player.h"
 #include "consts.h"
 #include "gui.h"
+#include "engine/game.h"
 
 #include <QCursor>
 #include <QHBoxLayout>

@@ -8,6 +8,9 @@
 #define WIDTH 1366
 #define HEIGHT 768
 
+//float WIDTH;
+//float HEIGHT;
+
 
 #define TILE_SIZE 32
 

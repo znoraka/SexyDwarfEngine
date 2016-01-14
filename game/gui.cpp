@@ -1,4 +1,5 @@
 #include "gui.h"
+#include "engine/game.h"
 
 Gui::Gui()
 {
@@ -118,5 +119,5 @@ void LifeAndGoldWindow::update()
 {
     life->setText(QString::number(Player::getInstance()->getLifePoints()));
     gold->setText(QString::number(Player::getInstance()->getGold()));
-    move(WIDTH * 0.5 - this->width() * 0.5, this->height() * 0.2);
+    move(Game::Graphics::width() * 0.5 - this->width() * 0.5, this->height() * 0.2);
 }
