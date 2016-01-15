@@ -26,6 +26,7 @@
 #include "game/testscene.h"
 #include "engine/tools/fileutility.h"
 #include "engine/components/volumecomponent.h"
+#include "game/splashscreenscene.h"
 
 #include "consts.h"
 
@@ -36,7 +37,7 @@ int main(int argc, char **argv)
     QApplication app(argc, argv);
     Game::getInstance()->initialize();
 
-    Game::getInstance()->setScene(new TestScene());
+    Game::getInstance()->setScene(new SplashScreenScene());
 
     return app.exec();
 }

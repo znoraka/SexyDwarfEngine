@@ -282,6 +282,7 @@ VolumeComponent *VolumeComponent::clone()
     v->m_colorbuffer = m_colorbuffer;
     v->m_indexbuffer = m_indexbuffer;
     v->shader = shader;
+    v->color = color;
 //    v->vao = vao;
 
     return v;

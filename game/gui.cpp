@@ -68,8 +68,8 @@ void TowerInfoUpgradeWindow::hide()
 void TowerInfoUpgradeWindow::update()
 {
     TowerComponent *t = lastEntity->getComponent<TowerComponent>();
-    upgradeDamage->setEnabled(t->getDamageUpgradePrice() < Player::getInstance()->getGold());
-    upgradeSpeed->setEnabled(t->getSpeedUpgradePrice() < Player::getInstance()->getGold());
+    upgradeDamage->setEnabled(t->getDamageUpgradePrice() <= Player::getInstance()->getGold());
+    upgradeSpeed->setEnabled(t->getSpeedUpgradePrice() <= Player::getInstance()->getGold());
     damagePrice->setText(QString() + "Damage upgrade = " + QString::number(t->getDamageUpgradePrice()) + "$");
     speedPrice->setText(QString() + "Speed upgrade = " + QString::number(t->getSpeedUpgradePrice()) + "$");
     damage->setText(QString() + "Damage = " + QString::number(t->getDamage()));

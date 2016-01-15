@@ -204,6 +204,23 @@ void TowerComponent::shoot()
     FMODManager::getInstance()->setParameterValue("pitch", 0.4 + (qrand() % 100) * 0.001);
     FMODManager::getInstance()->startEventInstance();
 
+    switch (type) {
+    case BULLET:
+        volume->setColor(QVector4D(0, 0.70, 0.01, 1));
+        break;
+    case FIRE:
+        volume->setColor(QVector4D(1, 0.32, 0, 1));
+        break;
+    case ICE:
+        volume->setColor(QVector4D(0, 0.55, 0.70, 1));
+        break;
+    case LIGHTNING:
+        volume->setColor(QVector4D(0.8, 0.8, 0.8, 1));
+        break;
+    default:
+        break;
+    }
+
     Entity *e = Entity::pool->obtain()->
             addComponent(BulletComponent::pool->obtain()->init(target, 0.5, damage))->
             addComponent(volume->clone())->
