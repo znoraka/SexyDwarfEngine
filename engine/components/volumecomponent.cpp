@@ -34,7 +34,7 @@ void VolumeComponent::release()
 //    this->m_colorbuffer.destroy();
 //    this->m_indexbuffer.destroy();
 
-    VolumeComponent::pool->release(this);
+//    VolumeComponent::pool->release(this);
 }
 
 VolumeComponent *VolumeComponent::init(QString filePath)

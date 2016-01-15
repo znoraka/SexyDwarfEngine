@@ -29,61 +29,67 @@ PathFollowerComponent *PathFollowerComponent::init(QString mapFolder, MapCompone
 
 void PathFollowerComponent::update(float delta)
 {
-    EnemyComponent *e = static_cast<EnemyComponent*>(getEntity()->getComponent(EnemyComponent::name));
+    EnemyComponent *e = getEntity()->getComponent<EnemyComponent>();
 
     if(e != nullptr) {
         speed = e->getSpeed();
     }
+    delta *= speed * 0.25;
 
-    delta *= speed;
-    QVector3D v = getEntity()->getLocalPosition();
+    MapComponent *m = getEntity()->getParent()->getComponent<MapComponent>();
 
-    v.setZ(static_cast<MapComponent*>(getEntity()->getParent()->getComponent(MapComponent::name))->getZ(v.x(), v.y()));
+    if(m == nullptr) return;
 
-    //    red = right
-    //    blue = left
-    //    green = down
-    //    white = up
+    for (int i = 0; i < 4; ++i) {
+        QVector3D v = getEntity()->getLocalPosition();
 
-    float x = v.x();
-    float y = path.height() - v.y();
+        v.setZ(m->getZ(v.x(), v.y()));
 
-    if(x < 0 || y < 0 || x > path.width() || y > path.height()) {
-        return;
+        //    red = right
+        //    blue = left
+        //    green = down
+        //    white = up
+
+        float x = v.x();
+        float y = path.height() - v.y();
+
+        if(x < 0 || y < 0 || x > path.width() || y > path.height()) {
+            return;
+        }
+
+        QRgb pixel = path.pixel(x, y);
+
+        if(qRed(pixel) == 255 && qGreen(pixel) == 255 && qBlue(pixel) == 255) {
+            //up
+            getEntity()->setRotation(0, 0, 0);
+            direction.setX(0);
+            direction.setY(1 * delta);
+        } else if (qRed(pixel) == 255 && qBlue(pixel) == 255) {
+            //reached base
+
+            EnemyComponent *e = getEntity()->getComponent<EnemyComponent>();
+            if(e == nullptr) return;
+            e->die();
+            Player::getInstance()->takeDamage(1);
+
+        } else if (qRed(pixel) == 255) {
+            //right
+            getEntity()->setRotation(0, 0, 0);
+            direction.setX(1 * delta);
+            direction.setY(0);
+        } else if (qGreen(pixel) == 255) {
+            //down
+            getEntity()->setRotation(0, 0, 180);
+            direction.setX(0);
+            direction.setY(-1 * delta);
+        } else if (qBlue(pixel) == 255) {
+            //left
+            getEntity()->setRotation(0, 0, 270);
+            direction.setX(-1 * delta);
+            direction.setY(0);
+        }
+        getEntity()->setPosition(v + direction);
     }
-
-    QRgb pixel = path.pixel(x, y);
-
-    if(qRed(pixel) == 255 && qGreen(pixel) == 255 && qBlue(pixel) == 255) {
-        //up
-        getEntity()->setRotation(0, 0, 0);
-        direction.setX(0);
-        direction.setY(1 * delta);
-    } else if (qRed(pixel) == 255 && qBlue(pixel) == 255) {
-        //reached base
-        EnemyComponent *e = static_cast<EnemyComponent*>(getEntity()->getComponent(EnemyComponent::name));
-        e->die();
-        Player::getInstance()->takeDamage(1);
-
-    } else if (qRed(pixel) == 255) {
-        //right
-        getEntity()->setRotation(0, 0, 0);
-        direction.setX(1 * delta);
-        direction.setY(0);
-    } else if (qGreen(pixel) == 255) {
-        //down
-        getEntity()->setRotation(0, 0, 180);
-        direction.setX(0);
-        direction.setY(-1 * delta);
-    } else if (qBlue(pixel) == 255) {
-        //left
-        getEntity()->setRotation(0, 0, 270);
-        direction.setX(-1 * delta);
-        direction.setY(0);
-    }
-    getEntity()->setPosition(v + direction);
-
-
 }
 
 PathFollowerComponent *PathFollowerComponent::clone()

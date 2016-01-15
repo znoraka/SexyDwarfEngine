@@ -25,9 +25,9 @@ template<typename T>
 void Pool<T>::release(T object)
 {
 //    delete object;
-//    if(!objects.contains(object)) {
-//        objects.push(object);
-//    }
+    if(!objects.contains(object)) {
+        objects.push(object);
+    }
 }
 
 

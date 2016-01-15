@@ -236,7 +236,6 @@ TowerButtons::TowerButtons(QWidget *parent) : QWidget(parent)
 {
     auto createButton = [=] (QString text, QSignalMapper *mapper) {
         QPushButton *p = new QPushButton(text);
-        p->setFixedSize(69, 69);
         p->setFocusPolicy(Qt::NoFocus);
         layout->addWidget(p);
         connect(p, SIGNAL(clicked(bool)), mapper, SLOT(map()));
@@ -253,22 +252,17 @@ TowerButtons::TowerButtons(QWidget *parent) : QWidget(parent)
     fire = createButton("Fire", fireMapper);
     ice = createButton("Ice", iceMapper);
     lightning = createButton("Lightning", lightningMapper);
-
-//    QPushButton *button = new QPushButton();
-//    QSignalMapper *mapper = new QSignalMapper(this);
-//    int n = type;
-//    towersIconsLayout->addWidget(button);
-//    button->setText(bgImage.split("/").last().split(".").first());
-//    //    button->setStyleSheet(QString() + "background-image:url(" + bgImage + ");");
-//    button->setFixedSize(69, 69);
-//    towersIconsLayout->setMargin(0);
-    //    //    button->setDisabled(towersIconsLayout->count() > 2);
 }
 
 void TowerButtons::update()
 {
-    this->setFixedSize(Game::Graphics::width() * 0.17, Game::Graphics::width() * 0.1);
+    this->setFixedSize(Game::Graphics::width() * 0.045 * 5, Game::Graphics::width() * 0.1);
     this->move(Game::Graphics::width() * 0.5 - this->width() * 0.5, Game::Graphics::height() - this->height() * 0.8);
+
+    poison->setFixedSize(Game::Graphics::width() * 0.045, Game::Graphics::width() * 0.045);
+    fire->setFixedSize(Game::Graphics::width() * 0.045, Game::Graphics::width() * 0.045);
+    ice->setFixedSize(Game::Graphics::width() * 0.045, Game::Graphics::width() * 0.045);
+    lightning->setFixedSize(Game::Graphics::width() * 0.045, Game::Graphics::width() * 0.045);
 
     poison->setEnabled(poisonPrice < Player::getInstance()->getGold());
     fire->setEnabled(firePrice < Player::getInstance()->getGold());

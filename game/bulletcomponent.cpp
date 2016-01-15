@@ -28,13 +28,13 @@ BulletComponent *BulletComponent::init(Entity *target, float speed, float damage
 
 void BulletComponent::update(float delta)
 {
-    EnemyComponent *enemy = static_cast<EnemyComponent*>(target->getComponent(EnemyComponent::name));
+    EnemyComponent *enemy = target->getComponent<EnemyComponent>();
 
     if(enemy != nullptr) {
         destination = target->getPosition();
     }
     QVector3D dir = -(this->getEntity()->getPosition() - destination);
-    if(dir.length() < 5) {
+    if(dir.length() < 10) {
         if(enemy != nullptr) {
             enemy->takeDamage(damage);
             QVector3D v = getEntity()->getPosition();
