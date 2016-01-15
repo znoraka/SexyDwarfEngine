@@ -91,7 +91,7 @@ void Entity::update(float delta)
     }
 
     foreach (Component *c, components) {
-        if(c != __null) {
+        if(c) {
             c->update(delta);
         }
     }

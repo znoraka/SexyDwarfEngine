@@ -1,16 +1,15 @@
 varying vec4 col;
 varying vec3 N;
 varying vec3 V;
+varying vec4 v_colAttr;
 uniform sampler2D tex;
 varying vec4 pos;
-varying float v_textureWidth;
-varying float v_textureHeight;
 
 #define MAX_LIGHTS 1 
 // #define MAX_LIGHTS 0
 void main (void) 
 { 
-   vec4 finalColor = vec4(0.0, 0.0, 0.0, 0.0);
+  vec4 finalColor = v_colAttr;
    
    for (int i=0;i<MAX_LIGHTS;i++)
    {
@@ -32,6 +31,9 @@ void main (void)
    
       finalColor += Iamb + Idiff + Ispec;
    }
-   
-   gl_FragColor = ((gl_FrontLightModelProduct.sceneColor + finalColor)) * texture2D(tex, vec2(pos.x / v_textureWidth, pos.y / v_textureHeight));
+   vec4 c = ((gl_FrontLightModelProduct.sceneColor + finalColor));
+   if(v_colAttr.w == 0) {
+     c = c + col;
+   }
+     gl_FragColor = c;
 }

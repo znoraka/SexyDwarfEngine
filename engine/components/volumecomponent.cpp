@@ -61,6 +61,13 @@ VolumeComponent *VolumeComponent::init(QString filePath)
     colorsArray.clear();
     indexesArray.clear();
 
+    color = QVector4D(0, 0, 0, 0);
+
+    shader = new QOpenGLShaderProgram();
+    shader->addShaderFromSourceFile(QOpenGLShader::Vertex, ":/assets/shaders/volume_vertex.glsl");
+    shader->addShaderFromSourceFile(QOpenGLShader::Fragment, ":/assets/shaders/volume_fragment.glsl");
+    qDebug() << "linked = " << shader->link();
+
     QStringList list;
     qDebug() << "loading " << filePath;
     QFile file( filePath );
@@ -233,8 +240,11 @@ void VolumeComponent::update(float delta)
 
 //    glPopMatrix();
 
+    shader->bind();
+    shader->setUniformValue("colAttr", color);
+
     glEnable(GL_COLOR_MATERIAL);
-    glColor4f(0, 1, 0, 0.5);
+//    glColor4f(0, 1, 0, 0.5);
     glEnableClientState(GL_VERTEX_ARRAY);
     glEnableClientState(GL_NORMAL_ARRAY);
     glEnableClientState(GL_COLOR_ARRAY);
@@ -253,6 +263,8 @@ void VolumeComponent::update(float delta)
     glDisableClientState(GL_COLOR_ARRAY);
     glDisableClientState(GL_NORMAL_ARRAY);
     glDisableClientState(GL_VERTEX_ARRAY);
+
+    shader->release();
 }
 
 VolumeComponent *VolumeComponent::clone()
@@ -269,6 +281,7 @@ VolumeComponent *VolumeComponent::clone()
     v->m_normalbuffer = m_normalbuffer;
     v->m_colorbuffer = m_colorbuffer;
     v->m_indexbuffer = m_indexbuffer;
+    v->shader = shader;
 //    v->vao = vao;
 
     return v;
@@ -336,6 +349,11 @@ QRectF VolumeComponent::getBounds() const
 QVector3D VolumeComponent::getSize() const
 {
     return size;
+}
+
+void VolumeComponent::setColor(QVector4D color)
+{
+    this->color = color;
 }
 
 void VolumeComponent::deleteBuffersData()

@@ -38,6 +38,23 @@ TowerComponent *TowerComponent::init(QVector3D canonPosition, QList<Entity *> *e
 
 void TowerComponent::update(float delta)
 {
+    switch (type) {
+    case BULLET:
+        getEntity()->getComponent<VolumeComponent>()->setColor(QVector4D(0, 0.70, 0.01, 1));
+        break;
+    case FIRE:
+        getEntity()->getComponent<VolumeComponent>()->setColor(QVector4D(1, 0.32, 0, 1));
+        break;
+    case ICE:
+        getEntity()->getComponent<VolumeComponent>()->setColor(QVector4D(0, 0.55, 0.70, 1));
+        break;
+    case LIGHTNING:
+        getEntity()->getComponent<VolumeComponent>()->setColor(QVector4D(0.8, 0.8, 0.8, 1));
+        break;
+    default:
+        break;
+    }
+
     this->setTarget();
 
     if(ready && target) {
@@ -67,6 +84,12 @@ TowerComponent *TowerComponent::clone()
     t->speedUpgradePrice = speedUpgradePrice;
     return t;
 }
+
+//TowerComponent *TowerComponent::setColorFromType(TowerComponent::TowerType type)
+//{
+
+//    return this;
+//}
 
 float TowerComponent::getRange() const
 {

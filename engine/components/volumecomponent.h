@@ -12,6 +12,7 @@
 #include <QMatrix4x4>
 #include <QTemporaryFile>
 #include <QSharedPointer>
+#include <QOpenGLShader>
 //#include <assimp/scene.h>
 //#include <assimp/postprocess.h>
 //#include <assimp/Importer.hpp>
@@ -71,6 +72,8 @@ public:
     QRectF getBounds() const;
     QVector3D getSize() const;
 
+    void setColor(QVector4D color);
+
     void deleteBuffersData();
 
     static const QString name;
@@ -94,8 +97,11 @@ private:
     QOpenGLBuffer m_colorbuffer;
     QOpenGLBuffer m_indexbuffer;
 
+    QOpenGLShaderProgram *shader;
+
     QRectF bounds;
     QVector3D size;
+    QVector4D color;
 };
 
 #endif // VOLUMECOMPONENT_H

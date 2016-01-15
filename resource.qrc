@@ -26,5 +26,7 @@
         <file>assets/ui/health.png</file>
         <file>assets/ui/coin.png</file>
         <file>assets/ui/wave.png</file>
+        <file>assets/shaders/volume_fragment.glsl</file>
+        <file>assets/shaders/volume_vertex.glsl</file>
     </qresource>
 </RCC>

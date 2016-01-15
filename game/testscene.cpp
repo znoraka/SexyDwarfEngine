@@ -124,7 +124,7 @@ void TestScene::initialize()
     dummy = Entity::pool->obtain();
     map->addChild(dummy);
 
-    Player::getInstance()->init(10, 135);
+    Player::getInstance()->init(10, 1035);
 
     FMODManager::getInstance()->setCurrentMusic("event:/musique");
     FMODManager::getInstance()->startCurrentMusic();
