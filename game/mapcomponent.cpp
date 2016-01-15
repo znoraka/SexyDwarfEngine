@@ -243,7 +243,6 @@ void MapComponent::update(float delta)
         EnemyComponent *ec = enemiesTemplate[s.name];
         Entity *e = Entity::pool->obtain()->
                 addComponent(ec->clone())->
-//                addComponent(VolumeComponent::pool->obtain()->init(":/assets/ply/sphere.ply"))->
                 addComponent(volumeComponent->clone())->
                 addComponent(pathFollowerComponent->clone())->
                 setPosition(s.x, s.y, getZ(s.x, s.y))->

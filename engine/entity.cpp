@@ -31,7 +31,6 @@ Component *Entity::getComponent(const QString componentId)
     auto i = components.find(componentId);
 
     if(i == components.end()) {
-//        qDebug() << "no component " << componentId << "found";
         return nullptr;
     }
 
@@ -53,7 +52,6 @@ void Entity::release()
         qDebug() << "releasing " << var->componentName();
         var->release();
     }
-    this->dirty = true;
     if(this->parent != nullptr)
         this->parent->removeChild(this);
     this->parent = nullptr;
@@ -110,16 +108,12 @@ void Entity::update(float delta)
 Entity *Entity::clicked(Qt::MouseButton button, int x, int y)
 {
     foreach (Component *c, components) {
-        qDebug() << c->componentName() << ":" << c->clicked(button, x, y);
         if(c->clicked(button, x, y)) return this;
     }
 
     foreach (Entity *child, children) {
         Entity *e = child->clicked(button, x, y);
         if(e != nullptr) {
-            for(Component *c : e->getComponents()) {
-                qDebug() << c->componentName();
-            }
             return e;
         }
     }

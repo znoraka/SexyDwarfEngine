@@ -90,19 +90,6 @@ void TestScene::initialize()
     glLightfv(GL_LIGHT0, GL_SPECULAR, specularLight);
     glLightfv(GL_LIGHT0, GL_POSITION, position);
 
-//    QWidget *container = new QWidget(this);
-//    towersIconsLayout = new QHBoxLayout(container);
-//    createUiButton(":/assets/ui/poison.png", TowerComponent::TowerType::BULLET);
-//    createUiButton(":/assets/ui/fire.png", TowerComponent::TowerType::FIRE);
-//    createUiButton(":/assets/ui/ice.png", TowerComponent::TowerType::ICE);
-//    createUiButton(":/assets/ui/lightning.png", TowerComponent::TowerType::LIGHTNING);
-//    container->resize(towersIconsLayout->count() * 75, 69);
-
-//    this->addCallBack([=]() {
-//        container->move(Game::Graphics::width() * 0.5 - container->width() * 0.5,
-//                        Game::Graphics::height() - container->height() * 1.2);
-//    });
-
     tiuw = new TowerInfoUpgradeWindow(this);
     connect(tiuw->getDamageUpgradeButton(), SIGNAL(clicked(bool)), this, SLOT(upgradeDamageClicked()));
     connect(tiuw->getSpeedUpgrageButton(), SIGNAL(clicked(bool)), this, SLOT(upgradeSpeedClicked()));
@@ -358,7 +345,7 @@ bool TestScene::handleEvent(QEvent *event)
 
         case Qt::Key_Space:
             makeCurrent();
-            Player::getInstance()->takeDamage(10);
+//            Player::getInstance()->takeDamage(10);
             if(displayLines) {
                 glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
             } else {

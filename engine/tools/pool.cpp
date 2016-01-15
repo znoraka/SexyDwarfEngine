@@ -24,7 +24,6 @@ T Pool<T>::clone(T object)
 template<typename T>
 void Pool<T>::release(T object)
 {
-//    delete object;
     if(!objects.contains(object)) {
         objects.push(object);
     }

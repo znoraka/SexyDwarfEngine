@@ -69,11 +69,6 @@ QVector3D Camera::getScale() const
 
 QVector3D Camera::screenToWorld(QVector3D vec, QMatrix4x4 modelview, QMatrix4x4 projection)
 {
-//    vec.setX(qMin(vec.x(), width));
-//    vec.setY(qMin(vec.y(), height));
-//    vec.setX(qMax(vec.x(), 0.0f));
-//    vec.setY(qMax(vec.y(), 0.0f));
-
     int viewport[4];
     glGetIntegerv(GL_VIEWPORT, viewport);
     float winX = vec.x();

@@ -151,8 +151,6 @@ FMODManager::FMODManager()
     ERRCHECK( system->getLowLevelSystem(&lowLevelSystem) );
     ERRCHECK( lowLevelSystem->setSoftwareFormat(0, FMOD_SPEAKERMODE_5POINT1, 0) );
     ERRCHECK( system->initialize(32, FMOD_STUDIO_INIT_NORMAL, FMOD_INIT_NORMAL, 0) );
-    ERRCHECK( lowLevelSystem->createChannelGroup("music", &musicGroup));
-    ERRCHECK( lowLevelSystem->createChannelGroup("events", &eventsGroup));
 }
 
 void FMODManager::ERRCHECK(FMOD_RESULT result) {
