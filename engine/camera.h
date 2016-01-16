@@ -19,7 +19,7 @@ public:
     Camera();
 
 
-    void initialize(qreal ratio, qreal width, qreal height, qreal near, qreal far);
+    void initialize(float ratio, float width, float height, float camNear, float camFar);
     void update(float delta);
     void setAnimated(bool b);
 
@@ -52,7 +52,7 @@ private:
     bool animated = false;
 
     float width, height, ratio;
-    qreal near, far;
+    float camNear, camFar;
 };
 
 #endif // CAMERA_H

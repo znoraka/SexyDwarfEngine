@@ -17,13 +17,13 @@ Camera::Camera()
     rotation.setZ(0);
 }
 
-void Camera::initialize(qreal ratio, qreal width, qreal height, qreal near, qreal far)
+void Camera::initialize(float ratio, float width, float height, float near, float far)
 {
     this->ratio = 1;
     this->width = width;
     this->height = height;
-    this->near = near;
-    this->far = far;
+    this->camNear = near;
+    this->camFar = far;
 }
 
 void Camera::update(float delta)
@@ -31,7 +31,7 @@ void Camera::update(float delta)
 
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    glOrtho(0.0, WIDTH, 0.0, HEIGHT, near * getScale().x(), far * getScale().y());
+    glOrtho(0.0, WIDTH, 0.0, HEIGHT, camNear * getScale().x(), camFar * getScale().y());
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 

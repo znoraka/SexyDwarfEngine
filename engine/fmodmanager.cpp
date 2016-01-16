@@ -6,6 +6,8 @@ FMODManager *FMODManager::getInstance()
     return instance;
 }
 
+#ifdef __linux__
+
 void FMODManager::loadBank(QString path)
 {
     FMOD::Studio::Bank* bank = NULL;
@@ -158,3 +160,91 @@ void FMODManager::ERRCHECK(FMOD_RESULT result) {
         qDebug() << "error : " << FMOD_ErrorString(result);
     }
 }
+
+#else
+
+
+void FMODManager::loadBank(QString path)
+{
+
+}
+
+void FMODManager::setCurrentEvent(QString description)
+{
+
+}
+
+void FMODManager::startEventInstance()
+{
+
+}
+
+void FMODManager::setParameterValue(QString parameter, float value)
+{
+
+}
+
+void FMODManager::setListenerPosition(QVector3D position)
+{
+
+}
+
+void FMODManager::setEventInstancePosition(QVector3D position)
+{
+
+}
+
+void FMODManager::setEventInstanceVolume(float volume)
+{
+}
+
+void FMODManager::setCurrentMusic(QString music)
+{
+
+}
+
+void FMODManager::setNextMusic(QString music)
+{
+
+}
+
+void FMODManager::setCurrentMusicVolume(float volume)
+{
+}
+
+void FMODManager::setCurrentMusicParameterValue(QString parameter, float value)
+{
+
+}
+
+void FMODManager::setNextMusicCurrent()
+{
+
+}
+
+void FMODManager::startCurrentMusic()
+{
+}
+
+void FMODManager::pauseCurrentMusic(bool paused)
+{
+}
+
+void FMODManager::set3DSettings(float dopplerScale, float distanceFactor, float rolloffScale)
+{
+}
+
+void FMODManager::update()
+{
+}
+
+FMODManager::FMODManager()
+{
+
+}
+
+void FMODManager::ERRCHECK(FMOD_RESULT result) {
+
+}
+
+#endif
