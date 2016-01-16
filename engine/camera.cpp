@@ -17,13 +17,12 @@ Camera::Camera()
     rotation.setZ(0);
 }
 
-void Camera::initialize(float ratio, float width, float height, float near, float far)
+void Camera::initialize(float width, float height, float n_ear, float f_ar)
 {
-    this->ratio = 1;
     this->width = width;
     this->height = height;
-    this->camNear = near;
-    this->camFar = far;
+    this->n_ear = n_ear;
+    this->f_ar = f_ar;
 }
 
 void Camera::update(float delta)
@@ -31,18 +30,11 @@ void Camera::update(float delta)
 
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    glOrtho(0.0, WIDTH, 0.0, HEIGHT, camNear * getScale().x(), camFar * getScale().y());
+    glOrtho(0.0, WIDTH, 0.0, HEIGHT, n_ear * getScale().x(), f_ar * getScale().y());
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
     glViewport(0, 0, Game::Graphics::width(), Game::Graphics::height());
-
-    glColor3f(1, 0, 0);
-    glBegin(GL_TRIANGLES);
-    glVertex3f(10000, 0, 0);
-    glVertex3f(0, 10000, 0);
-    glVertex3f(10000, 10000, 0);
-    glEnd();
 
     glTranslatef(position.x(), position.y(), position.z());
     glRotatef(rotation.x(), 1, 0, 0);

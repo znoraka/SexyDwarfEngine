@@ -37,7 +37,7 @@ void SplashScreenScene::initialize()
     glShadeModel(GL_SMOOTH);
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
     glClearDepth(1.0f);
-    camera->initialize(Game::Graphics::width() / Game::Graphics::height(), Game::Graphics::width(), Game::Graphics::height(), -1000, 1000);
+    camera->initialize(Game::Graphics::width(), Game::Graphics::height(), -1000, 1000);
     QVector3D pos = camera->getPosition();
     camera->setScale(camera->getScale());
 
@@ -60,7 +60,7 @@ void SplashScreenScene::update(float delta)
     button->move(Game::Graphics::width() * 0.5 - button->width() * 0.5,
                  Game::Graphics::height() * 0.7 - button->height() * 0.5);
 
-    e->setPosition(Game::Graphics::width() * 0.5, Game::Graphics::height() * 0.78, 0);
+    e->setPosition(Game::Graphics::width() * 0.5 * (1366 / Game::Graphics::width()), Game::Graphics::height() * 0.78 * (768 / Game::Graphics::height()), 0);
     e->setRotation(0, e->getRotation().y() + 1 * delta * 0.1, 0);
 
 

@@ -39,7 +39,7 @@ void TestScene::initialize()
     glShadeModel(GL_SMOOTH);
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
     glClearDepth(1.0f);
-    camera->initialize(Game::Graphics::width() / Game::Graphics::height(), Game::Graphics::width(), Game::Graphics::height(), -1000, 1000);
+    camera->initialize(Game::Graphics::width(), Game::Graphics::height(), -1000, 1000);
     QVector3D pos = camera->getPosition();
 
     camera->setPosition(200, 0, 0);

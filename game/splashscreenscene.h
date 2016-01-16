@@ -8,6 +8,7 @@
 #include "engine/game.h"
 #include "game/testscene.h"
 #include "engine/scene.h"
+#include "engine/components/volumecomponent.h"
 
 class SplashScreenScene : public Scene
 {
