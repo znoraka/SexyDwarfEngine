@@ -22,6 +22,7 @@ inline uint qHash(const QVector3D &v, uint seed)
 
 MapComponent::MapComponent()
 {
+    qDebug() << "new map";
 }
 
 const QString MapComponent::componentName() const
@@ -62,7 +63,7 @@ MapComponent *MapComponent::init(QString mapFolder)
     this->waveIndex = 0;
     this->enemies = new QList<Entity *>();
     this->volumeComponent = VolumeComponent::pool->obtain()->init(":/assets/ply/sphere.ply");
-    this->pathFollowerComponent = PathFollowerComponent::pool->obtain()->init(mapFolder, this, 0.1);
+    this->pathFollowerComponent = PathFollowerComponent::pool->obtain()->init(mapFolder, 0.1);
 
     heightmap = QImage(mapFolder + "h.png").mirrored();
     QFile f(mapFolder + "waves.json");
@@ -250,7 +251,6 @@ void MapComponent::update(float delta)
                 setScale(.05, .05, .05);
         this->getEntity()->addChild(e);
         this->enemies->append(e);
-        qDebug() << "added enemy";
     }
 
     for(auto i : *enemies) {

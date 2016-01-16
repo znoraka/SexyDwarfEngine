@@ -53,7 +53,7 @@ void TestScene::initialize()
             setRotation(-90, 0, 100);
     this->addEntity(map);
 
-    MapComponent *mapComponent = static_cast<MapComponent*>(map->getComponent(MapComponent::name));
+    MapComponent *mapComponent = map->getComponent<MapComponent>();
     towerComponents.insert(
                 TowerComponent::TowerType::BULLET,
                 TowerComponent::pool->obtain()->init(QVector3D(0, 0, 30), mapComponent->getEnemies(), 150, 3, 1, 50, TowerComponent::TowerType::BULLET));
@@ -263,6 +263,10 @@ bool TestScene::handleEvent(QEvent *event)
     case QEvent::KeyPress:
         keyEvent = static_cast<QKeyEvent*>(event);
         switch (keyEvent->key()) {
+        case Qt::Key_Escape:
+            Player::getInstance()->takeDamage(10);
+            return true;
+
         case Qt::Key_Right:
             v = camera->getRotation();
             v.setY(v.y() + 1);

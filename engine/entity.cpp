@@ -13,7 +13,7 @@ Entity *Entity::addComponent(Component *component)
 {
     removeComponent(component->componentName());
     component->setEntity(this);
-    components[component->componentName()] = component;
+    components.insert(component->componentName(), component);
     return this;
 }
 
@@ -49,7 +49,6 @@ QVector<Component *> Entity::getComponents()
 void Entity::release()
 {
     foreach (Component *var, components) {
-        qDebug() << "releasing " << var->componentName();
         var->release();
     }
     if(this->parent != nullptr)

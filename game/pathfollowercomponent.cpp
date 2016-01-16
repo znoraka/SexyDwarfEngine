@@ -18,12 +18,11 @@ void PathFollowerComponent::release()
     PathFollowerComponent::pool->release(this);
 }
 
-PathFollowerComponent *PathFollowerComponent::init(QString mapFolder, MapComponent *map, float speed)
+PathFollowerComponent *PathFollowerComponent::init(QString mapFolder, float speed)
 {
     path = QImage(mapFolder + "p.png");
     qDebug() << path.width();
     this->speed = speed;
-    this->map = map;
     return this;
 }
 
@@ -38,7 +37,10 @@ void PathFollowerComponent::update(float delta)
 
     MapComponent *m = getEntity()->getParent()->getComponent<MapComponent>();
 
-    if(m == nullptr) return;
+    if(m == nullptr) {
+        qDebug() << "no mapcomponent found";
+        return;
+    }
 
     for (int i = 0; i < 4; ++i) {
         QVector3D v = getEntity()->getLocalPosition();
@@ -58,6 +60,8 @@ void PathFollowerComponent::update(float delta)
         }
 
         QRgb pixel = path.pixel(x, y);
+
+//        qDebug() << "red = " << qRed(pixel);
 
         if(qRed(pixel) == 255 && qGreen(pixel) == 255 && qBlue(pixel) == 255) {
             //up
@@ -98,7 +102,8 @@ PathFollowerComponent *PathFollowerComponent::clone()
     p->path = path;
     p->direction = direction;
     p->speed = speed;
-    p->map = map;
+
+    return p;
 }
 
 PathFollowerComponent *PathFollowerComponent::setSpeed(float speed)

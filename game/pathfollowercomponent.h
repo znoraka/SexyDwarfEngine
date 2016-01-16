@@ -21,7 +21,7 @@ public:
 
     void release() override;
 
-    PathFollowerComponent *init(QString mapFolder, MapComponent *map, float speed);
+    PathFollowerComponent *init(QString mapFolder, float speed);
     virtual void update(float delta);
     PathFollowerComponent *clone();
 
@@ -31,7 +31,6 @@ public:
 
 private:
     QImage path;
-    MapComponent *map;
     QVector3D direction;
     float speed;
 };

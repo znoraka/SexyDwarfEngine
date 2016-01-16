@@ -40,7 +40,7 @@ void FMODManager::setCurrentEvent(QString description)
 
     ERRCHECK( eventDescription->createInstance(&eventInstance) );
 
-    qDebug() << "[FMODManager]:" << "added event instance of" << description;
+//    qDebug() << "[FMODManager]:" << "added event instance of" << description;
 }
 
 void FMODManager::startEventInstance()
